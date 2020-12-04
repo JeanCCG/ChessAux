@@ -5,6 +5,7 @@
 #include "Librerias/gameboard/gameboard.h"
 using namespace std;
 
+//hice un comentario para hacer push
 OnceAnnouncement announcement(5);
 
 int game(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces, int width = 8, int height = 8)
