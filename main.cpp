@@ -4,8 +4,6 @@
 
 using namespace std;
 
-OnceAnnouncement announcement(5);
-
 int game(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces, int width = 8, int height = 8,
          int mode = 0)//game function
 {
@@ -294,7 +292,8 @@ int game(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pie
 }
 
 int main() {
-
+    OnceAnnouncement Title(5);
+    Title.init();
     int width = 8;    //ancho
     int height = 8; //altura
     int result;
@@ -343,13 +342,14 @@ int main() {
 
     //* INTERFACE
     while (true) {
+        clean_screan();
         cout << "\nWhat do you want to do now?" << endl;
         cout << "\t[P]lay" << endl;
         cout << "\t[Q]uit" << endl;
         cout << "\t[S]ettings (in progress)" << endl;
         cout << endl;
         cin >> command;
-        cleanScreen(30);
+        clean_screan();
         command = toupper(command);
 
         switch (command) {
@@ -394,7 +394,7 @@ int main() {
                     printf("\t[S]how Gameboard\n");
                     // printf("\t[R]estart settings\n");
                     cin >> settings_command;
-                    cleanScreen(30);
+                    cleanScreen(2);
 
                     settings_command = toupper(settings_command);
 
@@ -417,7 +417,7 @@ int main() {
                             cout << "[S]how Gameboard" << endl;
                             cout << endl;
                             cin >> sub_command;
-                            cleanScreen(30);
+                            cleanScreen(2);
 
                             sub_command = toupper(sub_command);
 

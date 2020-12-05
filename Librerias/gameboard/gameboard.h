@@ -5,8 +5,14 @@
 
 #include <iostream>
 #include "../pieces/pieces.h"
+#include "../interface/interface.h"
 
 using namespace std;
+
+void clean_screan(){
+    system("cls");
+    OnceAnnouncement Title(5);
+}
 class Gameboard
 {
 public:
@@ -120,7 +126,7 @@ public:
 	}
 	void show()
 	{
-	    system("cls");
+	    clean_screan();
 		// Letters, upper gameframe
 		cout << equatorBlank << meridianChar;
 		for (int i = 0; i < width; i++)
