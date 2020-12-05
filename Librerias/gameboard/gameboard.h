@@ -120,6 +120,7 @@ public:
 	}
 	void show()
 	{
+	    system("cls");
 		// Letters, upper gameframe
 		cout << equatorBlank << meridianChar;
 		for (int i = 0; i < width; i++)

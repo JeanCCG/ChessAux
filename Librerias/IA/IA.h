@@ -823,5 +823,6 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
         cout<<"End board"<<endl;
         //return  minpt;
     }
+    return 0;
 }
 
