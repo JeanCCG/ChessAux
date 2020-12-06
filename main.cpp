@@ -210,6 +210,11 @@ int game(
 				cout << "\nMinimax : " << numeval << endl;
                 cout << "\nMOVE START " << arrstart[0] <<" "<<arrstart[1]<< endl;
                 cout << "\nMOVE END " << arrend[0] <<" "<<arrend[1]<< endl;
+                if(gameboard.slots[arrend[0]][arrend[1]].isFree){
+                    gameboard.move(arrstart, arrend);
+                }else{
+                    gameboard.eat(arrstart, arrend);
+                }
 				turn = !turn;
 				movements++;
 			}
