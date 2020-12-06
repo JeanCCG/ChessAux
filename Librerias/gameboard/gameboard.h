@@ -185,54 +185,94 @@ public:
 	{
 		return true;
 	}
-	bool validKingsideCastling(int kingBearings[2]) // Enroque de rey
-	{
-		return true;
-	}
-	bool validQueensideCastling() // Enroque de reina
-	{
-		return true;
-	}
 	bool isMenaced(int place[2])
 	{
 		return true;
 	}
-	bool drawDot()
+	void drawDot(int place[2])
 	{
-		return true;
+		slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
+	}
+	void undrawKingDots(int place[2]);
+	{
 	}
 
 	bool availableKingMovement(int kingBearings[2])
 	{
-		// bool availableMovement = false;
-		// bool inTheUpperBorder = (kingBearings[0] == 0) ? ;
-		// bool inTheBottomBorder = (kingBearings[0] == height - 1) ? ;
-		// bool inTheLeftBorder = (kingBearings[1] == 0) ? ;
-		// bool inTheRightBorder = (kingBearings[1] == width - 1) ? ;
+		bool availableMovement = false;
+		bool inTheUpperBorder = (kingBearings[0] == 0) ? true : false;
+		bool inTheBottomBorder = (kingBearings[0] == height - 1) ? true : false;
+		bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
+		bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
+		bool slotMenaced;
+		bool player(slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
+		bool availableQueensideCastling = true;
+		bool availableKingsideCastling = true;
 
+		int end[2];
 		// int i = 0;
-		// int iLimit = 4;
+		int iLimit = 4;
 		// int j = 0;
-		// int jLimit = 4;
+		int jLimit = 4;
 		// if (inTheUpperBorder)
 		// 	i = 1;
-		// else if (inTheBottomBorder)
-		// 	iLimit = 3;
-		// if (inTheRightBorder)
+		if (inTheBottomBorder)
+			iLimit = 3;
+		if (inTheRightBorder)
+			jLimit = 3;
+		// if (inTheLeftBorder)
 		// 	j = 1;
-		// else if (inTheLeftBorder)
-		// 	jLimit = 3;
-		// for (; i < iLimit; i++)
-		// {
-		// 	for (; j < jLimit; j++)
-		// 	{
-		// 	}
-		// }
-		// for (; (i < iLimit) && (j < jLimit); (i++) && (j++))
-		// {
-		// 	slots[kingBearings[0](-1 + i)][kingBearings[1]];
-		// }
-		return true;
+
+		for (int i = (inTheUpperBorder) ? 1 : 0; i < iLimit; i++)
+			for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
+			{
+				end[0] = kingBearings[0] + (-1 + i);
+				end[1] = kingBearings[1] + (-1 + j);
+				slotMenaced = isMenaced(end);
+				if ((slotMenaced == false) &&
+					(slots[end[0]][end[1]].isFree))
+				{
+					drawDot(end);
+					availableMovement = true;
+				}
+				else if (slots[end[0]][end[1]].player != player)
+					availableMovement = true;
+			}
+		if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+		{
+			if (slots[kingBearings[0]][0].movements == 0)
+			{
+				for (int j = kingBearings[1] - 1; 0 < j; j--)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableQueensideCastling = false;
+						break;
+					}
+			}
+			if (slots[kingBearings[0]][width - 1].movements == 0)
+			{
+				for (int j = kingBearings[1] + 1; j < width - 1; j++)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableKingsideCastling = false;
+						break;
+					}
+			}
+		}
+		if (availableKingsideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = 2;
+			drawDot(end);
+		}
+		if (availableQueensideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = width - 3;
+			drawDot(end);
+		}
 	}
 
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference
@@ -279,6 +319,7 @@ public:
 			switch (piecePossibilities)
 			{
 			case 0:
+				undrawKingDots(place);
 				break;
 			case 1:
 				undrawDiagonals(place);
