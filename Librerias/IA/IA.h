@@ -101,7 +101,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                 switch (slots[i][j]){
                     case PiecesChar::charP2_king: {
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -128,7 +128,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     case PiecesChar::charP2_queen:
                         availablepiece=true;
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -273,7 +273,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     case PiecesChar::charP2_rook: {
                         //(+x) line
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -341,7 +341,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     }
                     case PiecesChar::charP2_knight: {
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -391,7 +391,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     }
                     case PiecesChar::charP2_bishop:
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -478,7 +478,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                         break;
                     case PiecesChar::charP2_pawn:{
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -589,6 +589,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
             }
         }
         cout<<"End Board"<<endl;
+        cout<<"\nMaximo valor eval : "<<maxpt<<endl;
         return  maxpt;
     }else{// MIN
         int minpt = 50;
@@ -600,7 +601,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                 switch (slots[i][j]) {
                     case PiecesChar::charP1_king: {
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -626,7 +627,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     }
                     case PiecesChar::charP1_queen:
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -772,7 +773,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     case PiecesChar::charP1_rook: {
                         //(+x) line
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -840,7 +841,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     }
                     case PiecesChar::charP1_knight: {
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -898,7 +899,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                     }
                     case PiecesChar::charP1_bishop:
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -985,7 +986,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                         break;
                     case PiecesChar::charP1_pawn: {
                         for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; r < 2; ++r) {
+                            for (int s = 0; s < 3; ++s) {
                                 moves[r][s]=0;
                             }
                         }
@@ -1087,6 +1088,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
             }
         }
         cout<<"End board"<<endl;
+        cout<<"\nMainimo valor eval : "<<minpt<<endl;
         return  minpt;
     }
 }
