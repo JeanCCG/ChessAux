@@ -86,7 +86,7 @@ int p1validpieces(char piece){
             return 0;
     }
 }
-int minimax(char slots[26][26], int depth, bool player, int points) { //Player = True
+int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000][5],int& arrrms) { //Player = True
     if (depth == 0) {
         cout<<"\nDepth =0 return points: "<<points<<endl;
         return points;
@@ -94,6 +94,10 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
     if (player) {
         int maxpt = -50;
         int pts=points;
+        int arrrm;
+        if(depth==3) {
+            arrrm = 0;
+        }
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 int moves[26][3];
@@ -577,12 +581,20 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                         cout<<"k before: "<<p<<endl;
                         cout<<"movesm before: "<<movesm<<endl;
                         cout<<"savemovesm before: "<<movesm<<endl;
-                        int eval =minimax(slotscopy, depth - 1, false,points);
+                        int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
                         cout<<"k after: "<<p<<endl;
                         cout<<"movesm after: "<<movesm<<endl;
                         cout<<"savemovesm after: "<<movesm<<endl;
                         cout<<"End minimax"<<endl;
                         maxpt = max(eval, maxpt);
+                        if(depth==3){
+                            arrr[arrrm][0]=moves[p][0];
+                            arrr[arrrm][1]=moves[p][1];
+                            arrr[arrrm][2]=eval;
+                            arrr[arrrm][3]=i;
+                            arrr[arrrm][4]=j;
+                            arrrm++;
+                        }
                     }
                     cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                 }
@@ -590,6 +602,9 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
         }
         cout<<"End Board"<<endl;
         cout<<"\nMaximo valor eval : "<<maxpt<<endl;
+        if(depth == 3){
+            arrrms=arrrm;
+        }
         return  maxpt;
     }else{// MIN
         int minpt = 50;
@@ -1078,7 +1093,7 @@ int minimax(char slots[26][26], int depth, bool player, int points) { //Player =
                             }
                             cout<<endl;
                         }
-                        int eval=minimax(slotscopy, depth - 1, true, points);
+                        int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
 
                         cout<<"End minimax, eval = "<<eval<<endl;
                         minpt = min(eval, minpt);

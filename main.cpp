@@ -194,7 +194,22 @@ int game(
 					}
 					cout << endl;
 				}
-				cout << "\nMinimax : " << minimax(slotes, 3, true, 0) << endl;
+				int arrr[1000][5];
+				int arrrms;
+				int numeval=minimax(slotes, 3, true, 0,arrr,arrrms);
+				int arrend[2];
+                int arrstart[2];
+                for (int i = 0; i < 1000; ++i) {
+                    if(arrr[i][2]==numeval){
+                        arrend[0]=arrr[i][0];
+                        arrend[1]=arrr[i][1];
+                        arrstart[0]=arrr[i][3];
+                        arrstart[1]=arrr[i][4];
+                    }
+                }
+				cout << "\nMinimax : " << numeval << endl;
+                cout << "\nMOVE START " << arrstart[0] <<" "<<arrstart[1]<< endl;
+                cout << "\nMOVE END " << arrend[0] <<" "<<arrend[1]<< endl;
 				turn = !turn;
 				movements++;
 			}
