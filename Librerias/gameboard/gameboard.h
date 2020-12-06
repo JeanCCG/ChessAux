@@ -193,9 +193,10 @@ public:
 	{
 		slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
 	}
-	void undrawKingDots(int place[2]);
-	{
-	}
+	// void undrawKingDots(int place[2]);
+	// {
+	// 	place[0] = place[0];
+	// }
 
 	bool availableKingMovement(int kingBearings[2])
 	{
@@ -205,7 +206,7 @@ public:
 		bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
 		bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
 		bool slotMenaced;
-		bool player(slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
+		bool player = (slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
 		bool availableQueensideCastling = true;
 		bool availableKingsideCastling = true;
 
@@ -273,6 +274,7 @@ public:
 			end[1] = width - 3;
 			drawDot(end);
 		}
+		return availableMovement;
 	}
 
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference
@@ -319,7 +321,7 @@ public:
 			switch (piecePossibilities)
 			{
 			case 0:
-				undrawKingDots(place);
+				// undrawKingDots(place);
 				break;
 			case 1:
 				undrawDiagonals(place);

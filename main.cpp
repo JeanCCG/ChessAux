@@ -233,8 +233,7 @@ int game(
 							}
 							else
 							{
-								cout << "There aren't available positions to move your piece. Please, choose another"
-									 << endl;
+								cout << "There aren't available positions to move your piece. Please, choose another" << endl;
 							}
 						}
 						else
@@ -333,10 +332,10 @@ int game(
 							break;
 						}
 						if (((int)'A' - 1 < endSlot) && (endSlot < (int)'Z' + 1)) // eat P2
-																				  //King Exception
-																				  //system Point
-																				  //eat
 						{
+							//King Exception
+							//system Point
+							//eat
 							gameboard.eat(start, end);
 							break;
 						}
