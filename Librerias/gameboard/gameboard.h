@@ -179,9 +179,7 @@ public:
 	}
 	bool validKingMovement(int start[2], int end[2])
 	{
-	}
-	bool()
-	{
+		return true;
 	}
 	bool validEnPassant(int start[2], int end[2]) // Peón al paso
 	{
@@ -197,18 +195,44 @@ public:
 	}
 	bool isMenaced(int place[2])
 	{
+		return true;
 	}
 	bool drawDot()
 	{
+		return true;
 	}
 
 	bool availableKingMovement(int kingBearings[2])
 	{
-		bool availableMovement = false;
-		bool inTheUpperBorder = (kingBearings[0] == 0) ? ;
-		bool inTheBottomBorder = (kingBearings[0] == height - 1) ? ;
-		bool inTheLeftBorder = (kingBearings[1] == 0) ? ;
-		bool inTheRightBorder = (kingBearings[1] == width - 1) ? ;
+		// bool availableMovement = false;
+		// bool inTheUpperBorder = (kingBearings[0] == 0) ? ;
+		// bool inTheBottomBorder = (kingBearings[0] == height - 1) ? ;
+		// bool inTheLeftBorder = (kingBearings[1] == 0) ? ;
+		// bool inTheRightBorder = (kingBearings[1] == width - 1) ? ;
+
+		// int i = 0;
+		// int iLimit = 4;
+		// int j = 0;
+		// int jLimit = 4;
+		// if (inTheUpperBorder)
+		// 	i = 1;
+		// else if (inTheBottomBorder)
+		// 	iLimit = 3;
+		// if (inTheRightBorder)
+		// 	j = 1;
+		// else if (inTheLeftBorder)
+		// 	jLimit = 3;
+		// for (; i < iLimit; i++)
+		// {
+		// 	for (; j < jLimit; j++)
+		// 	{
+		// 	}
+		// }
+		// for (; (i < iLimit) && (j < jLimit); (i++) && (j++))
+		// {
+		// 	slots[kingBearings[0](-1 + i)][kingBearings[1]];
+		// }
+		return true;
 	}
 
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference

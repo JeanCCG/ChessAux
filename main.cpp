@@ -370,7 +370,7 @@ int game(
 
 int main()
 {
-	Title.init();
+	title.init();
 	int width = 8;	//ancho
 	int height = 8; //altura
 	int result;
