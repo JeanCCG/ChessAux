@@ -194,7 +194,7 @@ int game(
 					}
 					cout << endl;
 				}
-				cout << "\nMinimax : " << minimax(slotes, 3, false, 0) << endl;
+				cout << "\nMinimax : " << minimax(slotes, 2, true, 0) << endl;
 				turn = !turn;
 				movements++;
 			}
