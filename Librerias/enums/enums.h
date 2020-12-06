@@ -36,3 +36,9 @@ enum PiecesChar
 	charP2_pawn = 'P'
 
 };
+
+enum Player
+{
+	P1 = true,
+	P2 = false
+};

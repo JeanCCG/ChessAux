@@ -4,7 +4,7 @@
 
 using namespace std;
 
-OnceAnnouncement Title(5);
+OnceAnnouncement title(5);
 
 int game(
 	int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces,
@@ -33,6 +33,7 @@ int game(
 	char symbol;
 	char endSlot;
 	bool isFree;
+	bool validMovement = false;
 	///IA
 	char slotes[26][26];
 
@@ -70,8 +71,7 @@ int game(
 							}
 							else
 							{
-								cout << "There aren't available positions to move your piece. Please, choose another"
-									 << endl;
+								cout << "There aren't available positions to move your piece. Please, choose another" << endl;
 							}
 						}
 						else
@@ -97,13 +97,40 @@ int game(
 							gameboard.move(start, end);
 							break;
 						}
-						if (((int)'a' - 1 < endSlot) && (endSlot < (int)'z' + 1)) // eat P2
-																				  //King Exception
-																				  //system Point
-																				  //eat
+						if (((int)'a' - 1 < endSlot) && (endSlot < (int)'z' + 1))
 						{
-							gameboard.eat(start, end);
-							break;
+							switch (gameboard.slots[start[0]][start[1]].symbol)
+							{
+							case PiecesChar::charP1_king:
+								break;
+							case PiecesChar::charP1_queen:
+								if ((start[0] == end[0]) || (start[1] == end[1]))
+									validMovement = gameboard.goStraight(start, end);
+								else
+									validMovement = gameboard.goDiagonal(start, end);
+								break;
+							case PiecesChar::charP1_rook:
+								validMovement = gameboard.goStraight(start, end);
+								break;
+							case PiecesChar::charP1_knight:
+								validMovement = gameboard.jump(start, end);
+								break;
+							case PiecesChar::charP1_bishop:
+								validMovement = gameboard.goDiagonal(start, end);
+								break;
+							case PiecesChar::charP1_pawn:
+								break;
+
+							default:
+								break;
+							}
+							if (validMovement)
+							{
+								validMovement = false;
+								break;
+							}
+							else
+								cout << "Sorry, that movement is not allowed." << endl;
 						}
 						else
 							cout << "You can't capture your own pieces." << endl;
