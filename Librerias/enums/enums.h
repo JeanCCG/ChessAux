@@ -19,6 +19,7 @@ enum PiecesPoints
 enum PiecesChar
 {
 	char_free = ' ',
+	char_dot = '*',
 	// P1 is always in minuscules
 	charP1_king = 'r',
 	charP1_queen = 'q',
@@ -35,4 +36,10 @@ enum PiecesChar
 	charP2_bishop = 'A',
 	charP2_pawn = 'P'
 
+};
+
+enum Player
+{
+	P1 = true,
+	P2 = false
 };

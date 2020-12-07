@@ -9,9 +9,10 @@
 
 using namespace std;
 
-void clean_screan(){
-    system("cls");
-    OnceAnnouncement Title(5);
+void clean_screan()
+{
+    cleanScreen(10);
+	OnceAnnouncement title(5);
 }
 class Gameboard
 {
@@ -54,6 +55,228 @@ public:
 		capture(start, end);
 	}
 
+	int goDiagonal(int start[2], int end[2]) // Diagonal
+	{
+		int availableSlots = 1;
+		if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
+			return 1;
+		else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
+		{
+			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
+			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
+			int i, it, iLimit;
+			int j, jt, jLimit;
+			if (isUp)
+			{
+				iLimit = -1;
+				i = start[0] - 1;
+				it = -1;
+			}
+			else
+			{
+				iLimit = height;
+				i = start[0] + 1;
+				it = 1;
+			}
+			if (isLeft)
+			{
+				jLimit = -1;
+				j = start[1] - 1;
+				jt = -1;
+			}
+			else
+			{
+				jLimit = width;
+				j = start[1] + 1;
+				jt = 1;
+			}
+
+			for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
+			{
+				if (slots[i][j].symbol != PiecesChar::char_free)
+					return availableSlots;
+				availableSlots++;
+			}
+			return availableSlots;
+		}
+		else
+			return 0;
+	}
+	bool goStraight(int start[2], int end[2]) // Línea recta
+	{
+		if ((abs(start[0] - end[0]) == 0) && (abs(start[1] - end[1]) == 0))
+			return true;
+		else if (start[0] == end[0])
+		{
+			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
+			bool isAPieceInMiddle = false;
+			int j, jt;
+			int jLimit = end[1];
+			if (isLeft)
+			{
+				j = start[1] - 1;
+				jt = -1;
+			}
+			else
+			{
+				j = start[1] + 1;
+				jt = 1;
+			}
+			for (; (j != jLimit); (j += jt))
+				if (slots[start[0]][j].symbol != PiecesChar::char_free)
+					return false;
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+
+			return true;
+		}
+		else if (start[1] == end[1])
+		{
+			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
+			int i, it;
+			int iLimit = end[0];
+			if (isUp)
+			{
+				i = start[0] - 1;
+				it = -1;
+			}
+			else
+			{
+				i = start[0] + 1;
+				it = 1;
+			}
+			for (; (i != iLimit); (i += it))
+				if (slots[i][start[1]].symbol != PiecesChar::char_free)
+					return false;
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else
+			return false;
+	}
+	bool jump(int start[2], int end[2]) // Salto de caballo
+	{
+		int xDistance = abs(start[0] - end[0]);
+		int yDistance = abs(start[1] - end[1]);
+		if (
+			((xDistance == 1) && (yDistance == 2)) ||
+			((xDistance == 2) && (yDistance == 1)))
+		{
+
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else
+			return false;
+	}
+	bool validKingMovement(int start[2], int end[2])
+	{
+		return true;
+	}
+	bool validEnPassant(int start[2], int end[2]) // Peón al paso
+	{
+		return true;
+	}
+	bool isMenaced(int place[2])
+	{
+		return true;
+	}
+	void drawDot(int place[2])
+	{
+		slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
+	}
+	// void undrawKingDots(int place[2]);
+	// {
+	// 	place[0] = place[0];
+	// }
+
+	bool availableKingMovement(int kingBearings[2])
+	{
+		bool availableMovement = false;
+		bool inTheUpperBorder = (kingBearings[0] == 0) ? true : false;
+		bool inTheBottomBorder = (kingBearings[0] == height - 1) ? true : false;
+		bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
+		bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
+		bool slotMenaced;
+		bool player = (slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
+		bool availableQueensideCastling = true;
+		bool availableKingsideCastling = true;
+
+		int end[2];
+		// int i = 0;
+		int iLimit = 4;
+		// int j = 0;
+		int jLimit = 4;
+		// if (inTheUpperBorder)
+		// 	i = 1;
+		if (inTheBottomBorder)
+			iLimit = 3;
+		if (inTheRightBorder)
+			jLimit = 3;
+		// if (inTheLeftBorder)
+		// 	j = 1;
+
+		for (int i = (inTheUpperBorder) ? 1 : 0; i < iLimit; i++)
+			for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
+			{
+				end[0] = kingBearings[0] + (-1 + i);
+				end[1] = kingBearings[1] + (-1 + j);
+				slotMenaced = isMenaced(end);
+				if ((slotMenaced == false) &&
+					(slots[end[0]][end[1]].isFree))
+				{
+					drawDot(end);
+					availableMovement = true;
+				}
+				else if (slots[end[0]][end[1]].player != player)
+					availableMovement = true;
+			}
+		if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+		{
+			if (slots[kingBearings[0]][0].movements == 0)
+			{
+				for (int j = kingBearings[1] - 1; 0 < j; j--)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableQueensideCastling = false;
+						break;
+					}
+			}
+			if (slots[kingBearings[0]][width - 1].movements == 0)
+			{
+				for (int j = kingBearings[1] + 1; j < width - 1; j++)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableKingsideCastling = false;
+						break;
+					}
+			}
+		}
+		if (availableKingsideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = 2;
+			drawDot(end);
+		}
+		if (availableQueensideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = width - 3;
+			drawDot(end);
+		}
+		return availableMovement;
+	}
+
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference
 	{
 		cout << "piecePossibilities" << endl;
@@ -63,7 +286,7 @@ public:
 		{
 		case PiecesChar::charP1_king:
 			piecePossibilities = 0;
-			availableMovement;
+			availableMovement = availableKingMovement(place);
 			break;
 		case PiecesChar::charP1_queen:
 			piecePossibilities = 1;
@@ -98,6 +321,7 @@ public:
 			switch (piecePossibilities)
 			{
 			case 0:
+				// undrawKingDots(place);
 				break;
 			case 1:
 				undrawDiagonals(place);
@@ -126,7 +350,7 @@ public:
 	}
 	void show()
 	{
-	    clean_screan();
+		clean_screan();
 		// Letters, upper gameframe
 		cout << equatorBlank << meridianChar;
 		for (int i = 0; i < width; i++)
@@ -563,11 +787,13 @@ private:
 	}
 	void initGameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces)
 	{
-		for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
-            }
-        }
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
+			}
+		}
 		int points;
 		for (int i = 0; i < nP1Pieces; i++)
 		{
