@@ -199,7 +199,7 @@ int game(
 				int numeval=minimax(slotes, 3, true, 0,arrr,arrrms);
 				int arrend[2];
                 int arrstart[2];
-                for (int i = 0; i < 1000; ++i) {
+                for (int i = 0; i <arrrms; ++i) {
                     if(arrr[i][2]==numeval){
                         arrend[0]=arrr[i][0];
                         arrend[1]=arrr[i][1];
