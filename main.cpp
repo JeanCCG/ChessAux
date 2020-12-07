@@ -1,8 +1,12 @@
 #include <iostream>
 #include "Librerias/IA/IA.h"
 #include "Librerias/interface/interface.h"
-
+#include <SDL2/SDL.h>
 using namespace std;
+#include "Librerias/Graphics/Game.h"
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
+Game *game_G=nullptr;
 
 OnceAnnouncement title(5);
 
@@ -387,9 +391,29 @@ int game(
 	return result;
 }
 
-int main()
+int main(int argc, char* args[] )
 {
+    const int FPS = 60;
+    const int frameDelay = 1000/FPS;
+    Uint32 frameStart;
+    int frameTime;
 	title.init();
+
+    game_G=new Game();
+    game_G->init("Juego",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,SCREEN_HEIGHT,false);
+    while(game_G->running()){
+        frameStart=SDL_GetTicks();
+        game_G->handleEvents();
+        game_G->update();
+        game_G->render();
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay>frameTime){
+            SDL_Delay(frameDelay - frameTime);
+        }
+    }
+    game_G->clean();
+
 	int width = 8;	//ancho
 	int height = 8; //altura
 	int result;
