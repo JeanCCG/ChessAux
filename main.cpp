@@ -34,11 +34,11 @@ int game(
 	char endSlot;
 	bool isFree;
 	bool validMovement = false;
+	bool player;
 	///IA
 	char slotes[26][26];
 
-	///
-	if (mode == 1)
+	if (mode == 1) //* |-->->> P1 vs BOT <<-<--|
 	{
 		while (true)
 		{
@@ -50,43 +50,35 @@ int game(
 				while (true)
 				{
 					cout << "Input the piece's letter and number:" << endl;
-					cin >> startLetter >> start[0];
+					cin >> startLetter >> start[0]; // a <= startLetter <= z  && 1 <= start[0] <= 8
 					start[0]--;
 					startLetter = toupper(startLetter);
 					start[1] = (int)startLetter - ((int)'A'); // 0 - width
 					cout << start[0] << start[1] << endl;
-					if ((-1 < start[1]) && (start[1] < width) && (-1 < start[0]) && (start[0] < height))
+					if ((-1 < start[1]) && (start[1] < width) && // 0 <= start[1] <= width
+						(-1 < start[0]) && (start[0] < height))	 // 0 <= start[0] <= width
 					{
-						symbol = gameboard.slots[start[0]][start[1]].symbol;
-						//symbol = toupper(symbol);
 						isFree = gameboard.slots[start[0]][start[1]].isFree;
-						cout << symbol << isFree << endl;
-						// symbol is a symbol and belongs to P1
-						if ((!isFree) && ((int)symbol < ((int)'z' + 1)) && ((int)symbol > ((int)'a' - 1)))
+						player = gameboard.slots[start[0]][start[1]].player;
+						if ((!isFree) && (player == Player::P1))
 						{
 							availableMovement = gameboard.piecePossibilities(start);
 							if (availableMovement)
-							{
 								break;
-							}
 							else
-							{
-								cout << "There aren't available positions to move your piece. Please, choose another" << endl;
-							}
+								std::cout << "There aren't available positions to move your piece. Please, choose another" << std::endl;
 						}
 						else
-						{
-							cout << "There is no piece in that position." << endl;
-						}
+							std::cout << "There is no piece in that position." << std::endl;
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				while (true)
 				{
 					cout << "Input the end position letter and number:" << endl;
-					cin >> endLetter >> end[0];
-					end[0]--;
+					cin >> endLetter >> end[0]; // a <= endLetter <= z  && 1 <= end[0] <= 8
+					end[0]--;					// 0 <= end[0] <= 7
 					endLetter = toupper(endLetter);
 					end[1] = (int)endLetter - ((int)'A'); // = 0 to width
 					if ((-1 < end[1]) && (end[1] < width) && (-1 < end[0]) && (end[0] < height))
@@ -143,42 +135,8 @@ int game(
 				turn = !turn;
 				movements++;
 			}
-			else //* P2 turn
-			{	 /*
-
-			int n;
-			cin >> n;
-			int example[1];
-			int bearingsPoints[n][3];
-			int auxBearingsPoints[3];
-			int start[2] = {0, 0};
-			int maxPoints;
-			int count = 0;
-
-			for (int i = 0; i < n; i++)
+			else //* BOT turn
 			{
-				cin >> auxBearingsPoints[0] >> auxBearingsPoints[1] >> auxBearingsPoints[2];
-				if (auxBearingsPoints[1] > auxBearingsPoints[0])
-				{
-					continue;
-				}
-				bearingsPoints[count][0] = auxBearingsPoints[0];
-				bearingsPoints[count][1] = auxBearingsPoints[1];
-				bearingsPoints[count][2] = auxBearingsPoints[2];
-				count++;
-			}
-
-			//maxPoints = intelligence(start, bearingsPoints, count, 0, difficulty, 0, true);
-			//std::cout << maxPoints << std::endl;
-
-			//* strategic points (ruin the castle movement, position, get more options, get good options, exchange strain?, etc? suggest please), piece points,
-
-			// pass the state of the game
-			// set an objective: aperture?, start?. middle?, ends?.
-			// judge the options: defense, attack, develop (inrook), exchange chain,
-			// make a plan
-			// make the first movement plan
-			// make the movement in the gameboard*/
 				for (int i = 0; i < 8; ++i)
 				{
 					for (int j = 0; j < 8; ++j)
@@ -196,31 +154,36 @@ int game(
 				}
 				int arrr[1000][5];
 				int arrrms;
-				int numeval=minimax(slotes, 3, true, 0,arrr,arrrms);
+				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
 				int arrend[2];
-                int arrstart[2];
-                for (int i = 0; i <arrrms; ++i) {
-                    if(arrr[i][2]==numeval){
-                        arrend[0]=arrr[i][0];
-                        arrend[1]=arrr[i][1];
-                        arrstart[0]=arrr[i][3];
-                        arrstart[1]=arrr[i][4];
-                    }
-                }
+				int arrstart[2];
+				for (int i = 0; i < arrrms; ++i)
+				{
+					if (arrr[i][2] == numeval)
+					{
+						arrend[0] = arrr[i][0];
+						arrend[1] = arrr[i][1];
+						arrstart[0] = arrr[i][3];
+						arrstart[1] = arrr[i][4];
+					}
+				}
 				cout << "\nMinimax : " << numeval << endl;
-                cout << "\nMOVE START " << arrstart[0] <<" "<<arrstart[1]<< endl;
-                cout << "\nMOVE END " << arrend[0] <<" "<<arrend[1]<< endl;
-                if(gameboard.slots[arrend[0]][arrend[1]].isFree){
-                    gameboard.move(arrstart, arrend);
-                }else{
-                    gameboard.eat(arrstart, arrend);
-                }
+				cout << "\nMOVE START " << arrstart[0] << " " << arrstart[1] << endl;
+				cout << "\nMOVE END " << arrend[0] << " " << arrend[1] << endl;
+				if (gameboard.slots[arrend[0]][arrend[1]].isFree)
+				{
+					gameboard.move(arrstart, arrend);
+				}
+				else
+				{
+					gameboard.eat(arrstart, arrend);
+				}
 				turn = !turn;
 				movements++;
 			}
 		}
 	}
-	else if (mode == 2)
+	else if (mode == 2) //* |-->->> P1 vs P2 <<-<--| human vs human |
 	{
 		while (true)
 		{
