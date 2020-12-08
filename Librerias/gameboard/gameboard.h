@@ -11,7 +11,7 @@ using namespace std;
 
 void clean_screan()
 {
-    cleanScreen(10);
+    system("cls");
 	OnceAnnouncement title(5);
 }
 class Gameboard

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Librerias/IA/IA.h"
 #include "Librerias/interface/interface.h"
+#include <SDL.h>
 
 using namespace std;
 
@@ -11,7 +12,6 @@ int game(
 	int width = 8, int height = 8,
 	int mode = 0) //game function
 {
-
 	cout << "Creating the gameboard." << endl;
 	int result = 0;
 	int movements = 0;
@@ -145,7 +145,6 @@ int game(
 			}
 			else //* P2 turn
 			{	 /*
-
 			int n;
 			cin >> n;
 			int example[1];
@@ -387,7 +386,7 @@ int game(
 	return result;
 }
 
-int main()
+int main(int argc, char *args[])
 {
 	title.init();
 	int width = 8;	//ancho
