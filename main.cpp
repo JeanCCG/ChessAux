@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Librerias/IA/IA.h"
 #include "Librerias/interface/interface.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 using namespace std;
 #include "Librerias/Graphics/Game.h"
 const int SCREEN_WIDTH = 800;

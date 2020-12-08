@@ -1,4 +1,5 @@
 #include "TextureManager.h"
+#include <SDL_image.h>
 
 SDL_Texture *TextureManager::LoadTexture(const char *texture) {
     SDL_Surface *tempSurface = IMG_Load(texture);
