@@ -5,9 +5,11 @@
 using namespace std;
 
 GameObject* tablero;
+GameObject* caballo;
 Map* piesas;
 
 SDL_Renderer * Game::renderer = nullptr;
+SDL_Event Game::event;
 
 Game::Game(){
 
@@ -37,12 +39,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning=false;
     }
     tablero = new GameObject("assets/chess_board.png", -1,0);
+    caballo = new GameObject("assets/caballo.png",100,500);
     piesas = new Map();
 
 }
 
 void Game::handleEvents() {
-    SDL_Event event;
     SDL_PollEvent(&event);
     switch(event.type){
         case SDL_QUIT:
@@ -54,13 +56,14 @@ void Game::handleEvents() {
 }
 
 void Game::update(){
-    
+    caballo->Update();
 }
 
 void Game::render() {
     SDL_RenderClear(renderer);
     tablero->RenderBackground();
     piesas->DrawMap();
+    caballo->Render();
     SDL_RenderPresent(renderer);
 }
 

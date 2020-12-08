@@ -9,8 +9,8 @@ GameObject::GameObject(const char *texturesheet, int x, int y) {
     ypos = y;
 }
 void GameObject::Update() {
-    srcRect.h = 32;
-    srcRect.w = 32;
+    srcRect.h = 50;
+    srcRect.w = 50;
     srcRect.x = 0;
     srcRect.y = 0;
 
@@ -21,6 +21,13 @@ void GameObject::Update() {
 }
 
 void GameObject::Render() {
+    if(Game::event.type==SDL_MOUSEBUTTONDOWN){
+        if(Game::event.motion.x>=300 && Game::event.motion.x<400){
+            xpos=300;
+        }if(Game::event.motion.y>=200 && Game::event.motion.y<=300){
+            ypos = 200;
+        }
+    }
     SDL_RenderCopy(Game::renderer, objTexture, &srcRect, &destRect);
 }
 
