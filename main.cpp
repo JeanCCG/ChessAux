@@ -3,7 +3,7 @@
 #include "Librerias/interface/interface.h"
 #include <SDL.h>
 using namespace std;
-#include "Librerias/Graphics/Game.h"
+#include "Librerias/Graphics/Game/Game.h"
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 Game *game_G=nullptr;

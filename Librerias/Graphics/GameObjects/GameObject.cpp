@@ -1,5 +1,5 @@
-#include "GameObject.h"
-#include "TextureManager.h"
+#include "../GameObjects/GameObject.h"
+#include "../TextureManager/TextureManager.h"
 #include <iostream>
 
 

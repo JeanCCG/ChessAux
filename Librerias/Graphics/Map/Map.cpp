@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "TextureManager.h"
+#include "../TextureManager/TextureManager.h"
 
 int Base[8][8] ={
         {1,5,7,11,9,7,5,1},

@@ -1,7 +1,7 @@
 #include "Game.h"
-#include "TextureManager.h"
-#include "GameObject.h"
-#include "Map.h"
+#include "../TextureManager/TextureManager.h"
+#include "../GameObjects/GameObject.h"
+#include "../Map/Map.h"
 using namespace std;
 
 GameObject* tablero;
