@@ -11,7 +11,7 @@ using namespace std;
 
 void clean_screan()
 {
-    cleanScreen(10);
+	cleanScreen(10);
 	OnceAnnouncement title(5);
 }
 class Gameboard
@@ -54,54 +54,129 @@ public:
 	{
 		capture(start, end);
 	}
-
-	int goDiagonal(int start[2], int end[2]) // Diagonal
+	bool goDiagonal(int start[2], int end[2]) // Diagonal
 	{
-		int availableSlots = 1;
 		if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
-			return 1;
+		{
+			cout << "FIRST IF" << endl;
+			if (slots[end[0]][end[1]].isFree)
+			{
+				cout << "move" << endl;
+				move(start, end);
+			}
+			else
+			{
+				cout << "eat" << endl;
+				eat(start, end);
+			}
+			return true;
+		}
 		else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
 		{
+			cout << "ELSE IF" << endl;
 			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
 			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
 			int i, it, iLimit;
 			int j, jt, jLimit;
 			if (isUp)
 			{
-				iLimit = -1;
+				// iLimit = end[0] + 1;
+				iLimit = end[0];
 				i = start[0] - 1;
 				it = -1;
 			}
 			else
 			{
-				iLimit = height;
+				// iLimit = end[0] - 1;
+				iLimit = end[0];
 				i = start[0] + 1;
 				it = 1;
 			}
 			if (isLeft)
 			{
-				jLimit = -1;
+				// jLimit = end[1] + 1;
+				jLimit = end[1];
 				j = start[1] - 1;
 				jt = -1;
 			}
 			else
 			{
-				jLimit = width;
+				// jLimit = end[1] - 1;
+				jLimit = end[1];
 				j = start[1] + 1;
 				jt = 1;
 			}
-
+			cout << "i's\t: " << i << "\t" << iLimit << "+" << it << endl;
+			cout << "j's\t: " << j << "\t" << jLimit << "+" << jt << endl;
 			for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
 			{
+				cout << i << " & " << j << endl;
 				if (slots[i][j].symbol != PiecesChar::char_free)
-					return availableSlots;
-				availableSlots++;
+					return false;
 			}
-			return availableSlots;
+			if (slots[end[0]][end[1]].isFree)
+			{
+				cout << "move" << endl;
+				move(start, end);
+			}
+			else
+			{
+				cout << "eat" << endl;
+				eat(start, end);
+			}
+			return true;
 		}
 		else
-			return 0;
+			return false;
 	}
+
+	// int goDiagonal(int start[2], int end[2]) // Diagonal
+	// {
+	// 	int availableSlots = 1;
+	// 	if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
+	// 		return 1;
+	// 	else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
+	// 	{
+	// 		bool isUp = ((start[0] - end[0]) > 0) ? true : false;
+	// 		bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
+	// 		int i, it, iLimit;
+	// 		int j, jt, jLimit;
+	// 		if (isUp)
+	// 		{
+	// 			iLimit = -1;
+	// 			i = start[0] - 1;
+	// 			it = -1;
+	// 		}
+	// 		else
+	// 		{
+	// 			iLimit = height;
+	// 			i = start[0] + 1;
+	// 			it = 1;
+	// 		}
+	// 		if (isLeft)
+	// 		{
+	// 			jLimit = -1;
+	// 			j = start[1] - 1;
+	// 			jt = -1;
+	// 		}
+	// 		else
+	// 		{
+	// 			jLimit = width;
+	// 			j = start[1] + 1;
+	// 			jt = 1;
+	// 		}
+
+	// 		for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
+	// 		{
+	// 			if (slots[i][j].symbol != PiecesChar::char_free)
+	// 				return availableSlots;
+	// 			availableSlots++;
+	// 		}
+	// 		return availableSlots;
+	// 	}
+	// 	else
+	// 		return 0;
+	// }
 	bool goStraight(int start[2], int end[2]) // Línea recta
 	{
 		if ((abs(start[0] - end[0]) == 0) && (abs(start[1] - end[1]) == 0))
@@ -185,7 +260,7 @@ public:
 	{
 		return true;
 	}
-	bool isMenaced(int place[2])
+	bool isMenaced(int place[2], bool player)
 	{
 		return true;
 	}
@@ -229,7 +304,7 @@ public:
 			{
 				end[0] = kingBearings[0] + (-1 + i);
 				end[1] = kingBearings[1] + (-1 + j);
-				slotMenaced = isMenaced(end);
+				slotMenaced = isMenaced(end, slots[kingBearings[0]][kingBearings[1]].player);
 				if ((slotMenaced == false) &&
 					(slots[end[0]][end[1]].isFree))
 				{
@@ -276,7 +351,41 @@ public:
 		}
 		return availableMovement;
 	}
+	bool validMovement(int start[2], int end[2])
+	{
+		cout << "validMovement analysis" << endl;
+		bool valid = false;
+		switch (slots[start[0]][start[1]].symbol)
+		{
+		case PiecesChar::charP1_king:
+			valid = isMenaced(end, slots[start[0]][start[1]].player);
+			break;
+		case PiecesChar::charP1_queen:
+			valid = (goDiagonal(start, end) || goStraight(start, end));
+			break;
+		case PiecesChar::charP1_rook:
+			valid = goStraight(start, end);
+			break;
+		case PiecesChar::charP1_knight:
+			valid = jump(start, end);
+			break;
+		case PiecesChar::charP1_bishop:
+			cout << "validDiagonal?" << endl;
+			valid = goDiagonal(start, end);
+			break;
+		case PiecesChar::charP1_pawn:
+			if (slots[end[0]][end[1]].isFree) // endSlot is empty
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+			break;
 
+		default:
+			break;
+		}
+		return valid;
+	}
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference
 	{
 		cout << "piecePossibilities" << endl;

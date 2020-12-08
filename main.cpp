@@ -12,7 +12,7 @@ int game(
 	int mode = 0) //game function
 {
 
-	cout << "Creating the gameboard." << endl;
+	std::cout << "Creating the gameboard." << std::endl;
 	int result = 0;
 	int movements = 0;
 	int difficulty = 2; //movement projection, predicted or calculation in the future
@@ -21,7 +21,7 @@ int game(
 
 	//construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
-	cout << "Gameboard created!" << endl;
+	std::cout << "Gameboard created!" << std::endl;
 	//* GAME
 
 	int start[2];
@@ -49,14 +49,13 @@ int game(
 				// select a piece
 				while (true)
 				{
-					cout << "Input the piece's letter and number:" << endl;
-					cin >> startLetter >> start[0]; // a <= startLetter <= z  && 1 <= start[0] <= 8
-					start[0]--;
+					std::cout << "Input the piece's letter and number:" << endl;
+					std::cin >> startLetter >> start[0]; // a <= startLetter <= z  && 1 <= start[0] <= 8
+					start[0]--;							 // 0 <= end[0] <= 7
 					startLetter = toupper(startLetter);
-					start[1] = (int)startLetter - ((int)'A'); // 0 - width
-					cout << start[0] << start[1] << endl;
+					start[1] = (int)startLetter - ((int)'A');	 // 0 - width
 					if ((-1 < start[1]) && (start[1] < width) && // 0 <= start[1] <= width
-						(-1 < start[0]) && (start[0] < height))	 // 0 <= start[0] <= width
+						(-1 < start[0]) && (start[0] < height))	 // 0 <= start[0] <= height
 					{
 						isFree = gameboard.slots[start[0]][start[1]].isFree;
 						player = gameboard.slots[start[0]][start[1]].player;
@@ -76,59 +75,31 @@ int game(
 				}
 				while (true)
 				{
-					cout << "Input the end position letter and number:" << endl;
-					cin >> endLetter >> end[0]; // a <= endLetter <= z  && 1 <= end[0] <= 8
-					end[0]--;					// 0 <= end[0] <= 7
+					std::cout << "Input the end position letter and number:" << std::endl;
+					std::cin >> endLetter >> end[0]; // a <= endLetter <= z  && 1 <= end[0] <= 8
+					end[0]--;						 // 0 <= end[0] <= 7
 					endLetter = toupper(endLetter);
-					end[1] = (int)endLetter - ((int)'A'); // = 0 to width
-					if ((-1 < end[1]) && (end[1] < width) && (-1 < end[0]) && (end[0] < height))
+					end[1] = (int)endLetter - ((int)'A');	 // 0 - width
+					if ((-1 < end[1]) && (end[1] < width) && // 0 <= start[1] <= width
+						(-1 < end[0]) && (end[0] < height))	 // 0 <= start[0] <= height
 					{
-						isFree = gameboard.slots[end[0]][end[1]].isFree;
-						if (isFree) // endSlot is empty
+						if (gameboard.slots[end[0]][end[1]].player != Player::P1)
 						{
-							gameboard.move(start, end);
-							break;
-						}
-						if (((int)'a' - 1 < endSlot) && (endSlot < (int)'z' + 1))
-						{
-							switch (gameboard.slots[start[0]][start[1]].symbol)
-							{
-							case PiecesChar::charP1_king:
-								break;
-							case PiecesChar::charP1_queen:
-								if ((start[0] == end[0]) || (start[1] == end[1]))
-									validMovement = gameboard.goStraight(start, end);
-								else
-									validMovement = gameboard.goDiagonal(start, end);
-								break;
-							case PiecesChar::charP1_rook:
-								validMovement = gameboard.goStraight(start, end);
-								break;
-							case PiecesChar::charP1_knight:
-								validMovement = gameboard.jump(start, end);
-								break;
-							case PiecesChar::charP1_bishop:
-								validMovement = gameboard.goDiagonal(start, end);
-								break;
-							case PiecesChar::charP1_pawn:
-								break;
-
-							default:
-								break;
-							}
+							validMovement = gameboard.validMovement(start, end);
 							if (validMovement)
 							{
+								std::cout << "Is a Valid Movement" << std::endl;
 								validMovement = false;
 								break;
 							}
 							else
-								cout << "Sorry, that movement is not allowed." << endl;
+								std::cout << "Sorry, that movement is not allowed." << std::endl;
 						}
 						else
-							cout << "You can't capture your own pieces." << endl;
+							std::cout << "You can't capture your own pieces." << std::endl;
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				// make the movement in the gameboard
 				gameboard.show();
@@ -144,13 +115,13 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
-				for (int i = 0; i < 8; ++i)
+				for (int i = 0; i < height; ++i)
 				{
-					for (int j = 0; j < 8; ++j)
+					for (int j = 0; j < width; ++j)
 					{
-						cout << slotes[i][j] << " ";
+						std::cout << slotes[i][j] << " ";
 					}
-					cout << endl;
+					std::cout << std::endl;
 				}
 				int arrr[1000][5];
 				int arrrms;
@@ -167,9 +138,9 @@ int game(
 						arrstart[1] = arrr[i][4];
 					}
 				}
-				cout << "\nMinimax : " << numeval << endl;
-				cout << "\nMOVE START " << arrstart[0] << " " << arrstart[1] << endl;
-				cout << "\nMOVE END " << arrend[0] << " " << arrend[1] << endl;
+				std::cout << "\nMinimax : " << numeval << std::endl;
+				std::cout << "\nMOVE START " << arrstart[0] << " " << arrstart[1] << std::endl;
+				std::cout << "\nMOVE END " << arrend[0] << " " << arrend[1] << std::endl;
 				if (gameboard.slots[arrend[0]][arrend[1]].isFree)
 				{
 					gameboard.move(arrstart, arrend);
@@ -194,18 +165,18 @@ int game(
 				// select a piece
 				while (true)
 				{
-					cout << "Input the piece's letter and number:" << endl;
-					cin >> startLetter >> start[0];
+					std::cout << "Input the piece's letter and number:" << std::endl;
+					std::cin >> startLetter >> start[0];
 					start[0]--;
 					startLetter = toupper(startLetter);
 					start[1] = (int)startLetter - ((int)'A'); // 0 - width
-					cout << start[0] << start[1] << endl;
+					std::cout << start[0] << start[1] << std::endl;
 					if ((-1 < start[1]) && (start[1] < width) && (-1 < start[0]) && (start[0] < height))
 					{
 						symbol = gameboard.slots[start[0]][start[1]].symbol;
 						//symbol = toupper(symbol);
 						isFree = gameboard.slots[start[0]][start[1]].isFree;
-						cout << symbol << isFree << endl;
+						std::cout << symbol << isFree << std::endl;
 						// symbol is a symbol and belongs to P1
 						if ((!isFree) && ((int)symbol < ((int)'z' + 1)) && ((int)symbol > ((int)'a' - 1)))
 						{
@@ -216,21 +187,21 @@ int game(
 							}
 							else
 							{
-								cout << "There aren't available positions to move your piece. Please, choose another" << endl;
+								std::cout << "There aren't available positions to move your piece. Please, choose another" << std::endl;
 							}
 						}
 						else
 						{
-							cout << "There is no piece in that position." << endl;
+							std::cout << "There is no piece in that position." << std::endl;
 						}
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				while (true)
 				{
-					cout << "Input the end position letter and number:" << endl;
-					cin >> endLetter >> end[0];
+					std::cout << "Input the end position letter and number:" << std::endl;
+					std::cin >> endLetter >> end[0];
 					end[0]--;
 					endLetter = toupper(endLetter);
 					end[1] = (int)endLetter - ((int)'A'); // = 0 to width
@@ -251,10 +222,10 @@ int game(
 							break;
 						}
 						else
-							cout << "You can't capture your own pieces." << endl;
+							std::cout << "You can't capture your own pieces." << std::endl;
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				// make the movement in the gameboard
 				gameboard.show();
@@ -266,18 +237,18 @@ int game(
 				// select a piece
 				while (true)
 				{
-					cout << "Input the piece's letter and number:" << endl;
-					cin >> startLetter >> start[0];
+					std::cout << "Input the piece's letter and number:" << std::endl;
+					std::cin >> startLetter >> start[0];
 					start[0]--;
 					startLetter = toupper(startLetter);
 					start[1] = (int)startLetter - ((int)'A'); // 0 - width
-					cout << start[0] << start[1] << endl;
+					std::cout << start[0] << start[1] << std::endl;
 					if ((-1 < start[1]) && (start[1] < width) && (-1 < start[0]) && (start[0] < height))
 					{
 						symbol = gameboard.slots[start[0]][start[1]].symbol;
 						//symbol = toupper(symbol);
 						isFree = gameboard.slots[start[0]][start[1]].isFree;
-						cout << symbol << isFree << endl;
+						std::cout << symbol << isFree << std::endl;
 						// symbol is a symbol and belongs to P1
 						if ((!isFree) && ((int)symbol < ((int)'Z' + 1)) && ((int)symbol > ((int)'A' - 1)))
 						{
@@ -288,21 +259,21 @@ int game(
 							}
 							else
 							{
-								cout << "There aren't available positions to move your piece. Please, choose another" << endl;
+								std::cout << "There aren't available positions to move your piece. Please, choose another" << std::endl;
 							}
 						}
 						else
 						{
-							cout << "There is no piece in that position." << endl;
+							std::cout << "There is no piece in that position." << std::endl;
 						}
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				while (true)
 				{
-					cout << "Input the end position letter and number:" << endl;
-					cin >> endLetter >> end[0];
+					std::cout << "Input the end position letter and number:" << std::endl;
+					std::cin >> endLetter >> end[0];
 					end[0]--;
 					endLetter = toupper(endLetter);
 					end[1] = (int)endLetter - ((int)'A'); // = 0 to width
@@ -323,10 +294,10 @@ int game(
 							break;
 						}
 						else
-							cout << "You can't capture your own pieces." << endl;
+							std::cout << "You can't capture your own pieces." << std::endl;
 					}
 					else
-						cout << "Imposible position." << endl;
+						std::cout << "Imposible position." << std::endl;
 				}
 				// make the movement in the gameboard
 				gameboard.show();
@@ -403,63 +374,63 @@ int main()
 	while (true)
 	{
 		clean_screan();
-		cout << "\nWhat do you want to do now?" << endl;
-		cout << "\t[P]lay" << endl;
-		cout << "\t[Q]uit" << endl;
-		cout << "\t[S]ettings (in progress)" << endl;
-		cout << endl;
-		cin >> command;
+		std::cout << "\nWhat do you want to do now?" << std::endl;
+		std::cout << "\t[P]lay" << std::endl;
+		std::cout << "\t[Q]uit" << std::endl;
+		std::cout << "\t[S]ettings (in progress)" << std::endl;
+		std::cout << std::endl;
+		std::cin >> command;
 		clean_screan();
 		command = toupper(command);
 
 		switch (command)
 		{
 		case 'P':
-			cout << "\nChoose a game mode (1 or 2)" << endl;
-			cout << "\t1) P1 vs PC" << endl;
-			cout << "\t2) P1 vs P2" << endl;
-			cin >> game_mode;
+			std::cout << "\nChoose a game mode (1 or 2)" << std::endl;
+			std::cout << "\t1) P1 vs PC" << std::endl;
+			std::cout << "\t2) P1 vs P2" << std::endl;
+			std::cin >> game_mode;
 
-			cout << "\nLet's play!" << endl;
+			std::cout << "\nLet's play!" << std::endl;
 			result = game(P1PiecesInit, 16, P2PiecesInit, 16, 8, 8, game_mode);
 			if (result == 0)
 			{
-				cout << " 🥳 P1 won the game!" << endl;
+				std::cout << " 🥳 P1 won the game!" << std::endl;
 			}
 			else if (result == 1)
 			{
-				cout << " P2 won the game! 🥳" << endl;
+				std::cout << " P2 won the game! 🥳" << std::endl;
 			}
 			else
 			{
-				cout << " Tie 🤯 No one won the game" << endl;
+				std::cout << " Tie 🤯 No one won the game" << std::endl;
 			}
 			break;
 
 		case 'Q':
-			cout << "\nGood bye 😥" << endl;
+			std::cout << "\nGood bye 😥" << std::endl;
 			return 0;
 			break;
 		case 'S':
-			cout << "\n<<--<---SETTINGS--->-->>" << endl;
+			std::cout << "\n<<--<---SETTINGS--->-->>" << std::endl;
 			// show settings:
-			cout << "Dimensions\t: " << width << height << endl;
+			std::cout << "Dimensions\t: " << width << height << std::endl;
 
-			cout << "\n<---ACTUAL GAMEBOARD--->" << endl;
+			std::cout << "\n<---ACTUAL GAMEBOARD--->" << std::endl;
 			//print actual gameboard
 
 			while (true)
 			{
-				cout << "\nWhat do you want to modify?" << endl;
-				cout << "\t[B]ack" << endl;
-				cout << "\tP[1] settings" << endl;
-				cout << "\tP[2] settings" << endl;
-				cout << "\t[C]lear the gameboard" << endl;
-				cout << "\t[G]ameboard settings" << endl;
+				std::cout << "\nWhat do you want to modify?" << std::endl;
+				std::cout << "\t[B]ack" << std::endl;
+				std::cout << "\tP[1] settings" << std::endl;
+				std::cout << "\tP[2] settings" << std::endl;
+				std::cout << "\t[C]lear the gameboard" << std::endl;
+				std::cout << "\t[G]ameboard settings" << std::endl;
 				// printf("\t[S]how settings\n");
 				printf("\t[S]how Gameboard\n");
 				// printf("\t[R]estart settings\n");
-				cin >> settings_command;
+				std::cin >> settings_command;
 				cleanScreen(2);
 
 				settings_command = toupper(settings_command);
@@ -470,20 +441,20 @@ int main()
 					settings_break = true;
 					break;
 				case '1':
-					// cout << "\nNumber P1's pieces\t: " << sumUp(nP1_pieces, 6) << endl;
-					// cout << "\tKing(s)\t: " << nP1_pieces[0] << endl;
-					// cout << "\tQueen(s)\t: " << nP1_pieces[1] << endl;
-					// cout << "\tRook(s)\t: " << nP1_pieces[2] << endl;
-					// cout << "\tKnight(s)\t: " << nP1_pieces[3] << endl;
-					// cout << "\tBishop(s)\t: " << nP1_pieces[4] << endl;
-					// cout << "\tPawn(s)\t: " << nP1_pieces[5] << endl;
+					// std::cout << "\nNumber P1's pieces\t: " << sumUp(nP1_pieces, 6) << std::endl;
+					// std::cout << "\tKing(s)\t: " << nP1_pieces[0] << std::endl;
+					// std::cout << "\tQueen(s)\t: " << nP1_pieces[1] << std::endl;
+					// std::cout << "\tRook(s)\t: " << nP1_pieces[2] << std::endl;
+					// std::cout << "\tKnight(s)\t: " << nP1_pieces[3] << std::endl;
+					// std::cout << "\tBishop(s)\t: " << nP1_pieces[4] << std::endl;
+					// std::cout << "\tPawn(s)\t: " << nP1_pieces[5] << std::endl;
 
-					cout << "\n[B]ack" << endl;
-					cout << "[~] Add or remove a piece" << endl;
-					cout << "[C]hange a piece position" << endl;
-					cout << "[S]how Gameboard" << endl;
-					cout << endl;
-					cin >> sub_command;
+					std::cout << "\n[B]ack" << std::endl;
+					std::cout << "[~] Add or remove a piece" << std::endl;
+					std::cout << "[C]hange a piece position" << std::endl;
+					std::cout << "[S]how Gameboard" << std::endl;
+					std::cout << std::endl;
+					std::cin >> sub_command;
 					cleanScreen(2);
 
 					sub_command = toupper(sub_command);
@@ -520,13 +491,13 @@ int main()
 					break;
 
 				case '2':
-					// cout << "\nNumber P2's pieces\t: " << sumUp(nP2_pieces, 6) << endl;
-					// cout << "\tKing(s)\t: " << nP2_pieces[0] << endl;
-					// cout << "\tQueen(s)\t: " << nP2_pieces[1] << endl;
-					// cout << "\tRook(s)\t: " << nP2_pieces[2] << endl;
-					// cout << "\tKnight(s)\t: " << nP2_pieces[3] << endl;
-					// cout << "\tBishop(s)\t: " << nP2_pieces[4] << endl;
-					// cout << "\tPawn(s)\t: " << nP2_pieces[5] << endl;
+					// std::cout << "\nNumber P2's pieces\t: " << sumUp(nP2_pieces, 6) << std::endl;
+					// std::cout << "\tKing(s)\t: " << nP2_pieces[0] << std::endl;
+					// std::cout << "\tQueen(s)\t: " << nP2_pieces[1] << std::endl;
+					// std::cout << "\tRook(s)\t: " << nP2_pieces[2] << std::endl;
+					// std::cout << "\tKnight(s)\t: " << nP2_pieces[3] << std::endl;
+					// std::cout << "\tBishop(s)\t: " << nP2_pieces[4] << std::endl;
+					// std::cout << "\tPawn(s)\t: " << nP2_pieces[5] << std::endl;
 					int nP2_king[1][2];
 					int nP2_queen[1][2];
 					int nP2_rook[2][2];
@@ -553,7 +524,7 @@ int main()
 			settings_command = ' ';
 			break;
 		default:
-			cout << "\nNot recognizable command" << endl;
+			std::cout << "\nNot recognizable command" << std::endl;
 			break;
 		}
 
