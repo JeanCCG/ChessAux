@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "TextureManager.h"
+#include <iostream>
 
 
 
@@ -33,5 +34,13 @@ void GameObject::Render() {
 
 void GameObject::RenderBackground() {
     SDL_RenderCopy(Game::renderer, objTexture, NULL, NULL);
+}
+
+int GameObject::piece_xpos() {
+    return xpos;
+}
+
+int GameObject::piece_ypos() {
+    return ypos;
 }
 

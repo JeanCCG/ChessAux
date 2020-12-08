@@ -9,6 +9,8 @@ public:
     void Update();
     void Render();
     void RenderBackground();
+    int piece_xpos();
+    int piece_ypos();
 
 private:
 
