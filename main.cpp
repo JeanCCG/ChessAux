@@ -1,9 +1,12 @@
 #include <iostream>
 #include "Librerias/IA/IA.h"
 #include "Librerias/interface/interface.h"
-#include <SDL.h>
-
+#include <SDL2/SDL.h>
 using namespace std;
+#include "Librerias/Graphics/Game.h"
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
+Game *game_G=nullptr;
 
 OnceAnnouncement title(5);
 
@@ -12,6 +15,7 @@ int game(
 	int width = 8, int height = 8,
 	int mode = 0) //game function
 {
+
 	cout << "Creating the gameboard." << endl;
 	int result = 0;
 	int movements = 0;
@@ -145,6 +149,7 @@ int game(
 			}
 			else //* P2 turn
 			{	 /*
+
 			int n;
 			cin >> n;
 			int example[1];
@@ -198,7 +203,7 @@ int game(
 				int numeval=minimax(slotes, 3, true, 0,arrr,arrrms);
 				int arrend[2];
                 int arrstart[2];
-                for (int i = 0; i < 1000; ++i) {
+                for (int i = 0; i <arrrms; ++i) {
                     if(arrr[i][2]==numeval){
                         arrend[0]=arrr[i][0];
                         arrend[1]=arrr[i][1];
@@ -386,9 +391,29 @@ int game(
 	return result;
 }
 
-int main(int argc, char *args[])
+int main(int argc, char* args[] )
 {
+    const int FPS = 60;
+    const int frameDelay = 1000/FPS;
+    Uint32 frameStart;
+    int frameTime;
 	title.init();
+
+    game_G=new Game();
+    game_G->init("Juego",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,SCREEN_HEIGHT,false);
+    while(game_G->running()){
+        frameStart=SDL_GetTicks();
+        game_G->handleEvents();
+        game_G->update();
+        game_G->render();
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay>frameTime){
+            SDL_Delay(frameDelay - frameTime);
+        }
+    }
+    game_G->clean();
+
 	int width = 8;	//ancho
 	int height = 8; //altura
 	int result;

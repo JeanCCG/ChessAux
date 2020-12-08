@@ -10,12 +10,8 @@ using namespace std;
 int contadora=0, contador=0;
 bool availablepiece;
 bool availableeat;
-int maxmove[2]={0,0};
 char temp;
 int k, l;
-int save_movesm;
-
-
 
 void copy(char m_ori[26][26], char m_copy[26][26]){
     for (int i = 0; i < 8; ++i) {
