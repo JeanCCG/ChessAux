@@ -7,7 +7,7 @@ public:
     ~GameObject();
 
     void Update();
-    void Render();
+    void Render(int a, int b);
     void RenderBackground();
     int piece_xpos();
     int piece_ypos();

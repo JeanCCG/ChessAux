@@ -2,6 +2,8 @@
 #include "TextureManager.h"
 #include "GameObject.h"
 #include "Map.h"
+#include "Moves.h"
+
 using namespace std;
 
 GameObject* tablero;
@@ -182,7 +184,7 @@ void Game::update() {
 void Game::render() {
     SDL_RenderClear(renderer);
     tablero->RenderBackground();
-    caballo->Render();
+    /*caballo->Render();
     peon_10->Render();
     peon_11->Render();
     peon_12->Render();
@@ -190,9 +192,9 @@ void Game::render() {
     peon_14->Render();
     peon_15->Render();
     peon_16->Render();
-    peon_17->Render();
-    peon_60->Render();
-    peon_61->Render();
+    peon_17->Render();*/
+    peon_60->Render(peon_60->piece_xpos(), peon_60->piece_ypos());
+    /*peon_61->Render();
     peon_62->Render();
     peon_63->Render();
     peon_64->Render();
@@ -220,11 +222,15 @@ void Game::render() {
 
     rey_04->Render();
     rey_74->Render();
-    caballo->Render();
+    caballo->Render();*/
+    //std::cout <<"Mouse x: "<<position_x()<<" y: "<<position_y()<<std::endl;
+    //std::cout <<"x: "<< peon_60->piece_xpos()<<" y: "<<peon_60->piece_ypos()<<std::endl;
     SDL_RenderPresent(renderer);
 }
 
+
 void Game::clean() {
+
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
