@@ -11,6 +11,7 @@ GameObject::GameObject(const char *texturesheet, int x, int y) {
     ypos = y;
 }
 void GameObject::Update() {
+    SDL_GetMouseState(&mouse_x,&mouse_y);
     srcRect.h = 100;
     srcRect.w = 100;
     srcRect.x = 0;
@@ -20,11 +21,28 @@ void GameObject::Update() {
     destRect.y = ypos;
     destRect.w = srcRect.w;
     destRect.h = srcRect.h;
-    if(Game::event.type==SDL_MOUSEBUTTONDOWN) {
-        xpos=position_x();
-        ypos=position_y();
-    }
+    if(Game::event.type==SDL_MOUSEBUTTONDOWN && xpos==position_x() && ypos==position_y()){
+        std::cout <<"ENTROOOOOOOOOOOOOOOOOOOOOOOO"<<std::endl;
+        follow=true;
+        while(Game::event.type==SDL_MOUSEMOTION){
+            std::cout << "Entro a WHILEEE"<<std::endl;
+            xpos=mouse_x;
+            ypos=mouse_y;
+        }
 
+        std::cout<<follow<< std::endl;
+        if (follow && Game::event.type==SDL_MOUSEMOTION){
+            std::cout << "Entro a seguir "<<follow<< std::endl;
+            xpos=mouse_x;
+            ypos=mouse_y;
+        }else if(Game::event.type==SDL_MOUSEBUTTONUP) {
+            std::cout << "Entro a Colocar "<<follow<< std::endl;
+            follow=false;
+            xpos=position_x();
+            ypos=position_y();
+            std::cout << follow<< std::endl;
+        }
+    }
 }
 
 void GameObject::Render(int a, int b) {

@@ -15,6 +15,8 @@ public:
 private:
 
     int xpos, ypos;
+    int mouse_x, mouse_y;
+    bool follow=true;
 
     SDL_Texture *objTexture;
     SDL_Rect srcRect, destRect;
