@@ -27,9 +27,7 @@ public:
 		symbol = iSymbol;
 		isFree = iIsFree;
 		if (isFree == false)
-		{
 			player = iPlayer; // P1 = TRUE-+
-		}
 		points = iPoints;
 	}
 	// void moveTo(int[2]);

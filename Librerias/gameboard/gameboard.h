@@ -39,14 +39,10 @@ public:
 	}
 	void capture(int start[2], int end[2])
 	{
-		if (slots[start[0]][start[1]].player) //P1
-		{
+		if (slots[start[0]][start[1]].player == Player::P1) //P1
 			P1_score += slots[end[0]][end[1]].points;
-		}
 		else
-		{
 			P2_score += slots[end[0]][end[1]].points;
-		}
 		slots[end[0]][end[1]].setFree();
 		move(start, end);
 	}
@@ -129,54 +125,6 @@ public:
 		else
 			return false;
 	}
-
-	// int goDiagonal(int start[2], int end[2]) // Diagonal
-	// {
-	// 	int availableSlots = 1;
-	// 	if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
-	// 		return 1;
-	// 	else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
-	// 	{
-	// 		bool isUp = ((start[0] - end[0]) > 0) ? true : false;
-	// 		bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
-	// 		int i, it, iLimit;
-	// 		int j, jt, jLimit;
-	// 		if (isUp)
-	// 		{
-	// 			iLimit = -1;
-	// 			i = start[0] - 1;
-	// 			it = -1;
-	// 		}
-	// 		else
-	// 		{
-	// 			iLimit = height;
-	// 			i = start[0] + 1;
-	// 			it = 1;
-	// 		}
-	// 		if (isLeft)
-	// 		{
-	// 			jLimit = -1;
-	// 			j = start[1] - 1;
-	// 			jt = -1;
-	// 		}
-	// 		else
-	// 		{
-	// 			jLimit = width;
-	// 			j = start[1] + 1;
-	// 			jt = 1;
-	// 		}
-
-	// 		for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
-	// 		{
-	// 			if (slots[i][j].symbol != PiecesChar::char_free)
-	// 				return availableSlots;
-	// 			availableSlots++;
-	// 		}
-	// 		return availableSlots;
-	// 	}
-	// 	else
-	// 		return 0;
-	// }
 	bool goStraight(int start[2], int end[2]) // Línea recta
 	{
 		if ((abs(start[0] - end[0]) == 0) && (abs(start[1] - end[1]) == 0))
@@ -931,7 +879,7 @@ private:
 				points = 0;
 				break;
 			}
-			slots[P1PiecesInit[i][0]][P1PiecesInit[i][1]] = Piece((char)P1PiecesInit[i][2], 0, 1, points);
+			slots[P1PiecesInit[i][0]][P1PiecesInit[i][1]] = Piece((char)P1PiecesInit[i][2], 0, Player::P1, points);
 		}
 		for (int i = 0; i < nP2Pieces; i++)
 		{
@@ -960,7 +908,7 @@ private:
 				points = 0;
 				break;
 			}
-			slots[P2PiecesInit[i][0]][P2PiecesInit[i][1]] = Piece((char)P2PiecesInit[i][2], 0, 1, points);
+			slots[P2PiecesInit[i][0]][P2PiecesInit[i][1]] = Piece((char)P2PiecesInit[i][2], 0, Player::P2, points);
 		}
 	}
 };

@@ -115,39 +115,29 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
-				for (int i = 0; i < height; ++i)
-				{
-					for (int j = 0; j < width; ++j)
-					{
-						std::cout << slotes[i][j] << " ";
-					}
-					std::cout << std::endl;
-				}
 				int arrr[1000][5];
 				int arrrms;
 				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
-				int arrend[2];
-				int arrstart[2];
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
 					{
-						arrend[0] = arrr[i][0];
-						arrend[1] = arrr[i][1];
-						arrstart[0] = arrr[i][3];
-						arrstart[1] = arrr[i][4];
+						end[0] = arrr[i][0];
+						end[1] = arrr[i][1];
+						start[0] = arrr[i][3];
+						start[1] = arrr[i][4];
 					}
 				}
 				std::cout << "\nMinimax : " << numeval << std::endl;
-				std::cout << "\nMOVE START " << arrstart[0] << " " << arrstart[1] << std::endl;
-				std::cout << "\nMOVE END " << arrend[0] << " " << arrend[1] << std::endl;
-				if (gameboard.slots[arrend[0]][arrend[1]].isFree)
+				std::cout << "\nMOVE START " << start[0] << " " << start[1] << std::endl;
+				std::cout << "\nMOVE END " << end[0] << " " << end[1] << std::endl;
+				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
-					gameboard.move(arrstart, arrend);
+					gameboard.move(start, end);
 				}
 				else
 				{
-					gameboard.eat(arrstart, arrend);
+					gameboard.eat(start, end);
 				}
 				turn = !turn;
 				movements++;
