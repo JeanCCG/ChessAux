@@ -83,7 +83,8 @@ int game(
 					if ((-1 < end[1]) && (end[1] < width) && // 0 <= start[1] <= width
 						(-1 < end[0]) && (end[0] < height))	 // 0 <= start[0] <= height
 					{
-						if (gameboard.slots[end[0]][end[1]].player != Player::P1)
+						if ((gameboard.slots[end[0]][end[1]].isFree) ||
+							(gameboard.slots[end[0]][end[1]].player != Player::P1))
 						{
 							validMovement = gameboard.validMovement(start, end);
 							if (validMovement)

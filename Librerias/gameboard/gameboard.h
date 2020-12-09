@@ -54,17 +54,10 @@ public:
 	{
 		if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
 		{
-			cout << "FIRST IF" << endl;
 			if (slots[end[0]][end[1]].isFree)
-			{
-				cout << "move" << endl;
 				move(start, end);
-			}
 			else
-			{
-				cout << "eat" << endl;
 				eat(start, end);
-			}
 			return true;
 		}
 		else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
@@ -72,54 +65,37 @@ public:
 			cout << "ELSE IF" << endl;
 			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
 			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
-			int i, it, iLimit;
-			int j, jt, jLimit;
+			int i, it;
+			int iLimit = end[0];
+			int j, jt;
+			int jLimit = end[1];
 			if (isUp)
 			{
-				// iLimit = end[0] + 1;
-				iLimit = end[0];
 				i = start[0] - 1;
 				it = -1;
 			}
 			else
 			{
-				// iLimit = end[0] - 1;
-				iLimit = end[0];
 				i = start[0] + 1;
 				it = 1;
 			}
 			if (isLeft)
 			{
-				// jLimit = end[1] + 1;
-				jLimit = end[1];
 				j = start[1] - 1;
 				jt = -1;
 			}
 			else
 			{
-				// jLimit = end[1] - 1;
-				jLimit = end[1];
 				j = start[1] + 1;
 				jt = 1;
 			}
-			cout << "i's\t: " << i << "\t" << iLimit << "+" << it << endl;
-			cout << "j's\t: " << j << "\t" << jLimit << "+" << jt << endl;
 			for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
-			{
-				cout << i << " & " << j << endl;
 				if (slots[i][j].symbol != PiecesChar::char_free)
 					return false;
-			}
 			if (slots[end[0]][end[1]].isFree)
-			{
-				cout << "move" << endl;
 				move(start, end);
-			}
 			else
-			{
-				cout << "eat" << endl;
 				eat(start, end);
-			}
 			return true;
 		}
 		else
@@ -128,9 +104,16 @@ public:
 	bool goStraight(int start[2], int end[2]) // Línea recta
 	{
 		if ((abs(start[0] - end[0]) == 0) && (abs(start[1] - end[1]) == 0))
+		{
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
 			return true;
+		}
 		else if (start[0] == end[0])
 		{
+
 			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
 			bool isAPieceInMiddle = false;
 			int j, jt;
@@ -152,7 +135,6 @@ public:
 				move(start, end);
 			else
 				eat(start, end);
-
 			return true;
 		}
 		else if (start[1] == end[1])
@@ -186,11 +168,9 @@ public:
 	{
 		int xDistance = abs(start[0] - end[0]);
 		int yDistance = abs(start[1] - end[1]);
-		if (
-			((xDistance == 1) && (yDistance == 2)) ||
+		if (((xDistance == 1) && (yDistance == 2)) ||
 			((xDistance == 2) && (yDistance == 1)))
 		{
-
 			if (slots[end[0]][end[1]].isFree)
 				move(start, end);
 			else
@@ -306,7 +286,21 @@ public:
 		switch (slots[start[0]][start[1]].symbol)
 		{
 		case PiecesChar::charP1_king:
-			valid = isMenaced(end, slots[start[0]][start[1]].player);
+			int distance[2];
+			distance[0] = abs(start[0] - end[0]);
+			distance[1] = abs(start[1] - end[1]);
+			if (((distance[0] == 0) || (distance[0] == 1)) &&
+				((distance[1] == 0) || (distance[1] == 1)))
+			{
+				valid = !isMenaced(end, slots[start[0]][start[1]].player);
+				if (valid)
+				{
+					if (slots[end[0]][end[1]].isFree)
+						move(start, end);
+					else
+						eat(start, end);
+				}
+			}
 			break;
 		case PiecesChar::charP1_queen:
 			valid = (goDiagonal(start, end) || goStraight(start, end));
@@ -318,7 +312,6 @@ public:
 			valid = jump(start, end);
 			break;
 		case PiecesChar::charP1_bishop:
-			cout << "validDiagonal?" << endl;
 			valid = goDiagonal(start, end);
 			break;
 		case PiecesChar::charP1_pawn:
@@ -326,7 +319,7 @@ public:
 				move(start, end);
 			else
 				eat(start, end);
-			return true;
+			valid = true;
 			break;
 
 		default:
