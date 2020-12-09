@@ -20,33 +20,41 @@ void GameObject::Update() {
     destRect.y = ypos;
     destRect.w = srcRect.w;
     destRect.h = srcRect.h;
+    if(Game::event.type==SDL_MOUSEBUTTONDOWN) {
+        xpos=position_x();
+        ypos=position_y();
+    }
+
 }
 
 void GameObject::Render(int a, int b) {
-    int posx=position_x();
+    /*int posx=position_x();
     int posy=position_y();
-    if(a==posx){
-        while(Game::event.type==SDL_MOUSEBUTTONDOWN){
-            xpos=Game::event.motion.x;
+    if(Game::event.type==SDL_MOUSEBUTTONDOWN){
+        if(posx==a){
+            if(Game::event.type==SDL_MOUSEBUTTONUP){
+                xpos=posx;
+            }
+            //std::cout <<"postion of piece x: "<<a<<std::endl;
+            //std::cout<<"x: "<<posx<<std::endl;
+        }else{
+            std::cout <<"postion of piece x: "<<a<<std::endl;
+            std::cout<<"x: "<<posx<<std::endl;
         }
-        //std::cout <<"postion of piece x: "<<a<<std::endl;
-        //std::cout<<"x: "<<posx<<std::endl;
-    }else{
-        std::cout <<"postion of piece x: "<<a<<std::endl;
-        std::cout<<"x: "<<posx<<std::endl;
-    }
-    if(b==posy){
-        while(Game::event.type== SDL_MOUSEBUTTONDOWN){
-            ypos=Game::event.motion.y;
-        }
-        //std::cout <<"postion of piece y: "<<b<<std::endl;
-        //std::cout << destRect.y<<std::endl;
-        //std::cout<<"y: "<<posy<<std::endl;
+        if(posy==b){
+            if(Game::event.type== SDL_MOUSEBUTTONUP){
+                ypos=posy;
+            }
+            //std::cout <<"postion of piece y: "<<b<<std::endl;
+            //std::cout << destRect.y<<std::endl;
+            //std::cout<<"y: "<<posy<<std::endl;
 
-    }else{
-        std::cout <<"postion of piece x: "<<a<<std::endl;
-        std::cout<<"x: "<<posx<<std::endl;
+        }else{
+            std::cout <<"postion of piece y: "<<a<<std::endl;
+            std::cout<<"y: "<<posy<<std::endl;
+        }
     }
+
 
     /*while(Game::event.type== SDL_MOUSEBUTTONDOWN) {
         if(piece_xpos()==position_x()){
