@@ -280,6 +280,70 @@ public:
 		}
 		return availableMovement;
 	}
+	int validPawnMovement(int start[2], int end[2])
+	{
+		bool valid = false;
+		bool player = slots[start[0]][start[1]].player;
+		int direction = (player == Player::P1) ? 1 : -1;
+		std::cout << "inside Pawn Movement Validator" << std::endl;
+		if (slots[start[0]][start[1]].movements == 0)
+		{
+			std::cout << "first Movement" << std::endl;
+			if ((start[0] - end[0]) <= direction * 2)
+			{
+				if ((start[0] - end[0]) == direction)
+				{
+					if (abs(start[1] - end[1]) == 1)
+					{
+						if (slots[end[0]][end[1]].player == !player)
+						{
+							eat(start, end);
+							valid = true;
+						}
+					}
+					else if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+					{
+						int aux[2];
+						aux[0] = end[0] - 1;
+						aux[1] = end[1];
+						eat(start, aux);
+						move(aux, end);
+						valid = true;
+					}
+				}
+				else
+				{
+					if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+					{
+						move(start, end);
+						valid = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			std::cout << "not first Movement" << std::endl;
+			if ((start[0] - end[0]) == direction)
+			{
+				if (abs(start[1] - end[1]) == 1)
+				{
+					if (slots[end[0]][end[1]].player == !player)
+					{
+						eat(start, end);
+						valid = true;
+					}
+				}
+				else if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+				{
+					move(start, end);
+					valid = true;
+				}
+			}
+		}
+		return valid;
+	}
+
 	bool validMovement(int start[2], int end[2])
 	{
 		cout << "validMovement analysis" << endl;
@@ -316,11 +380,7 @@ public:
 			valid = goDiagonal(start, end);
 			break;
 		case PiecesChar::charP1_pawn:
-			if (slots[end[0]][end[1]].isFree) // endSlot is empty
-				move(start, end);
-			else
-				eat(start, end);
-			valid = true;
+			valid = validPawnMovement(start, end);
 			break;
 
 		default:

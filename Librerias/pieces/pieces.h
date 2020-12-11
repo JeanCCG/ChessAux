@@ -50,7 +50,7 @@ public:
 		isFree = false;
 		player = piece.player;
 		points = piece.points;
-		movements += piece.movements;
+		movements += piece.movements + 1;
 		// playerMenacing--;
 	}
 
