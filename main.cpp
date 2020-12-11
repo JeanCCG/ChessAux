@@ -19,7 +19,7 @@ int game(
 	bool turn = true;
 	bool availableMovement = false;
 
-	//construct/ declaring the pieces
+	// construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
 	std::cout << "Gameboard created!" << std::endl;
 	//* GAME
@@ -354,6 +354,7 @@ int main()
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};
 
+	//* INTERFACE
 	char command;
 	int game_mode;
 	char settings_command;

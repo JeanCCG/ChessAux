@@ -18,9 +18,10 @@ class Gameboard
 {
 public:
 	// 2D ptrptr?
-	Piece slots[26][26];
-	int width;
-	int height;
+	Piece slots[8][8];
+
+	int width = 8;	// width max <= 26
+	int height = 8; // width max <= 26
 
 	// Gameboard() {}
 	Gameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces, int iWidth, int iHeight)

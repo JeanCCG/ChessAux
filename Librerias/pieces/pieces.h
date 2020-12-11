@@ -15,10 +15,10 @@ public:
 	bool player;
 	int points;
 	int movements = 0;
-	int enemyMenacing = 0;
-	int playerMenacing = 0;
-	int winPotential = 0;  // Lo que se puede ganar si se mueve a una posición.
-	int lostPotential = 0; // Lo que se puede perder si no se defiende una posición
+	// int enemyMenacing = 0;
+	// int playerMenacing = 0;
+	// int winPotential = 0;  // Lo que se puede ganar si se mueve a una posición.
+	// int lostPotential = 0; // Lo que se puede perder si no se defiende una posición
 
 	Piece() {}
 	// Piece(char, bool, bool, int);
@@ -42,7 +42,7 @@ public:
 		isFree = true;
 		points = 0;
 		movements = 0;
-		playerMenacing++;
+		// playerMenacing++;
 	}
 	void setPiece(Piece piece)
 	{
@@ -51,7 +51,7 @@ public:
 		player = piece.player;
 		points = piece.points;
 		movements += piece.movements;
-		playerMenacing--;
+		// playerMenacing--;
 	}
 
 	// void setPiece(Piece);
