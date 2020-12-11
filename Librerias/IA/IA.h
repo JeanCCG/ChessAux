@@ -548,7 +548,14 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                         char slotscopy[26][26];
                         points =pts+moves[p][2];
                         contadora++;
+                        cout<<contadora<<": Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                         contador=0;
+                        for (int m = 0; m < movesm; ++m) {
+                            for (int n = 0; n < 3; ++n) {
+                                cout<<moves[m][n]<<" ";
+                            }
+                            cout<<endl;
+                        }
 
                         for (int i = 0; i < 8; ++i) {
                             for (int j = 0; j < 8; ++j) {
@@ -561,7 +568,14 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                         if (availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
+                        for (int i = 0; i < 8; ++i) {
+                            for (int j = 0; j < 8; ++j) {
+                                cout<<slotscopy[i][j]<<" ";
+                            }
+                            cout<<endl;
+                        }
                         int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
+                        cout<<"End minimax"<<endl;
                         maxpt = max(eval, maxpt);
                         if(depth==3){
                             arrr[arrrm][0]=moves[p][0];
@@ -572,9 +586,12 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                             arrrm++;
                         }
                     }
+                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                 }
             }
         }
+        cout<<"End Board"<<endl;
+        cout<<"\nMaximo valor eval : "<<maxpt<<endl;
         if(depth == 3){
             arrrms=arrrm;
         }
@@ -1045,6 +1062,13 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                         char slotscopy[26][26];
                         points =pts-moves[p][2];
                         contador++;
+                        cout<<contador<<" Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
+                        for (int m = 0; m < movesm; ++m) {
+                            for (int n = 0; n < 3; ++n) {
+                                cout<<moves[m][n]<<" ";
+                            }
+                            cout<<endl;
+                        }
                         copy(slots,slotscopy);
                         temp = slotscopy[i][j];
                         slotscopy[i][j] = slotscopy[moves[p][0]][moves[p][1]];
@@ -1052,12 +1076,22 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                         if(availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
+                        for (int i = 0; i < 8; ++i) {
+                            for (int j = 0; j < 8; ++j) {
+                                cout<<slotscopy[i][j]<<" ";
+                            }
+                            cout<<endl;
+                        }
                         int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
+                        cout<<"End minimax, eval = "<<eval<<endl;
                         minpt = min(eval, minpt);
                     }
+                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                 }
             }
         }
+        cout<<"End board"<<endl;
+        cout<<"\nMainimo valor eval : "<<minpt<<endl;
         return  minpt;
     }
 }
