@@ -1,15 +1,21 @@
 #pragma once
+
 #include "../Game/Game.h"
 
 class GameObject {
 public:
-    GameObject(const char* texturesheet, int x, int y);
+    GameObject(const char *texturesheet, int x, int y);
+
     ~GameObject();
 
     void Update();
+
     void Render();
+
     void RenderBackground();
+
     int piece_xpos();
+
     int piece_ypos();
 
 private:

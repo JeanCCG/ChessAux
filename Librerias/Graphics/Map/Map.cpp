@@ -1,18 +1,18 @@
 #include "Map.h"
 #include "../TextureManager/TextureManager.h"
 
-int Base[8][8] ={
-        {1,5,7,11,9,7,5,1},
-        {3,3,3,3,3,3,3,3},
-        {12,12,12,12,12,12,12},
-        {12,12,12,12,12,12,12},
-        {12,12,12,12,12,12,12},
-        {12,12,12,12,12,12,12},
-        {2,2,2,2,2,2,2,2},
-        {100,4,6,8,10,6,4,100},
+int Base[8][8] = {
+        {1,   5,  7,  11, 9,  7,  5, 1},
+        {3,   3,  3,  3,  3,  3,  3, 3},
+        {12,  12, 12, 12, 12, 12, 12},
+        {12,  12, 12, 12, 12, 12, 12},
+        {12,  12, 12, 12, 12, 12, 12},
+        {12,  12, 12, 12, 12, 12, 12},
+        {2,   2,  2,  2,  2,  2,  2, 2},
+        {100, 4,  6,  8,  10, 6,  4, 100},
 };
 
-Map::Map(){
+Map::Map() {
     peon_B = TextureManager::LoadTexture("assets/peon_blanco.png");
     peon_N = TextureManager::LoadTexture("assets/peon_negro.png");
     torre_B = TextureManager::LoadTexture("assets/torre_blanco.png");
@@ -34,9 +34,9 @@ Map::Map(){
 
 }
 
-void Map::LoadMap(int arr[8][8]){
-    for(int i=0; i<8; i++){
-        for(int j=0; j<8; j++){
+void Map::LoadMap(int arr[8][8]) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
             map[i][j] = arr[i][j];
         }
     }
@@ -44,11 +44,11 @@ void Map::LoadMap(int arr[8][8]){
 
 void Map::DrawMap() {
     int Tipo = 0;
-    for(int i=0; i<8; i++){
-        for(int j=0; j<8; j++){
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
             Tipo = map[i][j];
-            dest.x=j*100;
-            dest.y=i*100;
+            dest.x = j * 100;
+            dest.y = i * 100;
             switch (Tipo) {
                 case 100:
                     TextureManager::Draw(torre_B, src, dest);

@@ -1,12 +1,15 @@
 #pragma once
 
 #include "../Game/Game.h"
-class Map{
+
+class Map {
 public:
     Map();
+
     ~Map();
 
     void LoadMap(int arr[8][8]);
+
     void DrawMap();
 
 private:

@@ -8,6 +8,18 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 
-add_executable(Proyecto_de_prueba main.cpp Librerias/Graphics/Game/Game.cpp Librerias/Graphics/TextureManager/TextureManager.cpp Librerias/Graphics/GameObjects/GameObject.cpp Librerias/Graphics/Map/Map.cpp Librerias/Graphics/Moves/Moves.cpp Librerias/enums/enums.cpp)
+add_executable(Proyecto_de_prueba main.cpp
+        Librerias/Graphics/Game/Game.cpp
+        Librerias/Graphics/TextureManager/TextureManager.cpp
+        Librerias/Graphics/GameObjects/GameObject.cpp
+        Librerias/Graphics/Map/Map.cpp
+        Librerias/Graphics/Moves/Moves.cpp
+        Librerias/enums/enums.cpp
+        Librerias/gameboard/gameboard.cpp
+        Librerias/IA/IA.cpp
+        Librerias/interface/interface.cpp
+        Librerias/minMax/minMax.cpp
+        Librerias/pieces/pieces.cpp
+        )
 
 target_link_libraries(Proyecto_de_prueba ${SDL2_LIBRARY} -lmingw32 -lSDL2main -lSDL2 -lSDL2_image)

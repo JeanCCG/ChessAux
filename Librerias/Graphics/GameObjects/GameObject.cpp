@@ -3,12 +3,12 @@
 #include <iostream>
 
 
-
 GameObject::GameObject(const char *texturesheet, int x, int y) {
     objTexture = TextureManager::LoadTexture(texturesheet);
     xpos = x;
     ypos = y;
 }
+
 void GameObject::Update() {
     srcRect.h = 90;
     srcRect.w = 90;
