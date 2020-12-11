@@ -171,6 +171,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 moves[movesm][0] = i;
                                 moves[movesm][1] = k;
                                 movesm++;
+                                break;
                             } else{
                                 break;
                             }
@@ -317,6 +318,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 moves[movesm][0] = i;
                                 moves[movesm][1] = k;
                                 movesm++;
+                                break;
                             } else{
                                 break;
                             }
@@ -549,7 +551,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         points =pts+moves[p][2];
                         contadora++;
                         cout<<contadora<<": Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
-                        contador=0;
                         for (int m = 0; m < movesm; ++m) {
                             for (int n = 0; n < 3; ++n) {
                                 cout<<moves[m][n]<<" ";
@@ -677,6 +678,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 moves[movesm][0] = i;
                                 moves[movesm][1] = k;
                                 movesm++;
+                                break;
                             } else{
                                 break;
                             }
@@ -823,6 +825,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 moves[movesm][0] = i;
                                 moves[movesm][1] = k;
                                 movesm++;
+                                break;
                             } else{
                                 break;
                             }

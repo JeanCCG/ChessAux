@@ -116,19 +116,19 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
-				char debugtab[8][8]= {
-				        {"T","C","A","Q","R","A","C"," "},
-                        {"P","P","P","P","P","P","P"," "},
-                        {" "," "," "," "," "," "," "," "},
-                        {" "," ","q"," ","p"," "," ","T"},
-                        {" "," "," "," "," "," "," "," "},
-                        {" "," "," "," "," "," "," "," "},
-                        {"p","p","p","p"," ","p","p","p"},
-                        {"t","c","a"," ","r","a","c","t"}
-				};
+/*				char debugslot[8][8]= {
+				        {'P','P','P','P','P','P','P','P'},
+                        {'P','P','P','P','P','P','P','P'},
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {' ',' ','q',' ','p',' ',' ','T'},
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {'p','p','p','p',' ','p','p','p'},
+                        {'p','p','p',' ','p','p','p','p'},
+				};*/
 				int arrr[1000][5];
 				int arrrms;
-				int numeval = minimax(debugtap, 2, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
