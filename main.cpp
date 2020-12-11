@@ -36,7 +36,7 @@ int game(
 	bool validMovement = false;
 	bool player;
 	///IA
-	char slotes[26][26];
+	char slotes[8][8];
 
 	if (mode == 1) //* |-->->> P1 vs BOT <<-<--|
 	{
@@ -116,9 +116,10 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
+				int dubgtab[8][8];
 				int arrr[1000][5];
 				int arrrms;
-				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, 2, true, 0, arrr, arrrms);
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)

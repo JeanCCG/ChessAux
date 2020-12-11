@@ -13,7 +13,7 @@ bool availableeat;
 char temp;
 int k, l;
 
-void copy(char m_ori[26][26], char m_copy[26][26]){
+void copy(char m_ori[8][8], char m_copy[8][8]){
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             m_copy[i][j]=m_ori[i][j];
@@ -82,7 +82,7 @@ int p1validpieces(char piece){
             return 0;
     }
 }
-int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000][5],int& arrrms) { //Player = True
+int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][5],int& arrrms) { //Player = True
     if (depth == 0) {
         return points;
     }
@@ -545,7 +545,7 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                                     break;
                             }
                         }
-                        char slotscopy[26][26];
+                        char slotscopy[8][8];
                         points =pts+moves[p][2];
                         contadora++;
                         cout<<contadora<<": Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
@@ -1059,7 +1059,7 @@ int minimax(char slots[26][26], int depth, bool player, int points,int arrr[1000
                                     break;
                             }
                         }
-                        char slotscopy[26][26];
+                        char slotscopy[8][8];
                         points =pts-moves[p][2];
                         contador++;
                         cout<<contador<<" Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
