@@ -220,6 +220,7 @@ int minimax(char slots[26][26], int depth, bool player, int points, int arrr[100
 							moves[movesm][0] = i;
 							moves[movesm][1] = k;
 							movesm++;
+                            break;
 						}
 						else
 						{
@@ -405,6 +406,7 @@ int minimax(char slots[26][26], int depth, bool player, int points, int arrr[100
 							moves[movesm][0] = i;
 							moves[movesm][1] = k;
 							movesm++;
+                            break;
 						}
 						else
 						{
@@ -836,6 +838,7 @@ int minimax(char slots[26][26], int depth, bool player, int points, int arrr[100
 							moves[movesm][0] = i;
 							moves[movesm][1] = k;
 							movesm++;
+                            break;
 						}
 						else
 						{
@@ -1021,6 +1024,7 @@ int minimax(char slots[26][26], int depth, bool player, int points, int arrr[100
 							moves[movesm][0] = i;
 							moves[movesm][1] = k;
 							movesm++;
+                            break;
 						}
 						else
 						{
