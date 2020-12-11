@@ -116,10 +116,19 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
-				int dubgtab[8][8];
+				char debugtab[8][8]= {
+				        {"T","C","A","Q","R","A","C"," "},
+                        {"P","P","P","P","P","P","P"," "},
+                        {" "," "," "," "," "," "," "," "},
+                        {" "," ","q"," ","p"," "," ","T"},
+                        {" "," "," "," "," "," "," "," "},
+                        {" "," "," "," "," "," "," "," "},
+                        {"p","p","p","p"," ","p","p","p"},
+                        {"t","c","a"," ","r","a","c","t"}
+				};
 				int arrr[1000][5];
 				int arrrms;
-				int numeval = minimax(slotes, 2, true, 0, arrr, arrrms);
+				int numeval = minimax(debugtap, 2, true, 0, arrr, arrrms);
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
