@@ -440,8 +440,8 @@ int main()
 					// std::cout << "\tKnight(s)\t: " << nP1_pieces[3] << std::endl;
 					// std::cout << "\tBishop(s)\t: " << nP1_pieces[4] << std::endl;
 					// std::cout << "\tPawn(s)\t: " << nP1_pieces[5] << std::endl;
-
-					std::cout << "\n[B]ack" << std::endl;
+					std::cout << std::endl;
+					std::cout << "[B]ack" << std::endl;
 					std::cout << "[~] Add or remove a piece" << std::endl;
 					std::cout << "[C]hange a piece position" << std::endl;
 					std::cout << "[S]how Gameboard" << std::endl;
