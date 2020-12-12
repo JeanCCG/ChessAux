@@ -645,6 +645,7 @@ int minimax(char slots[26][26], int depth, bool player, int points, int arrr[100
                             }
                         }
                     }
+                    break;
 				}
 				case PiecesChar::charP2_queen:
 					availablepiece = true;
