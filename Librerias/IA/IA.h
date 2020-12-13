@@ -149,6 +149,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = k;
                                                 movesp1m++;
                                             }
+                                            else if (slots[p][k]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[p][k]))
                                             {
                                                 movesp1[movesp1m][0] = p;
@@ -165,6 +171,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (k = p - 1; - 1 < k; k--)
                                         {
                                             if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = o;
@@ -191,6 +203,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = k;
                                                 movesp1m++;
                                             }
+                                            else if (slots[p][k]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[p][k]))
                                             {
                                                 movesp1[movesp1m][0] = p;
@@ -207,6 +225,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (k = p + 1; k < 8; k++)
                                         {
                                             if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = o;
@@ -234,6 +258,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = l;
                                                 movesp1m++;
                                             }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[k][l]))
                                             {
                                                 movesp1[movesp1m][0] = k;
@@ -251,6 +281,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (; (-1 < k) && (-1 < l); (k--) && (l--))
                                         {
                                             if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = l;
@@ -279,6 +315,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = l;
                                                 movesp1m++;
                                             }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[k][l]))
                                             {
                                                 movesp1[movesp1m][0] = k;
@@ -297,6 +339,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (; (k < 8) && (l < 8); (k++) && (l++))
                                         {
                                             if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = l;
@@ -328,6 +376,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = k;
                                                 movesp1m++;
                                             }
+                                            else if (slots[p][k]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[p][k]))
                                             {
                                                 cout<<"GAA"<<endl;
@@ -347,6 +401,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (k = p - 1; - 1 < k; k--)
                                         {
                                             if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = o;
@@ -374,6 +434,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = k;
                                                 movesp1m++;
                                             }
+                                            else if (slots[p][k]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[p][k]))
                                             {
                                                 movesp1[movesp1m][0] = p;
@@ -391,6 +457,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (k = p + 1; k < 8; k++)
                                         {
                                             if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = o;
@@ -483,6 +555,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = l;
                                                 movesp1m++;
                                             }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[k][l]))
                                             {
                                                 movesp1[movesp1m][0] = k;
@@ -500,6 +578,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (; (-1 < k) && (-1 < l); (k--) && (l--))
                                         {
                                             if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = l;
@@ -528,6 +612,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 movesp1[movesp1m][1] = l;
                                                 movesp1m++;
                                             }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
                                             else if (p2validpieces(slots[k][l]))
                                             {
                                                 movesp1[movesp1m][0] = k;
@@ -546,6 +636,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         for (; (k < 8) && (l < 8); (k++) && (l++))
                                         {
                                             if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP2_king)
                                             {
                                                 movesp1[movesp1m][0] = k;
                                                 movesp1[movesp1m][1] = l;
