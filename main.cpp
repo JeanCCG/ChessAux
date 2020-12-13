@@ -100,25 +100,25 @@ int game(
 							validMovement = gameboard.validMovement(start, end);
 							if (validMovement)
 							{
-								if (P1_isChecked)
-								{
-									if (gameboard.isMenaced(P1_kingBearings, Player::P1) == false)
-									{
-										std::cout << "Valid Movement & king is not checked any more" << std::endl;
-										P1_isChecked = false;
-										break;
-									}
-									else
-									{
-										gameboard.move(end, start);
-									}
-								}
-								else
-								{
-									std::cout << "Valid Movement" << std::endl;
-									validMovement = false;
-									break;
-								}
+								// if (P1_isChecked)
+								// {
+								// 	if (gameboard.isMenaced(P1_kingBearings, Player::P1) == false)
+								// 	{
+								// 		std::cout << "Valid Movement & king is not checked any more" << std::endl;
+								// 		P1_isChecked = false;
+								// 		break;
+								// 	}
+								// 	else
+								// 	{
+								// 		gameboard.move(end, start);
+								// 	}
+								// }
+								// else
+								// {
+								std::cout << "Valid Movement" << std::endl;
+								validMovement = false;
+								break;
+								// }
 							}
 							else
 								std::cout << "Sorry, that movement is not allowed." << std::endl;

@@ -181,29 +181,180 @@ public:
 		else
 			return false;
 	}
-	bool validKingMovement(int start[2], int end[2])
-	{
-		return true;
-	}
-	bool validEnPassant(int start[2], int end[2]) // Peón al paso
-	{
-		return true;
-	}
 	bool isMenaced(int place[2], bool player)
 	{
-		// straight movements
-		// diagonal movements
-		// jumps
-		return true;
+		std::cout << place[0] << " , " << place[1] << std::endl;
+		std::cout << player << std::endl;
+		char bishop;
+		char queen;
+		char rook;
+		char knight;
+		char pawn;
+		// int pawnDirection;
+		if (player == Player::P1)
+		{
+			bishop = PiecesChar::charP2_bishop;
+			queen = PiecesChar::charP2_queen;
+			rook = PiecesChar::charP2_rook;
+			knight = PiecesChar::charP2_knight;
+			pawn = PiecesChar::charP2_knight;
+			// pawnDirection = 1;
+		}
+		else
+		{
+			pawn = PiecesChar::charP1_bishop;
+			bishop = PiecesChar::charP1_bishop;
+			queen = PiecesChar::charP1_queen;
+			rook = PiecesChar::charP1_rook;
+			knight = PiecesChar::charP1_knight;
+			// pawnDirection = -1;
+		}
+		/////////////*
+		//* straight
+		////////////*
+		std::cout << "rook menacing?" << std::endl;
+		//(+x) line
+		for (int j = place[1] + 1; j < width; j++)
+			if (slots[place[0]][j].isFree == false)
+			{
+				if ((slots[place[0]][j].player != player) &&
+					((slots[place[0]][j].symbol == rook) ||
+					 (slots[place[0]][j].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(+y) line
+		for (int i = place[0] - 1; - 1 < i; i--)
+			if (slots[i][place[1]].isFree == false)
+			{
+				if ((slots[i][place[1]].player != player) &&
+					((slots[i][place[1]].symbol == rook) ||
+					 (slots[i][place[1]].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(-x) line
+		for (int j = place[1] - 1; - 1 < j; j--)
+			if (slots[place[0]][j].isFree == false)
+			{
+				if ((slots[place[0]][j].player != player) &&
+					((slots[place[0]][j].symbol == rook) ||
+					 (slots[place[0]][j].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(-y) line
+		for (int i = place[0] + 1; i < height; i++)
+			if (slots[i][place[1]].isFree == false)
+			{
+				if ((slots[i][place[1]].player != player) &&
+					((slots[i][place[1]].symbol == rook) ||
+					 (slots[i][place[1]].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		////////////*
+		//* Diagonal
+		////////////*
+		std::cout << "is menaced by its diagonals?" << std::endl;
+		//pawns
+		if ((player == Player::P1) && (place[0] > 0))
+		{
+			if ((place[1] > 0) && (slots[place[0] - 1][place[1] - 1].symbol == pawn))
+				return true;
+			else if ((place[1] < width) && (slots[place[0] - 1][place[1] + 1].symbol == pawn))
+				return true;
+		}
+		else if (place[0] < height - 1)
+		{
+			if ((place[1] > 0) && (slots[place[0] + 1][place[1] - 1].symbol == pawn))
+				return true;
+			else if ((place[1] < width) && (slots[place[0] + 1][place[1] + 1].symbol == pawn))
+				return true;
+		}
+		//queens or bishops
+		int i, j;
+		i = place[0] - 1;
+		j = place[1] + 1;
+		for (; (-1 < i) && (j < width); (i--) && (j++))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		i = place[0] - 1;
+		j = place[1] - 1;
+		for (; (-1 < i) && (-1 < j); (i--) && (j--))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		//(-x;-y) diagonal
+		i = place[0] + 1;
+		j = place[1] - 1;
+		for (; (i < height) && (-1 < j); (i++) && (j--))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		//(+x;-y) diagonal
+		i = place[0] + 1;
+		j = place[1] + 1;
+		for (; (i < height) && (j < width); (i++) && (j++))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		////////////*
+		//* Jumps
+		////////////*
+		std::cout << "knight menacing?" << std::endl;
+		if ((place[0] > 1) && (place[1] > 0) && (slots[place[0] - 2][place[1] - 1].symbol == knight))
+			return true;
+		else if ((place[0] > 1) && (place[1] < 7) && (slots[place[0] - 2][place[1] + 1].symbol == knight))
+			return true;
+		else if ((place[0] > 0) && (place[1] > 1) && (slots[place[0] - 1][place[1] - 2].symbol == knight))
+			return true;
+		else if ((place[0] < 7) && (place[1] > 1) && (slots[place[0] + 1][place[1] - 2].symbol == knight))
+			return true;
+		else if ((place[0] < 6) && (place[1] > 0) && (slots[place[0] + 2][place[1] - 1].symbol == knight))
+			return true;
+		else if ((place[0] < 6) && (place[1] < 7) && (slots[place[0] + 2][place[1] + 1].symbol == knight))
+			return true;
+		else if ((place[0] > 0) && (place[1] < 6) && (slots[place[0] - 1][place[1] + 2].symbol == knight))
+			return true;
+		else if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == knight))
+			return true;
+		std::cout << "is not menaced" << std::endl;
+		return false;
 	}
 	void drawDot(int place[2])
 	{
 		slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
 	}
-	// void undrawKingDots(int place[2]);
-	// {
-	// 	place[0] = place[0];
-	// }
 
 	bool availableKingMovement(int kingBearings[2])
 	{
