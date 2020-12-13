@@ -1,6 +1,5 @@
 #include <iostream>
-#include "Librerias/IA/IA.h"
-#include "Librerias/interface/interface.h"
+#include "Librerias/gameboard/gameboard.h"
 
 using namespace std;
 
@@ -480,6 +479,7 @@ int main()
 					std::cout << std::endl;
 					std::cin >> sub_command;
 					cleanScreen(2);
+
 
 					sub_command = toupper(sub_command);
 

@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../pieces/pieces.h"
 #include "../interface/interface.h"
+#include "../IA/IA.h"
 
 using namespace std;
 

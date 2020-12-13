@@ -1,7 +1,3 @@
-// #ifndef CHESS_UCSP_INTERFACE_H
-// #define CHESS_UCSP_INTERFACE_H
-// #endif
-
 #pragma once
 
 using namespace std;
