@@ -63,7 +63,18 @@ int game(
 						{
 							availableMovement = gameboard.piecePossibilities(start);
 							if (availableMovement)
+							{
+								// if (P1_isChecked)
+								// {
+								// 	// what if I choose the king?
+								// 	// if(gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP1_king)
+								// 	// {
+								// 	// }
+								// 	//can this piece block or eat the menacing piece?
+								// }
+								// else
 								break;
+							}
 							else
 								std::cout << "There aren't available positions to move your piece. Please, choose another" << std::endl;
 						}
@@ -89,9 +100,25 @@ int game(
 							validMovement = gameboard.validMovement(start, end);
 							if (validMovement)
 							{
-								std::cout << "Is a Valid Movement" << std::endl;
-								validMovement = false;
-								break;
+								if (P1_isChecked)
+								{
+									if (gameboard.isMenaced(P1_kingBearings, Player::P1) == false)
+									{
+										std::cout << "Valid Movement & king is not checked any more" << std::endl;
+										P1_isChecked = false;
+										break;
+									}
+									else
+									{
+										gameboard.move(end, start);
+									}
+								}
+								else
+								{
+									std::cout << "Valid Movement" << std::endl;
+									validMovement = false;
+									break;
+								}
 							}
 							else
 								std::cout << "Sorry, that movement is not allowed." << std::endl;
@@ -336,6 +363,9 @@ int main()
 		{6, 5, (int)PiecesChar::charP1_pawn},
 		{6, 6, (int)PiecesChar::charP1_pawn},
 		{6, 7, (int)PiecesChar::charP1_pawn}};
+	P1_kingBearings[0] = 7;
+	P1_kingBearings[1] = 4;
+
 	int P2PiecesInit[16][3] = {
 		{0, 0, (int)PiecesChar::charP2_rook},
 		{0, 1, (int)PiecesChar::charP2_knight},
@@ -353,6 +383,8 @@ int main()
 		{1, 5, (int)PiecesChar::charP2_pawn},
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};
+	P2_kingBearings[0] = 0;
+	P2_kingBearings[1] = 4;
 
 	//* INTERFACE
 	char command;

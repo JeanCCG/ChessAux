@@ -7,6 +7,11 @@
 
 int P1_score = 0;
 int P2_score = 0;
+bool P1_isChecked = false;
+bool P2_isChecked = false;
+int P1_kingBearings[2];
+int P2_kingBearings[2];
+
 class Piece
 {
 public:
@@ -15,10 +20,6 @@ public:
 	bool player;
 	int points;
 	int movements = 0;
-	// int enemyMenacing = 0;
-	// int playerMenacing = 0;
-	// int winPotential = 0;  // Lo que se puede ganar si se mueve a una posición.
-	// int lostPotential = 0; // Lo que se puede perder si no se defiende una posición
 
 	Piece() {}
 	// Piece(char, bool, bool, int);
@@ -51,7 +52,6 @@ public:
 		player = piece.player;
 		points = piece.points;
 		movements += piece.movements + 1;
-		// playerMenacing--;
 	}
 
 	// void setPiece(Piece);

@@ -106,13 +106,13 @@ public:
 		default:
 			break;
 		}
-
 	}
-	void init(){
-        char anything;
-        cout << "\t\tInput [anything] to continue:" << endl;
-        cout << "\t\t\t\t";
-        cin >> anything;
+	void init()
+	{
+		char anything;
+		cout << "\t\tInput [anything] to continue:" << endl;
+		cout << "\t\t\t\t";
+		cin >> anything;
 	}
 	~OnceAnnouncement()
 	{

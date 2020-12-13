@@ -191,6 +191,9 @@ public:
 	}
 	bool isMenaced(int place[2], bool player)
 	{
+		// straight movements
+		// diagonal movements
+		// jumps
 		return true;
 	}
 	void drawDot(int place[2])
@@ -347,7 +350,16 @@ public:
 	bool validMovement(int start[2], int end[2])
 	{
 		cout << "validMovement analysis" << endl;
+		bool player = (slots[start[0]][start[1]].player == Player::P1) ? Player::P1 : Player::P2;
 		bool valid = false;
+		int points = slots[end[0]][end[1]].points;
+		bool wasFree = slots[end[0]][end[1]].isFree;
+		Piece auxEndPiece;
+		if (!wasFree)
+		{
+			auxEndPiece.setPiece(slots[end[0]][end[1]]);
+			auxEndPiece.movements--;
+		}
 		switch (slots[start[0]][start[1]].symbol)
 		{
 		case PiecesChar::charP1_king:
@@ -385,6 +397,53 @@ public:
 
 		default:
 			break;
+		}
+		if (player == Player::P1)
+		{
+			if (isMenaced(P1_kingBearings, Player::P1) == true)
+			{
+				//restore the movement
+				if (wasFree)
+				{
+					move(end, start);
+					slots[start[0]][start[1]].movements--;
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				else
+				{
+					P1_score -= points;
+					slots[start[0]][start[1]].movements--;
+					move(end, start);
+					slots[end[0]][end[1]].setPiece(auxEndPiece);
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				return false;
+			}
+		}
+		else
+		{
+			if (isMenaced(P2_kingBearings, Player::P2) == true)
+			{
+				if (wasFree)
+				{
+					move(end, start);
+					slots[start[0]][start[1]].movements--;
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				else
+				{
+					P1_score -= points;
+					slots[start[0]][start[1]].movements--;
+					move(end, start);
+					slots[end[0]][end[1]].setPiece(auxEndPiece);
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				return false;
+			}
 		}
 		return valid;
 	}
