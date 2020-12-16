@@ -115,8 +115,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         {
                             for (int o = 0; o < 8; ++o)
                             {
-                                cout<<ct<<" while king process"<<"["<<p<<"]["<<o<<"] , pieza: "<<slots[p][o]<<endl;
-                                ct++;
                                 switch (slots[p][o])
                                 {
                                     case PiecesChar::charP1_king:
@@ -365,11 +363,10 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         break;
                                     case PiecesChar::charP1_rook:
                                     {
-                                        cout<<"Enter rook"<<endl;
+
                                         //(+x) line
                                         for (k = o + 1; k < 8; k++)
                                         {
-                                            cout<<"k : "<<k<<endl;
                                             if (slots[p][k] == PiecesChar::char_free)
                                             {
                                                 movesp1[movesp1m][0] = p;
@@ -384,8 +381,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                             }
                                             else if (p2validpieces(slots[p][k]))
                                             {
-                                                cout<<"GAA"<<endl;
-                                                cout<<movesp1m<<endl;
                                                 movesp1[movesp1m][0] = p;
                                                 movesp1[movesp1m][1] = k;
                                                 movesp1m++;
@@ -396,7 +391,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 break;
                                             }
                                         }
-                                        cout<<"Pass Right"<<endl;
                                         //(+y) line
                                         for (k = p - 1; - 1 < k; k--)
                                         {
@@ -424,7 +418,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 break;
                                             }
                                         }
-                                        cout<<"Pass Up"<<endl;
                                         //(-x) line
                                         for (k = o - 1; - 1 < k; k--)
                                         {
@@ -452,7 +445,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 break;
                                             }
                                         }
-                                        cout<<"Pass Left"<<endl;
                                         //(-y) line
                                         for (k = p + 1; k < 8; k++)
                                         {
@@ -480,8 +472,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 break;
                                             }
                                         }
-                                        cout<<"Pass Down"<<endl;
-                                        cout<<"End rook"<<endl;
                                         break;
                                     }
                                     case PiecesChar::charP1_knight:
@@ -662,7 +652,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         break;
                                     case PiecesChar::charP1_pawn:
                                     {
-                                        cout<<"Enter pawn"<<endl;
                                         int cas;
                                         if (p == 6)
                                         {
@@ -690,7 +679,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                 }
                                             }
                                         }
-                                        cout<<"End pawn"<<endl;
                                         break;
                                     }
                                     default:
@@ -1130,7 +1118,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 10;
+                                    moves[p][2] = 20;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -1151,14 +1139,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         char slotscopy[8][8];
                         points =pts+moves[p][2];
-                        contadora++;
-                        cout<<contadora<<": Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
-                        for (int m = 0; m < movesm; ++m) {
-                            for (int n = 0; n < 3; ++n) {
-                                cout<<moves[m][n]<<" ";
-                            }
-                            cout<<endl;
-                        }
 
                         for (int i = 0; i < 8; ++i) {
                             for (int j = 0; j < 8; ++j) {
@@ -1171,14 +1151,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         if (availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
-                        for (int i = 0; i < 8; ++i) {
-                            for (int j = 0; j < 8; ++j) {
-                                cout<<slotscopy[i][j]<<" ";
-                            }
-                            cout<<endl;
-                        }
                         int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
-                        cout<<"End minimax"<<endl;
                         maxpt = max(eval, maxpt);
                         if(depth==3){
                             arrr[arrrm][0]=moves[p][0];
@@ -1189,12 +1162,10 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             arrrm++;
                         }
                     }
-                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                 }
             }
         }
-        cout<<"End Board"<<endl;
-        cout<<"\nMaximo valor eval : "<<maxpt<<endl;
+
         if(depth == 3){
             arrrms=arrrm;
         }
@@ -1208,27 +1179,617 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                 int movesm;
                 switch (slots[i][j]) {
                     case PiecesChar::charP1_king: {
-                        for (int r = 0; r < 26; ++r) {
-                            for (int s = 0; s < 3; ++s) {
-                                moves[r][s]=0;
+                        availablepiece = true;
+                        for (int r = 0; r < 26; ++r)
+                        {
+                            for (int s = 0; s < 3; ++s)
+                            {
+                                moves[r][s] = 0;
                             }
                         }
                         movesm = 0;
-                        availablepiece = true;
-                        int p_y = i - 1;
-                        int cas ;
-                        if (i == 6) {
-                            cas = 2;
-                        } else {
-                            cas = 1;
+                        int movesp1[121][2];
+                        int movesp1m=0;
+                        int ct=0;
+                        for (int p = 0; p < 8; ++p)
+                        {
+                            for (int o = 0; o < 8; ++o)
+                            {
+                                switch (slots[p][o])
+                                {
+                                    case PiecesChar::charP2_king:
+                                    {
+                                        movesp1[movesp1m][0]=p+1;
+                                        movesp1[movesp1m][1]=o;
+                                        movesp1[movesp1m+1][0]=p+1;
+                                        movesp1[movesp1m+1][1]=o+1;
+                                        movesp1[movesp1m+2][0]=p;
+                                        movesp1[movesp1m+2][1]=o+1;
+                                        movesp1[movesp1m+3][0]=p-1;
+                                        movesp1[movesp1m+3][1]=o;
+                                        movesp1[movesp1m+4][0]=p-1;
+                                        movesp1[movesp1m+4][1]=o-1;
+                                        movesp1[movesp1m+5][0]=p;
+                                        movesp1[movesp1m+5][1]=o-1;
+                                        movesp1[movesp1m+6][0]=p+1;
+                                        movesp1[movesp1m+6][1]=o-1;
+                                        movesp1[movesp1m+7][0]=p-1;
+                                        movesp1[movesp1m+7][1]=o+1;
+                                        movesp1m=movesp1m+8;
+                                        break;
+                                    }
+                                    case PiecesChar::charP2_queen:
+                                        for (k = o + 1; k < 8; k++)
+                                        {
+                                            if (slots[p][k] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[p][k]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[p][k]))
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(+y) line
+                                        for (k = p - 1; - 1 < k; k--)
+                                        {
+                                            if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][o]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-x) line
+                                        for (k = o - 1; - 1 < k; k--)
+                                        {
+                                            if (slots[p][k] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[p][k]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[p][k]))
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-y) line
+                                        for (k = p + 1; k < 8; k++)
+                                        {
+                                            if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][o]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        k = p - 1;
+                                        l = o + 1;
+                                        for (; (-1 < k) && (l < 8); (k--) && (l++))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        k = p - 1;
+                                        l = o - 1;
+                                        for (; (-1 < k) && (-1 < l); (k--) && (l--))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-x;-y) diagonal
+                                        k = p + 1;
+                                        l = o - 1;
+                                        for (; (k < 8) && (-1 < l); (k++) && (l--))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(+x;-y) diagonal
+                                        k = p + 1;
+                                        l = o + 1;
+                                        for (; (k < 8) && (l < 8); (k++) && (l++))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case PiecesChar::charP2_rook:
+                                    {
+
+                                        //(+x) line
+                                        for (k = o + 1; k < 8; k++)
+                                        {
+                                            if (slots[p][k] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[p][k]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[p][k]))
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(+y) line
+                                        for (k = p - 1; - 1 < k; k--)
+                                        {
+                                            if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][o]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-x) line
+                                        for (k = o - 1; - 1 < k; k--)
+                                        {
+                                            if (slots[p][k] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[p][k]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[p][k]))
+                                            {
+                                                movesp1[movesp1m][0] = p;
+                                                movesp1[movesp1m][1] = k;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-y) line
+                                        for (k = p + 1; k < 8; k++)
+                                        {
+                                            if (slots[k][o] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][o]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][o]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = o;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case PiecesChar::charP2_knight:
+                                    {
+                                        if ((p > 1) && (o > 0) &&
+                                            ((slots[p - 2][o - 1] == PiecesChar::char_free) || (p1validpieces(slots[p - 2][o - 1]))))
+                                        {
+                                            movesp1[movesp1m][0] = p - 2;
+                                            movesp1[movesp1m][1] = o - 1;
+                                            movesp1m++;
+                                        }
+                                        if ((p > 1) && (o < 7) &&
+                                            ((slots[p - 2][o + 1] == PiecesChar::char_free) || (p1validpieces(slots[p - 2][o + 1]))))
+                                        {
+                                            movesp1[movesp1m][0] = p - 2;
+                                            movesp1[movesp1m][1] = o + 1;
+                                            movesp1m++;
+                                        }
+                                        if ((p > 0) && (o > 1) &&
+                                            ((slots[p - 1][o - 2] == PiecesChar::char_free) || (p1validpieces(slots[p - 1][o - 2]))))
+                                        {
+                                            movesp1[movesp1m][0] = p - 1;
+                                            movesp1[movesp1m][1] = o - 2;
+                                            movesp1m++;
+                                        }
+                                        if ((p < 7) && (o > 1) &&
+                                            ((slots[p + 1][o - 2] == PiecesChar::char_free) || (p1validpieces(slots[p + 1][o - 2]))))
+                                        {
+                                            movesp1[movesp1m][0] = p + 1;
+                                            movesp1[movesp1m][1] = o - 2;
+                                            movesp1m++;
+                                        }
+                                        if ((p < 6) && (o > 0) &&
+                                            ((slots[p + 2][o - 1] == PiecesChar::char_free) || (p1validpieces(slots[p + 2][o - 1]))))
+                                        {
+                                            movesp1[movesp1m][0] = p + 2;
+                                            movesp1[movesp1m][1] = o - 1;
+                                            movesp1m++;
+                                        }
+                                        if ((p < 6) && (o < 7) &&
+                                            ((slots[p + 2][o + 1] == PiecesChar::char_free) || (p1validpieces(slots[p + 2][o + 1]))))
+                                        {
+                                            movesp1[movesp1m][0] = p + 2;
+                                            movesp1[movesp1m][1] = o + 1;
+                                            movesp1m++;
+                                        }
+                                        if ((p > 0) && (o < 6) &&
+                                            ((slots[p - 1][o + 2] == PiecesChar::char_free) || (p1validpieces(slots[p - 1][o + 2]))))
+                                        {
+                                            movesp1[movesp1m][0] = p - 1;
+                                            movesp1[movesp1m][1] = o + 2;
+                                            movesp1m++;
+                                        }
+                                        if ((p < 7) && (o < 6) &&
+                                            ((slots[p + 1][o + 2] == PiecesChar::char_free) || (p1validpieces(slots[p + 1][o + 2]))))
+                                        {
+                                            movesp1[movesp1m][0] = p + 1;
+                                            movesp1[movesp1m][1] = o + 2;
+                                            movesp1m++;
+                                        }
+                                        break;
+                                    }
+                                    case PiecesChar::charP2_bishop:
+                                        k = p - 1;
+                                        l = o + 1;
+                                        for (; (-1 < k) && (l < 8); (k--) && (l++))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        k = p - 1;
+                                        l = o - 1;
+                                        for (; (-1 < k) && (-1 < l); (k--) && (l--))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(-x;-y) diagonal
+                                        k = p + 1;
+                                        l = o - 1;
+                                        for (; (k < 8) && (-1 < l); (k++) && (l--))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        //(+x;-y) diagonal
+                                        k = p + 1;
+                                        l = o + 1;
+                                        for (; (k < 8) && (l < 8); (k++) && (l++))
+                                        {
+                                            if (slots[k][l] == PiecesChar::char_free)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (slots[k][l]== PiecesChar::charP1_king)
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                            }
+                                            else if (p1validpieces(slots[k][l]))
+                                            {
+                                                movesp1[movesp1m][0] = k;
+                                                movesp1[movesp1m][1] = l;
+                                                movesp1m++;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case PiecesChar::charP2_pawn:
+                                    {
+                                        int cas;
+                                        if (p == 6)
+                                        {
+                                            cas = 2;
+                                        }
+                                        else
+                                        {
+                                            cas = 1;
+                                        }
+                                        for (k = 1; k <= cas; k++)
+                                        {
+                                            if (k == 1)
+                                            {
+                                                if ((p>0)&&(o<7)&&((p1validpieces(slots[p - 1][o + 1])) || (slots[p - 1][o + 1] == PiecesChar::char_free)))
+                                                {
+                                                    movesp1[movesp1m][0] = p - 1;
+                                                    movesp1[movesp1m][1] = o + 1;
+                                                    movesp1m++;
+                                                }
+                                                if ((p>0)&&(o>0)&&((p1validpieces(slots[p - 1][o - 1])) || (slots[p - 1][o + 1] == PiecesChar::char_free)))
+                                                {
+                                                    movesp1[movesp1m][0] = p - 1;
+                                                    movesp1[movesp1m][1] = o - 1;
+                                                    movesp1m++;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    default:
+                                        break;
+                                }
+                            }
                         }
-                        for (k = 0; k < cas; k++) {
-                            if ((slots[p_y][j] == PiecesChar::char_free) || (p1validpieces(slots[p_y][j]))) {
-                                moves[movesm][0] = p_y;
-                                moves[movesm][1] = j;
-                                movesm++;
-                            } else {
-                                break;
+
+                        int movesking[8][2]={
+                                {i+1,j},
+                                {i+1,j+1},
+                                {i,j+1},
+                                {i-1,j},
+                                {i-1,j-1},
+                                {i,j-1},
+                                {i+1,j-1},
+                                {i-1,j+1}};
+                        bool valid_move_king;
+                        for (int m = 0; m < 8; ++m) {
+                            valid_move_king=true;
+                            for (int n = 0; n < movesp1m; ++n) {
+                                if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
+                                    valid_move_king=false;
+                                }
+                            }
+                            if(valid_move_king){
+                                if(slots[movesking[m][0]][movesking[m][1]]==PiecesChar::char_free || (p1validpieces(slots[movesking[m][0]][movesking[m][1]]))) {
+                                    moves[movesm][0] = movesking[m][0];
+                                    moves[movesm][1] = movesking[m][1];
+                                    movesm++;
+                                }
                             }
                         }
                         break;
@@ -1645,7 +2206,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 10;
+                                    moves[p][2] = 20;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -1666,14 +2227,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         char slotscopy[8][8];
                         points =pts-moves[p][2];
-                        contador++;
-                        cout<<contador<<" Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
-                        for (int m = 0; m < movesm; ++m) {
-                            for (int n = 0; n < 3; ++n) {
-                                cout<<moves[m][n]<<" ";
-                            }
-                            cout<<endl;
-                        }
                         copy(slots,slotscopy);
                         temp = slotscopy[i][j];
                         slotscopy[i][j] = slotscopy[moves[p][0]][moves[p][1]];
@@ -1681,22 +2234,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         if(availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
-                        for (int i = 0; i < 8; ++i) {
-                            for (int j = 0; j < 8; ++j) {
-                                cout<<slotscopy[i][j]<<" ";
-                            }
-                            cout<<endl;
-                        }
                         int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
-                        cout<<"End minimax, eval = "<<eval<<endl;
                         minpt = min(eval, minpt);
                     }
-                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                 }
             }
         }
-        cout<<"End board"<<endl;
-        cout<<"\nMainimo valor eval : "<<minpt<<endl;
         return  minpt;
     }
 }

@@ -117,18 +117,24 @@ int game(
 					}
 				}
 				char debugslot[8][8]= {
-				        {'P','P','P','P','P','P','P','P'},
-                        {'P','P','P','P','P','P','P','P'},
                         {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {' ',' ',' ','P',' ',' ',' ',' '},
                         {' ',' ',' ',' ',' ',' ',' ',' '},
-                        {' ','R',' ',' ',' ',' ','R',' '},
+                        {'P','A',' ',' ',' ',' ',' ',' '},
+                        {' ','R','Q',' ',' ',' ',' ','t'},
+                        {' ',' ',' ',' ',' ',' ','a',' '},
                         {' ',' ',' ',' ',' ',' ',' ',' '},
-                        {'p','p','p','q',' ','p','p','p'},
-                        {'p','p','p',' ','p','p','p','p'},
+                        {' ',' ',' ',' ','r',' ',' ',' '},
 				};
+                for (int i = 0; i < 8; ++i) {
+                    for (int j = 0; j < 8; ++j) {
+                        cout<<debugslot[i][j]<<" ";
+                    }
+                    cout<<endl;
+                }
 				int arrr[1000][5];
 				int arrrms;
-				int numeval = minimax(debugslot, 2, false, 0, arrr, arrrms);
+				int numeval = minimax(debugslot, 3, true, 0, arrr, arrrms);
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
@@ -140,8 +146,21 @@ int game(
 					}
 				}
 				std::cout << "\nMinimax : " << numeval << std::endl;
-				std::cout << "\nMOVE START " << start[0] << " " << start[1] << std::endl;
-				std::cout << "\nMOVE END " << end[0] << " " << end[1] << std::endl;
+				std::cout << "\nMOVE START " << start[0] << " " << start[1] <<" piece: "<<debugslot[start[0]][start[1]]<<std::endl;
+				std::cout << "\nMOVE END " << end[0] << " " << end[1] <<" piece: "<<debugslot[end[0]][end[1]]<<std::endl;
+                char tempo;
+                tempo=debugslot[start[0]][start[1]];
+                debugslot[start[0]][start[1]]=debugslot[end[0]][end[1]];
+                debugslot[end[0]][end[1]]=tempo;
+                std::cout << "tempo: " << tempo << std::endl;
+                std::cout << "\nMOVE START " << start[0] << " " << start[1] <<" piece: "<<debugslot[start[0]][start[1]]<<std::endl;
+                std::cout << "\nMOVE END " << end[0] << " " << end[1] <<" piece: "<<debugslot[end[0]][end[1]]<<std::endl;
+                for (int i = 0; i < 8; ++i) {
+                    for (int j = 0; j < 8; ++j) {
+                        cout<<debugslot[i][j]<<" ";
+                    }
+                    cout<<endl;
+                }
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
 					gameboard.move(start, end);
