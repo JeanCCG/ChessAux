@@ -1,6 +1,5 @@
 #include <iostream>
-#include "Librerias/IA/IA.h"
-#include "Librerias/interface/interface.h"
+#include "Librerias/gameboard/gameboard.h"
 
 using namespace std;
 
@@ -64,7 +63,18 @@ int game(
 						{
 							availableMovement = gameboard.piecePossibilities(start);
 							if (availableMovement)
+							{
+								// if (P1_isChecked)
+								// {
+								// 	// what if I choose the king?
+								// 	// if(gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP1_king)
+								// 	// {
+								// 	// }
+								// 	//can this piece block or eat the menacing piece?
+								// }
+								// else
 								break;
+							}
 							else
 								std::cout << "There aren't available positions to move your piece. Please, choose another" << std::endl;
 						}
@@ -90,9 +100,25 @@ int game(
 							validMovement = gameboard.validMovement(start, end);
 							if (validMovement)
 							{
-								std::cout << "Is a Valid Movement" << std::endl;
+								// if (P1_isChecked)
+								// {
+								// 	if (gameboard.isMenaced(P1_kingBearings, Player::P1) == false)
+								// 	{
+								// 		std::cout << "Valid Movement & king is not checked any more" << std::endl;
+								// 		P1_isChecked = false;
+								// 		break;
+								// 	}
+								// 	else
+								// 	{
+								// 		gameboard.move(end, start);
+								// 	}
+								// }
+								// else
+								// {
+								std::cout << "Valid Movement" << std::endl;
 								validMovement = false;
 								break;
+								// }
 							}
 							else
 								std::cout << "Sorry, that movement is not allowed." << std::endl;
@@ -490,8 +516,8 @@ int main()
 					// std::cout << "\tKnight(s)\t: " << nP1_pieces[3] << std::endl;
 					// std::cout << "\tBishop(s)\t: " << nP1_pieces[4] << std::endl;
 					// std::cout << "\tPawn(s)\t: " << nP1_pieces[5] << std::endl;
-
-					std::cout << "\n[B]ack" << std::endl;
+					std::cout << std::endl;
+					std::cout << "[B]ack" << std::endl;
 					std::cout << "[~] Add or remove a piece" << std::endl;
 					std::cout << "[C]hange a piece position" << std::endl;
 					std::cout << "[S]how Gameboard" << std::endl;

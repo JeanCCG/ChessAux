@@ -6,3 +6,4 @@ build
 main
 cmake
 helper
+out

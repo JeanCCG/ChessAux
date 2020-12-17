@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
-project(Proyecto_de_prueba)
+project(ChessAux)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Proyecto_de_prueba main.cpp)
+add_executable(ChessAux main.cpp)
