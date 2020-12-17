@@ -6,20 +6,23 @@
 #include <iostream>
 #include "../pieces/pieces.h"
 #include "../interface/interface.h"
+#include "../IA/IA.h"
 
 using namespace std;
 
-void clean_screan(){
-    system("cls");
-    OnceAnnouncement Title(5);
+void clean_screan()
+{
+	cleanScreen(10);
+	OnceAnnouncement title(5);
 }
 class Gameboard
 {
 public:
 	// 2D ptrptr?
-	Piece slots[26][26];
-	int width;
-	int height;
+	Piece slots[8][8];
+
+	int width = 8;	// width max <= 26
+	int height = 8; // width max <= 26
 
 	// Gameboard() {}
 	Gameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces, int iWidth, int iHeight)
@@ -38,14 +41,10 @@ public:
 	}
 	void capture(int start[2], int end[2])
 	{
-		if (slots[start[0]][start[1]].player) //P1
-		{
+		if (slots[start[0]][start[1]].player == Player::P1) //P1
 			P1_score += slots[end[0]][end[1]].points;
-		}
 		else
-		{
 			P2_score += slots[end[0]][end[1]].points;
-		}
 		slots[end[0]][end[1]].setFree();
 		move(start, end);
 	}
@@ -53,7 +52,553 @@ public:
 	{
 		capture(start, end);
 	}
+	bool goDiagonal(int start[2], int end[2]) // Diagonal
+	{
+		if ((abs(start[0] - end[0]) == 1) && (abs(start[1] - end[1]) == 1))
+		{
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else if (abs(start[0] - end[0]) == abs(start[1] - end[1]))
+		{
+			cout << "ELSE IF" << endl;
+			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
+			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
+			int i, it;
+			int iLimit = end[0];
+			int j, jt;
+			int jLimit = end[1];
+			if (isUp)
+			{
+				i = start[0] - 1;
+				it = -1;
+			}
+			else
+			{
+				i = start[0] + 1;
+				it = 1;
+			}
+			if (isLeft)
+			{
+				j = start[1] - 1;
+				jt = -1;
+			}
+			else
+			{
+				j = start[1] + 1;
+				jt = 1;
+			}
+			for (; (i != iLimit) && (j != jLimit); (i += it) && (j += jt))
+				if (slots[i][j].symbol != PiecesChar::char_free)
+					return false;
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else
+			return false;
+	}
+	bool goStraight(int start[2], int end[2]) // Línea recta
+	{
+		if ((abs(start[0] - end[0]) == 0) && (abs(start[1] - end[1]) == 0))
+		{
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else if (start[0] == end[0])
+		{
 
+			bool isLeft = ((start[1] - end[1]) > 0) ? true : false;
+			bool isAPieceInMiddle = false;
+			int j, jt;
+			int jLimit = end[1];
+			if (isLeft)
+			{
+				j = start[1] - 1;
+				jt = -1;
+			}
+			else
+			{
+				j = start[1] + 1;
+				jt = 1;
+			}
+			for (; (j != jLimit); (j += jt))
+				if (slots[start[0]][j].symbol != PiecesChar::char_free)
+					return false;
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else if (start[1] == end[1])
+		{
+			bool isUp = ((start[0] - end[0]) > 0) ? true : false;
+			int i, it;
+			int iLimit = end[0];
+			if (isUp)
+			{
+				i = start[0] - 1;
+				it = -1;
+			}
+			else
+			{
+				i = start[0] + 1;
+				it = 1;
+			}
+			for (; (i != iLimit); (i += it))
+				if (slots[i][start[1]].symbol != PiecesChar::char_free)
+					return false;
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else
+			return false;
+	}
+	bool jump(int start[2], int end[2]) // Salto de caballo
+	{
+		int xDistance = abs(start[0] - end[0]);
+		int yDistance = abs(start[1] - end[1]);
+		if (((xDistance == 1) && (yDistance == 2)) ||
+			((xDistance == 2) && (yDistance == 1)))
+		{
+			if (slots[end[0]][end[1]].isFree)
+				move(start, end);
+			else
+				eat(start, end);
+			return true;
+		}
+		else
+			return false;
+	}
+	bool isMenaced(int place[2], bool player)
+	{
+		std::cout << place[0] << " , " << place[1] << std::endl;
+		std::cout << player << std::endl;
+		char bishop;
+		char queen;
+		char rook;
+		char knight;
+		char pawn;
+		// int pawnDirection;
+		if (player == Player::P1)
+		{
+			bishop = PiecesChar::charP2_bishop;
+			queen = PiecesChar::charP2_queen;
+			rook = PiecesChar::charP2_rook;
+			knight = PiecesChar::charP2_knight;
+			pawn = PiecesChar::charP2_knight;
+			// pawnDirection = 1;
+		}
+		else
+		{
+			pawn = PiecesChar::charP1_bishop;
+			bishop = PiecesChar::charP1_bishop;
+			queen = PiecesChar::charP1_queen;
+			rook = PiecesChar::charP1_rook;
+			knight = PiecesChar::charP1_knight;
+			// pawnDirection = -1;
+		}
+		/////////////*
+		//* straight
+		////////////*
+		std::cout << "rook menacing?" << std::endl;
+		//(+x) line
+		for (int j = place[1] + 1; j < width; j++)
+			if (slots[place[0]][j].isFree == false)
+			{
+				if ((slots[place[0]][j].player != player) &&
+					((slots[place[0]][j].symbol == rook) ||
+					 (slots[place[0]][j].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(+y) line
+		for (int i = place[0] - 1; - 1 < i; i--)
+			if (slots[i][place[1]].isFree == false)
+			{
+				if ((slots[i][place[1]].player != player) &&
+					((slots[i][place[1]].symbol == rook) ||
+					 (slots[i][place[1]].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(-x) line
+		for (int j = place[1] - 1; - 1 < j; j--)
+			if (slots[place[0]][j].isFree == false)
+			{
+				if ((slots[place[0]][j].player != player) &&
+					((slots[place[0]][j].symbol == rook) ||
+					 (slots[place[0]][j].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		//(-y) line
+		for (int i = place[0] + 1; i < height; i++)
+			if (slots[i][place[1]].isFree == false)
+			{
+				if ((slots[i][place[1]].player != player) &&
+					((slots[i][place[1]].symbol == rook) ||
+					 (slots[i][place[1]].symbol == queen)))
+					return true;
+				else
+					break;
+			}
+		////////////*
+		//* Diagonal
+		////////////*
+		std::cout << "is menaced by its diagonals?" << std::endl;
+		//pawns
+		if ((player == Player::P1) && (place[0] > 0))
+		{
+			if ((place[1] > 0) && (slots[place[0] - 1][place[1] - 1].symbol == pawn))
+				return true;
+			else if ((place[1] < width) && (slots[place[0] - 1][place[1] + 1].symbol == pawn))
+				return true;
+		}
+		else if (place[0] < height - 1)
+		{
+			if ((place[1] > 0) && (slots[place[0] + 1][place[1] - 1].symbol == pawn))
+				return true;
+			else if ((place[1] < width) && (slots[place[0] + 1][place[1] + 1].symbol == pawn))
+				return true;
+		}
+		//queens or bishops
+		int i, j;
+		i = place[0] - 1;
+		j = place[1] + 1;
+		for (; (-1 < i) && (j < width); (i--) && (j++))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		i = place[0] - 1;
+		j = place[1] - 1;
+		for (; (-1 < i) && (-1 < j); (i--) && (j--))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		//(-x;-y) diagonal
+		i = place[0] + 1;
+		j = place[1] - 1;
+		for (; (i < height) && (-1 < j); (i++) && (j--))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		//(+x;-y) diagonal
+		i = place[0] + 1;
+		j = place[1] + 1;
+		for (; (i < height) && (j < width); (i++) && (j++))
+			if (slots[i][j].isFree == false)
+			{
+				if ((slots[i][j].player != player) &&
+					((slots[i][j].symbol == bishop) ||
+					 (slots[i][j].symbol == queen)))
+					return true;
+				else if ((slots[i][j].player == player))
+					break;
+			}
+		////////////*
+		//* Jumps
+		////////////*
+		std::cout << "knight menacing?" << std::endl;
+		if ((place[0] > 1) && (place[1] > 0) && (slots[place[0] - 2][place[1] - 1].symbol == knight))
+			return true;
+		else if ((place[0] > 1) && (place[1] < 7) && (slots[place[0] - 2][place[1] + 1].symbol == knight))
+			return true;
+		else if ((place[0] > 0) && (place[1] > 1) && (slots[place[0] - 1][place[1] - 2].symbol == knight))
+			return true;
+		else if ((place[0] < 7) && (place[1] > 1) && (slots[place[0] + 1][place[1] - 2].symbol == knight))
+			return true;
+		else if ((place[0] < 6) && (place[1] > 0) && (slots[place[0] + 2][place[1] - 1].symbol == knight))
+			return true;
+		else if ((place[0] < 6) && (place[1] < 7) && (slots[place[0] + 2][place[1] + 1].symbol == knight))
+			return true;
+		else if ((place[0] > 0) && (place[1] < 6) && (slots[place[0] - 1][place[1] + 2].symbol == knight))
+			return true;
+		else if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == knight))
+			return true;
+		std::cout << "is not menaced" << std::endl;
+		return false;
+	}
+	void drawDot(int place[2])
+	{
+		slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
+	}
+
+	bool availableKingMovement(int kingBearings[2])
+	{
+		bool availableMovement = false;
+		bool inTheUpperBorder = (kingBearings[0] == 0) ? true : false;
+		bool inTheBottomBorder = (kingBearings[0] == height - 1) ? true : false;
+		bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
+		bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
+		bool slotMenaced;
+		bool player = (slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
+		bool availableQueensideCastling = true;
+		bool availableKingsideCastling = true;
+
+		int end[2];
+		// int i = 0;
+		int iLimit = 4;
+		// int j = 0;
+		int jLimit = 4;
+		// if (inTheUpperBorder)
+		// 	i = 1;
+		if (inTheBottomBorder)
+			iLimit = 3;
+		if (inTheRightBorder)
+			jLimit = 3;
+		// if (inTheLeftBorder)
+		// 	j = 1;
+
+		for (int i = (inTheUpperBorder) ? 1 : 0; i < iLimit; i++)
+			for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
+			{
+				end[0] = kingBearings[0] + (-1 + i);
+				end[1] = kingBearings[1] + (-1 + j);
+				slotMenaced = isMenaced(end, slots[kingBearings[0]][kingBearings[1]].player);
+				if ((slotMenaced == false) &&
+					(slots[end[0]][end[1]].isFree))
+				{
+					drawDot(end);
+					availableMovement = true;
+				}
+				else if (slots[end[0]][end[1]].player != player)
+					availableMovement = true;
+			}
+		if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+		{
+			if (slots[kingBearings[0]][0].movements == 0)
+			{
+				for (int j = kingBearings[1] - 1; 0 < j; j--)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableQueensideCastling = false;
+						break;
+					}
+			}
+			if (slots[kingBearings[0]][width - 1].movements == 0)
+			{
+				for (int j = kingBearings[1] + 1; j < width - 1; j++)
+					if (slots[kingBearings[0]][j].isFree == false)
+					{
+						availableKingsideCastling = false;
+						break;
+					}
+			}
+		}
+		if (availableKingsideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = 2;
+			drawDot(end);
+		}
+		if (availableQueensideCastling)
+		{
+			availableMovement = true;
+			end[0] = kingBearings[0];
+			end[1] = width - 3;
+			drawDot(end);
+		}
+		return availableMovement;
+	}
+	int validPawnMovement(int start[2], int end[2])
+	{
+		bool valid = false;
+		bool player = slots[start[0]][start[1]].player;
+		int direction = (player == Player::P1) ? 1 : -1;
+		std::cout << "inside Pawn Movement Validator" << std::endl;
+		if (slots[start[0]][start[1]].movements == 0)
+		{
+			std::cout << "first Movement" << std::endl;
+			if ((start[0] - end[0]) <= direction * 2)
+			{
+				if ((start[0] - end[0]) == direction)
+				{
+					if (abs(start[1] - end[1]) == 1)
+					{
+						if (slots[end[0]][end[1]].player == !player)
+						{
+							eat(start, end);
+							valid = true;
+						}
+					}
+					else if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+					{
+						int aux[2];
+						aux[0] = end[0] - 1;
+						aux[1] = end[1];
+						eat(start, aux);
+						move(aux, end);
+						valid = true;
+					}
+				}
+				else
+				{
+					if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+					{
+						move(start, end);
+						valid = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			std::cout << "not first Movement" << std::endl;
+			if ((start[0] - end[0]) == direction)
+			{
+				if (abs(start[1] - end[1]) == 1)
+				{
+					if (slots[end[0]][end[1]].player == !player)
+					{
+						eat(start, end);
+						valid = true;
+					}
+				}
+				else if ((start[1] == end[1]) && (slots[end[0]][end[1]].isFree))
+				{
+					move(start, end);
+					valid = true;
+				}
+			}
+		}
+		return valid;
+	}
+
+	bool validMovement(int start[2], int end[2])
+	{
+		cout << "validMovement analysis" << endl;
+		bool player = (slots[start[0]][start[1]].player == Player::P1) ? Player::P1 : Player::P2;
+		bool valid = false;
+		int points = slots[end[0]][end[1]].points;
+		bool wasFree = slots[end[0]][end[1]].isFree;
+		Piece auxEndPiece;
+		if (!wasFree)
+		{
+			auxEndPiece.setPiece(slots[end[0]][end[1]]);
+			auxEndPiece.movements--;
+		}
+		switch (slots[start[0]][start[1]].symbol)
+		{
+		case PiecesChar::charP1_king:
+			int distance[2];
+			distance[0] = abs(start[0] - end[0]);
+			distance[1] = abs(start[1] - end[1]);
+			if (((distance[0] == 0) || (distance[0] == 1)) &&
+				((distance[1] == 0) || (distance[1] == 1)))
+			{
+				valid = !isMenaced(end, slots[start[0]][start[1]].player);
+				if (valid)
+				{
+					if (slots[end[0]][end[1]].isFree)
+						move(start, end);
+					else
+						eat(start, end);
+				}
+			}
+			break;
+		case PiecesChar::charP1_queen:
+			valid = (goDiagonal(start, end) || goStraight(start, end));
+			break;
+		case PiecesChar::charP1_rook:
+			valid = goStraight(start, end);
+			break;
+		case PiecesChar::charP1_knight:
+			valid = jump(start, end);
+			break;
+		case PiecesChar::charP1_bishop:
+			valid = goDiagonal(start, end);
+			break;
+		case PiecesChar::charP1_pawn:
+			valid = validPawnMovement(start, end);
+			break;
+
+		default:
+			break;
+		}
+		if (player == Player::P1)
+		{
+			if (isMenaced(P1_kingBearings, Player::P1) == true)
+			{
+				//restore the movement
+				if (wasFree)
+				{
+					move(end, start);
+					slots[start[0]][start[1]].movements--;
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				else
+				{
+					P1_score -= points;
+					slots[start[0]][start[1]].movements--;
+					move(end, start);
+					slots[end[0]][end[1]].setPiece(auxEndPiece);
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				return false;
+			}
+		}
+		else
+		{
+			if (isMenaced(P2_kingBearings, Player::P2) == true)
+			{
+				if (wasFree)
+				{
+					move(end, start);
+					slots[start[0]][start[1]].movements--;
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				else
+				{
+					P1_score -= points;
+					slots[start[0]][start[1]].movements--;
+					move(end, start);
+					slots[end[0]][end[1]].setPiece(auxEndPiece);
+					slots[end[0]][end[1]].movements--;
+					std::cout << "Your king would be in Danger" << std::endl;
+				}
+				return false;
+			}
+		}
+		return valid;
+	}
 	bool piecePossibilities(int place[2]) // ONLY P1 need visual reference
 	{
 		cout << "piecePossibilities" << endl;
@@ -63,7 +608,7 @@ public:
 		{
 		case PiecesChar::charP1_king:
 			piecePossibilities = 0;
-			availableMovement;
+			availableMovement = availableKingMovement(place);
 			break;
 		case PiecesChar::charP1_queen:
 			piecePossibilities = 1;
@@ -98,6 +643,7 @@ public:
 			switch (piecePossibilities)
 			{
 			case 0:
+				// undrawKingDots(place);
 				break;
 			case 1:
 				undrawDiagonals(place);
@@ -126,7 +672,7 @@ public:
 	}
 	void show()
 	{
-	    clean_screan();
+		clean_screan();
 		// Letters, upper gameframe
 		cout << equatorBlank << meridianChar;
 		for (int i = 0; i < width; i++)
@@ -563,11 +1109,13 @@ private:
 	}
 	void initGameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces)
 	{
-		for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
-            }
-        }
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
+			}
+		}
 		int points;
 		for (int i = 0; i < nP1Pieces; i++)
 		{
@@ -596,7 +1144,7 @@ private:
 				points = 0;
 				break;
 			}
-			slots[P1PiecesInit[i][0]][P1PiecesInit[i][1]] = Piece((char)P1PiecesInit[i][2], 0, 1, points);
+			slots[P1PiecesInit[i][0]][P1PiecesInit[i][1]] = Piece((char)P1PiecesInit[i][2], 0, Player::P1, points);
 		}
 		for (int i = 0; i < nP2Pieces; i++)
 		{
@@ -625,7 +1173,7 @@ private:
 				points = 0;
 				break;
 			}
-			slots[P2PiecesInit[i][0]][P2PiecesInit[i][1]] = Piece((char)P2PiecesInit[i][2], 0, 1, points);
+			slots[P2PiecesInit[i][0]][P2PiecesInit[i][1]] = Piece((char)P2PiecesInit[i][2], 0, Player::P2, points);
 		}
 	}
 };

@@ -1,7 +1,3 @@
-// #ifndef CHESS_UCSP_INTERFACE_H
-// #define CHESS_UCSP_INTERFACE_H
-// #endif
-
 #pragma once
 
 using namespace std;
@@ -106,13 +102,13 @@ public:
 		default:
 			break;
 		}
-
 	}
-	void init(){
-        char anything;
-        cout << "\t\tInput [anything] to continue:" << endl;
-        cout << "\t\t\t\t";
-        cin >> anything;
+	void init()
+	{
+		char anything;
+		cout << "\t\tInput [anything] to continue:" << endl;
+		cout << "\t\t\t\t";
+		cin >> anything;
 	}
 	~OnceAnnouncement()
 	{
