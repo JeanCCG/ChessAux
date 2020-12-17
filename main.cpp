@@ -16,7 +16,6 @@ int game(
 	std::cout << "Creating the gameboard." << std::endl;
 	int result = 0;
 	int movements = 0;
-	int difficulty = 2; //movement projection, predicted or calculation in the future
 	bool turn = true;
 	bool availableMovement = false;
 
@@ -163,7 +162,7 @@ int game(
                 }
 				int arrr[1000][5];
 				int arrrms;
-				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr, arrrms);
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
@@ -386,7 +385,7 @@ int main()
 	int height = 8; //altura
 	int result;
 
-	int P1PiecesInit[16][3] = {
+	/*int P1PiecesInit[16][3] = {
 		{7, 0, (int)PiecesChar::charP1_rook},
 		{7, 1, (int)PiecesChar::charP1_knight},
 		{7, 2, (int)PiecesChar::charP1_bishop},
@@ -419,17 +418,18 @@ int main()
 		{1, 4, (int)PiecesChar::charP2_pawn},
 		{1, 5, (int)PiecesChar::charP2_pawn},
 		{1, 6, (int)PiecesChar::charP2_pawn},
-		{1, 7, (int)PiecesChar::charP2_pawn}};
-    /*int P1PiecesInit[16][3] = {
-            {3, 1, (int)PiecesChar::charP1_bishop},
-            {4, 2, (int)PiecesChar::charP1_queen},
-            {4, 1, (int)PiecesChar::charP1_king},
+		{1, 7, (int)PiecesChar::charP2_pawn}};*/
+    int P1PiecesInit[16][3] = {
+            {7, 5, (int)PiecesChar::charP1_king},
+            {1, 0, (int)PiecesChar::charP1_rook},
+            {7, 3, (int)PiecesChar::charP1_rook},
+            {7, 6, (int)PiecesChar::charP1_pawn},
+            {6, 7, (int)PiecesChar::charP1_rook},
     };
     int P2PiecesInit[16][3] = {
-            {5, 7, (int)PiecesChar::charP2_rook},
-            {5, 6, (int)PiecesChar::charP2_bishop},
-            {7, 4, (int)PiecesChar::charP2_king},
-    };*/
+            {0, 4, (int)PiecesChar::charP2_king},
+            {0, 7, (int)PiecesChar::charP2_rook},
+    };
 
 
 	//* INTERFACE
@@ -462,7 +462,7 @@ int main()
 			std::cin >> game_mode;
 
 			std::cout << "\nLet's play!" << std::endl;
-			result = game(P1PiecesInit, 16, P2PiecesInit, 16, 8, 8, game_mode);
+			result = game(P1PiecesInit, 5, P2PiecesInit, 2, 8, 8, game_mode);
 			if (result == 0)
 			{
 				std::cout << " 🥳 P1 won the game!" << std::endl;
