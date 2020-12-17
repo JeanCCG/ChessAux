@@ -1,5 +1,7 @@
 #include <iostream>
 #include "Librerias/gameboard/gameboard.h"
+#include "Librerias/interface/interface.h"
+#include "Librerias/IA/IA.h"
 
 using namespace std;
 

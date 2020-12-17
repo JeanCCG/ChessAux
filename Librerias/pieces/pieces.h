@@ -1,59 +1,27 @@
 #pragma once
+
 #include "../enums/enums.h"
 
-int P1_score = 0;
-int P2_score = 0;
-bool P1_isChecked = false;
-bool P2_isChecked = false;
-int P1_kingBearings[2];
-int P2_kingBearings[2];
 
-class Piece
-{
+
+class Piece {
 public:
-	char symbol;
-	bool isFree;
-	bool player;
-	int points;
-	int movements = 0;
+    char symbol;
+    bool isFree;
+    bool player;
+    int points;
+    int movements = 0;
 
-	Piece() {}
-	// Piece(char, bool, bool, int);
-	Piece(char iSymbol, bool iIsFree, bool iPlayer, int iPoints)
-	{
-		symbol = iSymbol;
-		isFree = iIsFree;
-		if (isFree == false)
-			player = iPlayer; // P1 = TRUE-+
-		points = iPoints;
-	}
-	// void moveTo(int[2]);
-	void moveTo(int place[2])
-	{
-		movements++;
-	}
-	// void setFree();
-	void setFree()
-	{
-		symbol = PiecesChar::char_free;
-		isFree = true;
-		points = 0;
-		movements = 0;
-		// playerMenacing++;
-	}
-	void setPiece(Piece piece)
-	{
-		symbol = piece.symbol;
-		isFree = false;
-		player = piece.player;
-		points = piece.points;
-		movements += piece.movements + 1;
-	}
+    Piece();
 
-	// void setPiece(Piece);
-	// bool inCheck();
-	// void eat(Piece);
-	// void capture(Piece);
-protected:
-private:
+    // Piece(char, bool, bool, int);
+    Piece(char, bool, bool, int);
+
+    // void moveTo(int[2]);
+    void moveTo(int [2]);
+
+    // void setFree();
+    void setFree();
+
+    void setPiece(Piece);
 };
