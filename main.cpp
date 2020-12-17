@@ -20,6 +20,7 @@ int game(
 
 	// construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
+
 	std::cout << "Gameboard created!" << std::endl;
 	//* GAME
 
@@ -35,7 +36,7 @@ int game(
 	bool validMovement = false;
 	bool player;
 	///IA
-	char slotes[26][26];
+	char slotes[8][8];
 
 	if (mode == 1) //* |-->->> P1 vs BOT <<-<--|
 	{
@@ -142,6 +143,22 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
+				char debugslot[8][8]= {
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {' ',' ',' ','P',' ',' ',' ',' '},
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {'P','A',' ',' ',' ',' ',' ',' '},
+                        {' ','R','Q',' ',' ',' ',' ','t'},
+                        {' ',' ',' ',' ',' ',' ','a',' '},
+                        {' ',' ',' ',' ',' ',' ',' ',' '},
+                        {' ',' ',' ',' ','r',' ',' ',' '},
+				};
+                for (int i = 0; i < 8; ++i) {
+                    for (int j = 0; j < 8; ++j) {
+                        cout<<debugslot[i][j]<<" ";
+                    }
+                    cout<<endl;
+                }
 				int arrr[1000][5];
 				int arrrms;
 				int numeval = minimax(slotes, 3, true, 0, arrr, arrrms);
@@ -156,8 +173,25 @@ int game(
 					}
 				}
 				std::cout << "\nMinimax : " << numeval << std::endl;
-				std::cout << "\nMOVE START " << start[0] << " " << start[1] << std::endl;
-				std::cout << "\nMOVE END " << end[0] << " " << end[1] << std::endl;
+				std::cout << "\nMOVE START " << start[0] << " " << start[1] <<" piece: " << gameboard.slots[start[0]][start[1]].symbol<<std::endl;
+				std::cout << "\nMOVE END " << end[0] << " " << end[1] <<" piece: " << gameboard.slots[end[0]][end[1]].symbol<<std::endl;
+                char tempo;
+                tempo=gameboard.slots[start[0]][start[1]].symbol;
+                debugslot[start[0]][start[1]]=debugslot[end[0]][end[1]];
+                debugslot[end[0]][end[1]]=tempo;
+                std::cout << "tempo: " << tempo << std::endl;
+                for (int i = 0; i < 8; ++i) {
+                    for (int j = 0; j < 8; ++j) {
+                        cout<<debugslot[i][j]<<" ";
+                    }
+                    cout<<endl;
+                }
+                if (numeval < (-90)){
+                    result = 0;
+                    gameboard.show();
+                    break;
+                }
+
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
 					gameboard.move(start, end);
@@ -166,6 +200,11 @@ int game(
 				{
 					gameboard.eat(start, end);
 				}
+                if (numeval > 90){
+                    result = 1;
+                    gameboard.show();
+                    break;
+                }
 				turn = !turn;
 				movements++;
 			}
@@ -362,9 +401,6 @@ int main()
 		{6, 5, (int)PiecesChar::charP1_pawn},
 		{6, 6, (int)PiecesChar::charP1_pawn},
 		{6, 7, (int)PiecesChar::charP1_pawn}};
-	P1_kingBearings[0] = 7;
-	P1_kingBearings[1] = 4;
-
 	int P2PiecesInit[16][3] = {
 		{0, 0, (int)PiecesChar::charP2_rook},
 		{0, 1, (int)PiecesChar::charP2_knight},
@@ -382,8 +418,17 @@ int main()
 		{1, 5, (int)PiecesChar::charP2_pawn},
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};
-	P2_kingBearings[0] = 0;
-	P2_kingBearings[1] = 4;
+    /*int P1PiecesInit[16][3] = {
+            {3, 1, (int)PiecesChar::charP1_bishop},
+            {4, 2, (int)PiecesChar::charP1_queen},
+            {4, 1, (int)PiecesChar::charP1_king},
+    };
+    int P2PiecesInit[16][3] = {
+            {5, 7, (int)PiecesChar::charP2_rook},
+            {5, 6, (int)PiecesChar::charP2_bishop},
+            {7, 4, (int)PiecesChar::charP2_king},
+    };*/
+
 
 	//* INTERFACE
 	char command;
@@ -479,7 +524,6 @@ int main()
 					std::cout << std::endl;
 					std::cin >> sub_command;
 					cleanScreen(2);
-
 
 					sub_command = toupper(sub_command);
 
