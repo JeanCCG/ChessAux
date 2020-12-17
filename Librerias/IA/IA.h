@@ -10,6 +10,8 @@ using namespace std;
 int contadora=0, contador=0;
 bool availablepiece;
 bool availableeat;
+bool checkmate;
+bool check;
 char temp;
 int k, l;
 
@@ -99,6 +101,8 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                 int movesm;
                 switch (slots[i][j]){
                     case PiecesChar::charP2_king: {
+                        checkmate = true;
+                        check = false;
                         availablepiece = true;
                         for (int r = 0; r < 26; ++r)
                         {
@@ -686,7 +690,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
-
                         int movesking[8][2]={
                                 {i+1,j},
                                 {i+1,j+1},
@@ -702,6 +705,10 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             for (int n = 0; n < movesp1m; ++n) {
                                 if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
                                     valid_move_king=false;
+                                    break;
+                                }
+                                if((i==movesp1[n][0])&&(j==movesp1[n][1])){
+                                    check=true;
                                 }
                             }
                             if(valid_move_king){
@@ -709,8 +716,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[movesm][0] = movesking[m][0];
                                     moves[movesm][1] = movesking[m][1];
                                     movesm++;
+                                    checkmate=false;
                                 }
                             }
+                        }
+                        if ((check)&&(checkmate)){
+                            return -100;
                         }
                         break;
                     }
@@ -1180,6 +1191,8 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                 switch (slots[i][j]) {
                     case PiecesChar::charP1_king: {
                         availablepiece = true;
+                        check=false;
+                        checkmate=true;
                         for (int r = 0; r < 26; ++r)
                         {
                             for (int s = 0; s < 3; ++s)
@@ -1782,15 +1795,23 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             for (int n = 0; n < movesp1m; ++n) {
                                 if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
                                     valid_move_king=false;
+                                    break;
+                                }
+                                if((i==movesp1[n][0])&&(j==movesp1[n][1])){
+                                    check=true;
                                 }
                             }
                             if(valid_move_king){
-                                if(slots[movesking[m][0]][movesking[m][1]]==PiecesChar::char_free || (p1validpieces(slots[movesking[m][0]][movesking[m][1]]))) {
+                                if(slots[movesking[m][0]][movesking[m][1]]==PiecesChar::char_free || (p2validpieces(slots[movesking[m][0]][movesking[m][1]]))) {
                                     moves[movesm][0] = movesking[m][0];
                                     moves[movesm][1] = movesking[m][1];
                                     movesm++;
+                                    checkmate=false;
                                 }
                             }
+                        }
+                        if ((check)&&(checkmate)){
+                            return 100;
                         }
                         break;
                     }
