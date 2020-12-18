@@ -10,4 +10,4 @@ int max(int ,int );
 int min(int ,int );
 int p2validpieces(char );
 int p1validpieces(char );
-int minimax(char [8][8], int , bool , int ,int [1000][5],int& );
+int minimax(char [8][8], int , bool , int ,int [5]);

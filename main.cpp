@@ -150,20 +150,14 @@ int game(
 					}
 				}
 
-				int arrr[1000][5];
+				int arrr[5];
 				int arrrms;
-				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr);
+                end[0] = arrr[0];
+                end[1] = arrr[1];
+                start[0] = arrr[3];
+                start[1] = arrr[4];
 
-				for (int i = 0; i < arrrms; ++i)
-				{
-					if (arrr[i][2] == numeval)
-					{
-						end[0] = arrr[i][0];
-						end[1] = arrr[i][1];
-						start[0] = arrr[i][3];
-						start[1] = arrr[i][4];
-					}
-				}
                 /*if(movements==1){
                     start[0] = 1;
                     start[1] = 4;
