@@ -670,7 +670,7 @@ bool Gameboard::validMovement(int start[2], int end[2])
 			{
 				if ((slots[start[0]][0].movements == 0) && (start[1] < end[1])) // KingsideCastling
 				{
-					std::cout << " DO KingSide CASTLING" << std::endl;
+					// std::cout << " DO KingSide CASTLING" << std::endl;
 					P1_kingBearings[0] = end[0];
 					P1_kingBearings[1] = end[1];
 					startRook[1] = width - 1;
@@ -687,7 +687,7 @@ bool Gameboard::validMovement(int start[2], int end[2])
 				{
 					P1_kingBearings[0] = end[0];
 					P1_kingBearings[1] = end[1];
-					std::cout << " DO QueenSide CASTLING" << std::endl;
+					// std::cout << " DO QueenSide CASTLING" << std::endl;
 					startRook[1] = 0;
 					endRook[1] = start[1] - 1;
 					move(start, end);
