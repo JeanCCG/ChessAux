@@ -19,8 +19,8 @@ int game(
 	int difficulty = 2; //movement projection, predicted or calculation in the future
 	bool turn = true;
 	bool availableMovement = false;
-    int start_aux[2];
-    int end_aux[2];
+	int start_aux[2];
+	int end_aux[2];
 	// construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
 
@@ -49,11 +49,10 @@ int game(
 			gameboard.show();
 			if (turn) //* P1 turn
 			{
-                 
+
 				// select a piece
 				while (true)
 				{
-                    cout<< "before Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 					std::cout << "Input the piece's letter and number:" << endl;
 					std::cin >> startLetter >> start[0]; // a <= startLetter <= z  && 1 <= start[0] <= 8
 					start[0]--;							 // 0 <= end[0] <= 7
@@ -67,7 +66,6 @@ int game(
 						if ((!isFree) && (player == Player::P1))
 						{
 							availableMovement = gameboard.piecePossibilities(start);
-                            cout<< "avalablemovement Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							if (availableMovement)
 							{
 								// if (P1_isChecked)
@@ -90,7 +88,6 @@ int game(
 					else
 						std::cout << "Imposible position." << std::endl;
 				}
-                cout<< "after selected position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 				while (true)
 				{
 					std::cout << "Input the end position letter and number:" << std::endl;
@@ -104,9 +101,7 @@ int game(
 						if ((gameboard.slots[end[0]][end[1]].isFree) ||
 							(gameboard.slots[end[0]][end[1]].player != Player::P1))
 						{
-                            cout<< "before valid end position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							validMovement = gameboard.validMovement(start, end);
-                            cout<< "after valid end position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							if (validMovement)
 							{
 								// if (P1_isChecked)
@@ -142,11 +137,10 @@ int game(
 				gameboard.show();
 				turn = !turn;
 				movements++;
-                 
 			}
 			else //* BOT turn
 			{
-                 
+
 				for (int i = 0; i < 8; ++i)
 				{
 					for (int j = 0; j < 8; ++j)
@@ -169,15 +163,15 @@ int game(
 						start[1] = arrr[i][4];
 					}
 				}
-                /*if(movements==1){
+				/*if(movements==1){
                     start[0] = 1;
                     start[1] = 4;
                     end[0] = 3;
                     end[1] = 4;
                 }*/
-				std::cout << "nMinimax : " << numeval << std::endl;
-				std::cout << "nMOVE START " << start[0] << " " << start[1] << " piece: " << gameboard.slots[start[0]][start[1]].symbol << std::endl;
-				std::cout << "nMOVE END " << end[0] << " " << end[1] << " piece: " << gameboard.slots[end[0]][end[1]].symbol << std::endl;
+				std::cout << "Minimax : " << numeval << std::endl;
+				std::cout << "MOVE START " << start[0] << " " << start[1] << " piece: " << gameboard.slots[start[0]][start[1]].symbol << std::endl;
+				std::cout << "MOVE END " << end[0] << " " << end[1] << " piece: " << gameboard.slots[end[0]][end[1]].symbol << std::endl;
 
 				if (numeval < (-90))
 				{
@@ -189,20 +183,22 @@ int game(
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
 					gameboard.move(start, end);
-                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==6)){
-                        start_aux[0]=0;
-                        start_aux[1]=7;
-                        end_aux[0]=0;
-                        end_aux[1]=5;
-                        gameboard.move(start_aux,end_aux);
-                    }
-                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==2)){
-                        start_aux[0]=0;
-                        start_aux[1]=0;
-                        end_aux[0]=0;
-                        end_aux[1]=3;
-                        gameboard.move(start_aux,end_aux);
-                    }
+					if ((gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP2_king) && (end[0] == 0) && (end[1] == 6))
+					{
+						start_aux[0] = 0;
+						start_aux[1] = 7;
+						end_aux[0] = 0;
+						end_aux[1] = 5;
+						gameboard.move(start_aux, end_aux);
+					}
+					if ((gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP2_king) && (end[0] == 0) && (end[1] == 2))
+					{
+						start_aux[0] = 0;
+						start_aux[1] = 0;
+						end_aux[0] = 0;
+						end_aux[1] = 3;
+						gameboard.move(start_aux, end_aux);
+					}
 				}
 				else
 				{
@@ -216,7 +212,7 @@ int game(
 				}
 				turn = !turn;
 				movements++;
-                 
+				title.init();
 			}
 		}
 	}
@@ -392,53 +388,58 @@ int main()
 	title.init();
 	int width = 8;	//ancho
 	int height = 8; //altura
+	int nP1Pieces = 16;
+	int nP2Pieces = 16;
 	int result;
 
-    int P1PiecesInit[16][3] = {
-            {7, 0, (int)PiecesChar::charP1_rook},
-            {7, 1, (int)PiecesChar::charP1_knight},
-            {7, 2, (int)PiecesChar::charP1_bishop},
-            {7, 3, (int)PiecesChar::charP1_queen},
-            {7, 4, (int)PiecesChar::charP1_king},
-            {7, 5, (int)PiecesChar::charP1_bishop},
-            {7, 6, (int)PiecesChar::charP1_knight},
-            {7, 7, (int)PiecesChar::charP1_rook},
-            {6, 0, (int)PiecesChar::charP1_pawn},
-            {6, 1, (int)PiecesChar::charP1_pawn},
-            {6, 2, (int)PiecesChar::charP1_pawn},
-            {6, 3, (int)PiecesChar::charP1_pawn},
-            {6, 4, (int)PiecesChar::charP1_pawn},
-            {6, 5, (int)PiecesChar::charP1_pawn},
-            {6, 6, (int)PiecesChar::charP1_pawn},
-            {6, 7, (int)PiecesChar::charP1_pawn}};
-    int P2PiecesInit[16][3] = {
-            {0, 0, (int)PiecesChar::charP2_rook},
-            {0, 1, (int)PiecesChar::charP2_knight},
-            {0, 2, (int)PiecesChar::charP2_bishop},
-            {0, 3, (int)PiecesChar::charP2_queen},
-            {0, 4, (int)PiecesChar::charP2_king},
-            {0, 5, (int)PiecesChar::charP2_bishop},
-            {0, 6, (int)PiecesChar::charP2_knight},
-            {0, 7, (int)PiecesChar::charP2_rook},
-            {1, 0, (int)PiecesChar::charP2_pawn},
-            {1, 1, (int)PiecesChar::charP2_pawn},
-            {1, 2, (int)PiecesChar::charP2_pawn},
-            {1, 3, (int)PiecesChar::charP2_pawn},
-            {1, 4, (int)PiecesChar::charP2_pawn},
-            {1, 5, (int)PiecesChar::charP2_pawn},
-            {1, 6, (int)PiecesChar::charP2_pawn},
-            {1, 7, (int)PiecesChar::charP2_pawn}};
-   /* int P1PiecesInit[16][3] = {
-            {3, 1, (int)PiecesChar::charP1_rook},
-            {4, 2, (int)PiecesChar::charP1_queen},
-            {4, 1, (int)PiecesChar::charP1_king},
-    };
-    int P2PiecesInit[16][3] = {
-            {5, 7, (int)PiecesChar::charP2_rook},
-            {5, 6, (int)PiecesChar::charP2_queen},
-            {7, 4, (int)PiecesChar::charP2_king},
-    };*/
+	int P1PiecesInit[16][3] = {
+		{7, 0, (int)PiecesChar::charP1_rook},
+		{7, 1, (int)PiecesChar::charP1_knight},
+		{7, 2, (int)PiecesChar::charP1_bishop},
+		{7, 3, (int)PiecesChar::charP1_queen},
+		{7, 4, (int)PiecesChar::charP1_king},
+		{7, 5, (int)PiecesChar::charP1_bishop},
+		{7, 6, (int)PiecesChar::charP1_knight},
+		{7, 7, (int)PiecesChar::charP1_rook},
+		{6, 0, (int)PiecesChar::charP1_pawn},
+		{6, 1, (int)PiecesChar::charP1_pawn},
+		{6, 2, (int)PiecesChar::charP1_pawn},
+		{6, 3, (int)PiecesChar::charP1_pawn},
+		{6, 4, (int)PiecesChar::charP1_pawn},
+		{6, 5, (int)PiecesChar::charP1_pawn},
+		{6, 6, (int)PiecesChar::charP1_pawn},
+		{6, 7, (int)PiecesChar::charP1_pawn}};
+	int P2PiecesInit[16][3] = {
+		{0, 0, (int)PiecesChar::charP2_rook},
+		{0, 1, (int)PiecesChar::charP2_knight},
+		{0, 2, (int)PiecesChar::charP2_bishop},
+		{0, 3, (int)PiecesChar::charP2_queen},
+		{0, 4, (int)PiecesChar::charP2_king},
+		{0, 5, (int)PiecesChar::charP2_bishop},
+		{0, 6, (int)PiecesChar::charP2_knight},
+		{0, 7, (int)PiecesChar::charP2_rook},
+		{1, 0, (int)PiecesChar::charP2_pawn},
+		{1, 1, (int)PiecesChar::charP2_pawn},
+		{1, 2, (int)PiecesChar::charP2_pawn},
+		{1, 3, (int)PiecesChar::charP2_pawn},
+		{1, 4, (int)PiecesChar::charP2_pawn},
+		{1, 5, (int)PiecesChar::charP2_pawn},
+		{1, 6, (int)PiecesChar::charP2_pawn},
+		{1, 7, (int)PiecesChar::charP2_pawn}};
 
+	/////////*
+	//* CASTLING
+	/////////*
+	// int nP1Pieces = 3;
+	// int nP2Pieces = 3;
+	// int P1PiecesInit[16][3] = {
+	// 	{7, 0, (int)PiecesChar::charP1_rook},
+	// 	{7, 4, (int)PiecesChar::charP1_king},
+	// 	{7, 7, (int)PiecesChar::charP1_rook}};
+	// int P2PiecesInit[16][3] = {
+	// 	{0, 0, (int)PiecesChar::charP2_rook},
+	// 	{0, 4, (int)PiecesChar::charP2_king},
+	// 	{0, 7, (int)PiecesChar::charP2_rook}};
 
 	//* INTERFACE
 	char command;
@@ -452,10 +453,10 @@ int main()
 	while (true)
 	{
 		clean_screan();
-		std::cout << "nWhat do you want to do now?" << std::endl;
-		std::cout << "t[P]lay" << std::endl;
-		std::cout << "t[Q]uit" << std::endl;
-		std::cout << "t[S]ettings (in progress)" << std::endl;
+		std::cout << "\nWhat do you want to do now?" << std::endl;
+		std::cout << "\t[P]lay" << std::endl;
+		std::cout << "\t[Q]uit" << std::endl;
+		std::cout << "\t[S]ettings (in progress)" << std::endl;
 		std::cout << std::endl;
 		std::cin >> command;
 		clean_screan();
@@ -464,20 +465,22 @@ int main()
 		switch (command)
 		{
 		case 'P':
-			std::cout << "nChoose a game mode (1 or 2)" << std::endl;
-			std::cout << "t1) P1 vs PC" << std::endl;
-			std::cout << "t2) P1 vs P2" << std::endl;
+			std::cout << "\nChoose a game mode (1 or 2)" << std::endl;
+			std::cout << "\t1) P1 vs PC" << std::endl;
+			std::cout << "\t2) P1 vs P2" << std::endl;
 			std::cin >> game_mode;
 
-			std::cout << "nLet's play!" << std::endl;
+			std::cout << "\nLet's play!" << std::endl;
 			result = game(P1PiecesInit, 16, P2PiecesInit, 16, 8, 8, game_mode);
 			if (result == 0)
 			{
-				std::cout << " 🥳 P1 won the game!" << std::endl;
+				std::cout << " \nP1 won the game!" << std::endl;
+				title.init();
 			}
 			else if (result == 1)
 			{
-				std::cout << " P2 won the game! 🥳" << std::endl;
+				std::cout << " \nP2 won the game! " << std::endl;
+				title.init();
 			}
 			else
 			{
@@ -486,7 +489,7 @@ int main()
 			break;
 
 		case 'Q':
-			std::cout << "nGood bye 😥" << std::endl;
+			std::cout << "\nGood bye 😥" << std::endl;
 			return 0;
 			break;
 		case 'S':
@@ -499,12 +502,12 @@ int main()
 
 			while (true)
 			{
-				std::cout << "nWhat do you want to modify?" << std::endl;
-				std::cout << "t[B]ack" << std::endl;
-				std::cout << "tP[1] settings" << std::endl;
-				std::cout << "tP[2] settings" << std::endl;
-				std::cout << "t[C]lear the gameboard" << std::endl;
-				std::cout << "t[G]ameboard settings" << std::endl;
+				std::cout << "\nWhat do you want to modify?" << std::endl;
+				std::cout << "\t[B]ack" << std::endl;
+				std::cout << "\tP[1] settings" << std::endl;
+				std::cout << "\tP[2] settings" << std::endl;
+				std::cout << "\t[C]lear the gameboard" << std::endl;
+				std::cout << "\t[G]ameboard settings" << std::endl;
 				// printf("t[S]how settingsn");
 				printf("t[S]how Gameboardn");
 				// printf("t[R]estart settingsn");
