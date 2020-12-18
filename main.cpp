@@ -18,7 +18,8 @@ int game(
 	int movements = 0;
 	bool turn = true;
 	bool availableMovement = false;
-
+    int start_aux[2];
+    int end_aux[2];
 	// construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
 
@@ -196,6 +197,20 @@ int game(
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
 					gameboard.move(start, end);
+                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==6)){
+                        start_aux[0]=0;
+                        start_aux[1]=7;
+                        end_aux[0]=0;
+                        end_aux[1]=5;
+                        gameboard.move(start_aux,end_aux);
+                    }
+                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==2)){
+                        start_aux[0]=0;
+                        start_aux[1]=0;
+                        end_aux[0]=0;
+                        end_aux[1]=3;
+                        gameboard.move(start_aux,end_aux);
+                    }
 				}
 				else
 				{
@@ -420,15 +435,14 @@ int main()
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};*/
     int P1PiecesInit[16][3] = {
-            {7, 5, (int)PiecesChar::charP1_king},
-            {1, 0, (int)PiecesChar::charP1_rook},
-            {7, 3, (int)PiecesChar::charP1_rook},
-            {7, 6, (int)PiecesChar::charP1_pawn},
-            {6, 7, (int)PiecesChar::charP1_rook},
+            {7, 4, (int)PiecesChar::charP1_king},
+            {7, 1, (int)PiecesChar::charP1_rook},
+            {7, 7, (int)PiecesChar::charP1_rook},
     };
     int P2PiecesInit[16][3] = {
             {0, 4, (int)PiecesChar::charP2_king},
             {0, 7, (int)PiecesChar::charP2_rook},
+            {0, 0, (int)PiecesChar::charP2_rook},
     };
 
 
@@ -462,7 +476,7 @@ int main()
 			std::cin >> game_mode;
 
 			std::cout << "\nLet's play!" << std::endl;
-			result = game(P1PiecesInit, 5, P2PiecesInit, 2, 8, 8, game_mode);
+			result = game(P1PiecesInit, 3, P2PiecesInit, 3, 8, 8, game_mode);
 			if (result == 0)
 			{
 				std::cout << " 🥳 P1 won the game!" << std::endl;

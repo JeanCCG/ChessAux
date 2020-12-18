@@ -4,8 +4,10 @@ using namespace std;
 int contador=0,contadora=0;
 bool availablepiece;
 bool availableeat;
-bool kingside_castling;
-bool queenside_castling;
+bool kingside_castling=false;
+bool queenside_castling=false;
+bool kingside_castling_P1=false;
+bool queenside_castling_P1=false;
 bool checkmate;
 bool check;
 char temp;
@@ -18,7 +20,6 @@ void copy(char m_ori[8][8], char m_copy[8][8]){
         }
     }
 }
-
 int max(int a,int b){
     if(a>b){
         return a;
@@ -91,8 +92,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         checkmate = true;
                         check = false;
                         availablepiece = true;
-                        kingside_castling=false ;
-                        queenside_castling=false;
                         for (int r = 0; r < 26; ++r)
                         {
                             for (int s = 0; s < 3; ++s)
@@ -679,32 +678,64 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
+                        int movesking_m=0;
+                        int movesking[8][2];
+                        if (i>0) {
+                            if (j>0){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j-1;
+                                movesking_m++;
+                            }
+                            if (j<7){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j+1;
+                                movesking_m++;
+                            }
+                            movesking[movesking_m][0]=i-1;
+                            movesking[movesking_m][1]=j;
+                            movesking_m++;
+                        }
+                        if (i<7) {
+                            if (j>0){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j-1;
+                                movesking_m++;
+                            }
+                            if (j<7){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j+1;
+                                movesking_m++;
+                            }
+                            movesking[movesking_m][0]=i+1;
+                            movesking[movesking_m][1]=j;
+                            movesking_m++;
+                        }
+                        if (j<7){
+                            movesking[movesking_m][0]=i;
+                            movesking[movesking_m][1]=j+1;
+                            movesking_m++;
+                        }
+                        if (j>0){
+                            movesking[movesking_m][0]=i;
+                            movesking[movesking_m][1]=j-1;
+                            movesking_m++;
+                        }
                         if((i == 0)&&(j==4)){
                             cout<<"if i==0 j==4"<<endl;
                             if((slots[0][7]==PiecesChar::charP2_rook)&&(slots[0][5]==PiecesChar::char_free)&&(slots[0][6]==PiecesChar::char_free)){
                                 cout<<"if slots free"<<endl;
-                                movesp1[movesp1m][0] = 0;
-                                movesp1[movesp1m][1] = 6;
-                                movesp1m++;
+                                movesking[movesking_m][0] = 0;
+                                movesking[movesking_m][1] = 6;
+                                movesking_m++;
                                 kingside_castling=true;
                             }
                             if((slots[0][0]==PiecesChar::charP2_rook)&&(slots[0][3]==PiecesChar::char_free)&&(slots[0][2]==PiecesChar::char_free)&&(slots[0][1]==PiecesChar::char_free)){
-                                movesp1[movesp1m][0] = 0;
-                                movesp1[movesp1m][1] = 2;
-                                movesp1m++;
-
+                                movesking[movesking_m][0] = 0;
+                                movesking[movesking_m][1] = 2;
+                                movesking_m++;
                                 queenside_castling=true;
                             }
                         }
-                        int movesking[8][2]={
-                                {i+1,j},
-                                {i+1,j+1},
-                                {i,j+1},
-                                {i-1,j},
-                                {i-1,j-1},
-                                {i,j-1},
-                                {i+1,j-1},
-                                {i-1,j+1}};
                         bool valid_move_king;
                         for (int m = 0; m < 8; ++m) {
                             valid_move_king=true;
@@ -1184,6 +1215,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 slotscopy[i][j]=slots[i][j];
                             }
                         }
+                        cout<<"kingside_castling: "<<kingside_castling<<"move :"<<moves[p][0]<<moves[p][1]<<endl;
                         if((slots[i][j]==PiecesChar::charP2_king)&&(kingside_castling)&&(moves[p][0]==0)&&(moves[p][1]==6)){
                             slotscopy[0][7]=PiecesChar::char_free;
                             slotscopy[0][5]=PiecesChar::charP2_rook;
@@ -1240,8 +1272,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         availablepiece = true;
                         check=false;
                         checkmate=true;
-                        kingside_castling=false;
-                        queenside_castling=false;
                         for (int r = 0; r < 26; ++r)
                         {
                             for (int s = 0; s < 3; ++s)
@@ -1828,30 +1858,62 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
+                        int movesking_m=0;
+                        int movesking[8][2];
+                        if (i>0) {
+                            if (j>0){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j-1;
+                                movesking_m++;
+                            }
+                            if (j<7){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j+1;
+                                movesking_m++;
+                            }
+                            movesking[movesking_m][0]=i-1;
+                            movesking[movesking_m][1]=j;
+                            movesking_m++;
+                        }
+                        if (i<7) {
+                            if (j>0){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j-1;
+                                movesking_m++;
+                            }
+                            if (j<7){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j+1;
+                                movesking_m++;
+                            }
+                            movesking[movesking_m][0]=i+1;
+                            movesking[movesking_m][1]=j;
+                            movesking_m++;
+                        }
+                        if (j<7){
+                            movesking[movesking_m][0]=i;
+                            movesking[movesking_m][1]=j+1;
+                            movesking_m++;
+                        }
+                        if (j>0){
+                            movesking[movesking_m][0]=i;
+                            movesking[movesking_m][1]=j-1;
+                            movesking_m++;
+                        }
                         if((i == 7)&&(j==4)){
                             if((slots[7][7]==PiecesChar::charP1_rook)&&(slots[7][5]==PiecesChar::char_free)&&(slots[7][6]==PiecesChar::char_free)){
-                                movesp1[movesp1m][0] = 7;
-                                movesp1[movesp1m][1] = 6;
-                                movesp1m++;
-                                kingside_castling=true;
+                                movesking[movesking_m][0]=7;
+                                movesking[movesking_m][1]=6;
+                                movesking_m++;
+                                kingside_castling_P1=true;
                             }
                             if((slots[7][0]==PiecesChar::charP1_rook)&&(slots[7][3]==PiecesChar::char_free)&&(slots[7][2]==PiecesChar::char_free)&&(slots[7][1]==PiecesChar::char_free)){
-                                movesp1[movesp1m][0] = 7;
-                                movesp1[movesp1m][1] = 2;
-                                movesp1m++;
-
-                                queenside_castling=true;
+                                movesking[movesking_m][0]=7;
+                                movesking[movesking_m][1]=2;
+                                movesking_m++;
+                                queenside_castling_P1=true;
                             }
                         }
-                        int movesking[8][2]={
-                                {i+1,j},
-                                {i+1,j+1},
-                                {i,j+1},
-                                {i-1,j},
-                                {i-1,j-1},
-                                {i,j-1},
-                                {i+1,j-1},
-                                {i-1,j+1}};
                         bool valid_move_king;
                         for (int m = 0; m < 8; ++m) {
                             valid_move_king=true;
@@ -1860,14 +1922,14 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     valid_move_king=false;
                                     break;
                                 }
-                                if ((kingside_castling)&&(movesp1[n][0]==7)&&(movesp1[n][1]==5)){
+                                if ((kingside_castling_P1)&&(movesp1[n][0]==7)&&(movesp1[n][1]==5)){
                                     valid_move_king=false;
-                                    kingside_castling=false;
+                                    kingside_castling_P1=false;
                                     break;
                                 }
-                                if ((queenside_castling)&&(movesp1[n][0]==7)&&(movesp1[n][1]==3)){
+                                if ((queenside_castling_P1)&&(movesp1[n][0]==7)&&(movesp1[n][1]==3)){
                                     valid_move_king=false;
-                                    queenside_castling=false;
+                                    queenside_castling_P1=false;
                                     break;
                                 }
                                 if((i==movesp1[n][0])&&(j==movesp1[n][1])){
@@ -2332,12 +2394,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         //DEBUGGING---------------------
                         copy(slots,slotscopy);
-                        if((slots[i][j]==PiecesChar::charP1_king)&&(kingside_castling)&&(moves[p][0]==7)&&(moves[p][1]==6)){
+                        if((slots[i][j]==PiecesChar::charP1_king)&&(kingside_castling_P1)&&(moves[p][0]==7)&&(moves[p][1]==6)){
                             slotscopy[7][7]=PiecesChar::char_free;
                             slotscopy[7][5]=PiecesChar::charP1_rook;
                         }
-                        if((slots[i][j]==PiecesChar::charP1_king)&&(kingside_castling)&&(moves[p][0]==7)&&(moves[p][1]==2)){
-                            slotscopy[7][7]=PiecesChar::char_free;
+                        if((slots[i][j]==PiecesChar::charP1_king)&&(kingside_castling_P1)&&(moves[p][0]==7)&&(moves[p][1]==2)){
+                            slotscopy[7][0]=PiecesChar::char_free;
                             slotscopy[7][3]=PiecesChar::charP1_rook;
                         }
                         temp = slotscopy[i][j];
