@@ -181,16 +181,13 @@ bool Gameboard::jump(int start[2], int end[2]) // Salto de caballo
 
 bool Gameboard::isMenaced(int place[2], bool player)
 {
-	std::cout << place[0] << " , " << place[1] << std::endl;
-	// std::cout << player << std::endl;
-	char bishop;
-	char queen;
-	char rook;
-	char knight;
-	char pawn;
+	std::cout << "|->" << place[0] << " , " << place[1] << "<-|" << std::endl;
+	char bishop, queen, rook, knight, pawn, king;
+	bool isMyKingInMiddle = false;
 	// int pawnDirection;
 	if (player == Player::P1)
 	{
+		king = PiecesChar::charP1_king;
 		bishop = PiecesChar::charP2_bishop;
 		queen = PiecesChar::charP2_queen;
 		rook = PiecesChar::charP2_rook;
@@ -200,6 +197,7 @@ bool Gameboard::isMenaced(int place[2], bool player)
 	}
 	else
 	{
+		king = PiecesChar::charP2_king;
 		pawn = PiecesChar::charP1_bishop;
 		bishop = PiecesChar::charP1_bishop;
 		queen = PiecesChar::charP1_queen;
@@ -207,54 +205,118 @@ bool Gameboard::isMenaced(int place[2], bool player)
 		knight = PiecesChar::charP1_knight;
 		// pawnDirection = -1;
 	}
-	/////////////*
+	////////////*
 	//* straight
 	////////////*
 	std::cout << "rook menacing?" << std::endl;
 	//(+x) line
+	std::cout << "(+x) line" << std::endl;
 	for (int j = place[1] + 1; j < width; j++)
+	{
+		std::cout << "slots[" << place[0] << "][" << j << "] : ";
 		if (slots[place[0]][j].isFree == false)
 		{
+			std::cout << "is NOT Free : " << slots[place[0]][j].symbol << std::endl;
+			std::cout << slots[place[0]][j].player << " !players= " << player << std::endl;
 			if ((slots[place[0]][j].player != player) &&
 				((slots[place[0]][j].symbol == rook) ||
 				 (slots[place[0]][j].symbol == queen)))
 				return true;
-			else
-				break;
+			else if ((slots[place[0]][j].player == player))
+			{
+				if (slots[place[0]][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
+		else
+			std::cout << "isFree : " << slots[place[0]][j].symbol << std::endl;
+	}
 	//(+y) line
+	std::cout << "(+y) line" << std::endl;
 	for (int i = place[0] - 1; - 1 < i; i--)
+	{
+		std::cout << "slots[" << i << "][" << place[1] << "] : ";
 		if (slots[i][place[1]].isFree == false)
 		{
+			std::cout << "is NOT Free" << std::endl;
+			std::cout << slots[i][place[1]].player << " !players= " << player << std::endl;
 			if ((slots[i][place[1]].player != player) &&
 				((slots[i][place[1]].symbol == rook) ||
 				 (slots[i][place[1]].symbol == queen)))
 				return true;
-			else
-				break;
+			else if ((slots[i][place[1]].player == player))
+			{
+				if (slots[i][place[1]].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
+		else
+			std::cout << "isFree : " << slots[i][place[1]].symbol << std::endl;
+	}
 	//(-x) line
+	std::cout << "(-x) line" << std::endl;
 	for (int j = place[1] - 1; - 1 < j; j--)
+	{
+		std::cout << "slots[" << place[0] << "][" << j << "] : ";
 		if (slots[place[0]][j].isFree == false)
 		{
+			std::cout << "is NOT Free" << std::endl;
+			std::cout << slots[place[0]][j].player << " !players= " << player << std::endl;
 			if ((slots[place[0]][j].player != player) &&
 				((slots[place[0]][j].symbol == rook) ||
 				 (slots[place[0]][j].symbol == queen)))
 				return true;
-			else
-				break;
+			else if ((slots[place[0]][j].player == player))
+			{
+				if (slots[place[0]][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
+		else
+			std::cout << "isFree : " << slots[place[0]][j].symbol << std::endl;
+	}
 	//(-y) line
+	std::cout << "(-y) line" << std::endl;
 	for (int i = place[0] + 1; i < height; i++)
+	{
+		std::cout << "slots[" << i << "][" << place[1] << "] : ";
 		if (slots[i][place[1]].isFree == false)
 		{
+			std::cout << "is NOT Free" << std::endl;
+			std::cout << slots[i][place[1]].player << " !players= " << player << std::endl;
 			if ((slots[i][place[1]].player != player) &&
 				((slots[i][place[1]].symbol == rook) ||
 				 (slots[i][place[1]].symbol == queen)))
 				return true;
-			else
-				break;
+			else if ((slots[i][place[1]].player == player))
+			{
+				if (slots[i][place[1]].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
+		else
+			std::cout << "isFree : " << slots[i][place[1]].symbol << std::endl;
+	}
 	////////////*
 	//* Diagonal
 	////////////*
@@ -287,7 +349,15 @@ bool Gameboard::isMenaced(int place[2], bool player)
 				 (slots[i][j].symbol == queen)))
 				return true;
 			else if ((slots[i][j].player == player))
-				break;
+			{
+				if (slots[i][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
 	//(-x;+y) diagonal
 	i = place[0] - 1;
@@ -300,7 +370,15 @@ bool Gameboard::isMenaced(int place[2], bool player)
 				 (slots[i][j].symbol == queen)))
 				return true;
 			else if ((slots[i][j].player == player))
-				break;
+			{
+				if (slots[i][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
 	//(-x;-y) diagonal
 	i = place[0] + 1;
@@ -313,7 +391,15 @@ bool Gameboard::isMenaced(int place[2], bool player)
 				 (slots[i][j].symbol == queen)))
 				return true;
 			else if ((slots[i][j].player == player))
-				break;
+			{
+				if (slots[i][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
 	//(+x;-y) diagonal
 	i = place[0] + 1;
@@ -326,7 +412,15 @@ bool Gameboard::isMenaced(int place[2], bool player)
 				 (slots[i][j].symbol == queen)))
 				return true;
 			else if ((slots[i][j].player == player))
-				break;
+			{
+				if (slots[i][j].symbol == king)
+				{
+					std::cout << "***KING exception***" << std::endl;
+					continue;
+				}
+				else
+					break;
+			}
 		}
 	////////////*
 	//* Jumps
@@ -348,7 +442,7 @@ bool Gameboard::isMenaced(int place[2], bool player)
 		return true;
 	else if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == knight))
 		return true;
-	std::cout << "is not menaced" << std::endl;
+	std::cout << "<--<--| IS NOT MENACED |-->-->" << std::endl;
 	return false;
 }
 
@@ -406,6 +500,10 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 					availableMovement = true;
 					break;
 				}
+			}
+			else
+			{
+				std::cout << "<--<--| IS MENACEEEEEEEEEEED |-->-->" << std::endl;
 			}
 		}
 	}
@@ -511,8 +609,7 @@ int Gameboard::validPawnMovement(int start[2], int end[2])
 	return valid;
 }
 
-bool Gameboard::
-	validMovement(int start[2], int end[2])
+bool Gameboard::validMovement(int start[2], int end[2])
 {
 	cout << "validMovement analysis" << endl;
 	bool player = (slots[start[0]][start[1]].player == Player::P1) ? Player::P1 : Player::P2;
@@ -544,6 +641,10 @@ bool Gameboard::
 					move(start, end);
 				else
 					eat(start, end);
+			}
+			else
+			{
+				std::cout << "<--<--| IS MENACEEEEEEEEEEED |-->-->" << std::endl;
 			}
 		}
 		break;
@@ -591,6 +692,10 @@ bool Gameboard::
 			P1_kingBearings[1] = start[1];
 			return false;
 		}
+		else
+		{
+			std::cout << "<--<--| IS MENACEEEEEEEEEEED |-->-->" << std::endl;
+		}
 	}
 	else
 	{
@@ -614,6 +719,10 @@ bool Gameboard::
 			}
 			return false;
 		}
+		else
+		{
+			std::cout << "<--<--| IS MENACEEEEEEEEEEED |-->-->" << std::endl;
+		}
 	}
 	return valid;
 }
@@ -627,8 +736,8 @@ void Gameboard::undrawKingDots(int kingBearings[2])
 	bool availableQueensideCastling = true;
 	bool availableKingsideCastling = true;
 
-	std::cout << "borders" << std::endl;
-	std::cout << inTheUpperBorder << inTheBottomBorder << inTheLeftBorder << inTheRightBorder << std::endl;
+	// std::cout << "borders" << std::endl;
+	// std::cout << inTheUpperBorder << inTheBottomBorder << inTheLeftBorder << inTheRightBorder << std::endl;
 
 	int end[2];
 	// int i = 0;
@@ -650,11 +759,7 @@ void Gameboard::undrawKingDots(int kingBearings[2])
 		{
 			end[1] = kingBearings[1] + (-1 + j);
 			if (slots[end[0]][end[1]].symbol == PiecesChar::char_dot)
-			{
-				std::cout << "*" << i << "-" << j << std::endl;
 				unDrawDot(end);
-			}
-			std::cout << "?" << i << "-" << j << std::endl;
 		}
 	}
 	// if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
