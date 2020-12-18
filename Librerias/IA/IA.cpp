@@ -1903,7 +1903,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                         }
                         if ((j<7)&&((slots[i][j+1] == PiecesChar::char_free)||(p1validpieces(slots[i][j+1])))){
-                            cout<<"valid king move"<<endl;
                             movesking[movesking_m][0]=i;
                             movesking[movesking_m][1]=j+1;
                             movesking_m++;

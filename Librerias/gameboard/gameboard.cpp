@@ -11,7 +11,7 @@ int P2_kingBearings[2];
 
 void clean_screan()
 {
-	//system("cls");
+	system("cls");
 	OnceAnnouncement title(5);
 }
 
