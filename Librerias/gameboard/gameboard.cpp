@@ -4,6 +4,15 @@
 
 using namespace std;
 
+/*** REPOSITORIO EN GITHUB
+ * https://github.com/JeanCCG/ChessAux
+ * Autores:
+ * Jean Carlo Gino Condori Gonzales
+ * Geraldo Mark Romero Guillén
+ * Gabriel Santiago Choque Mayta
+ * José Enrique Vilca Campana
+ */
+
 int P1_score = 0;
 int P2_score = 0;
 int P1_kingBearings[2];
