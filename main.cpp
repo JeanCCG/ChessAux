@@ -53,7 +53,6 @@ int game(
 				// select a piece
 				while (true)
 				{
-                    cout<< "before Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 					std::cout << "Input the piece's letter and number:" << endl;
 					std::cin >> startLetter >> start[0]; // a <= startLetter <= z  && 1 <= start[0] <= 8
 					start[0]--;							 // 0 <= end[0] <= 7
@@ -67,7 +66,6 @@ int game(
 						if ((!isFree) && (player == Player::P1))
 						{
 							availableMovement = gameboard.piecePossibilities(start);
-                            cout<< "avalablemovement Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							if (availableMovement)
 							{
 								// if (P1_isChecked)
@@ -90,7 +88,6 @@ int game(
 					else
 						std::cout << "Imposible position." << std::endl;
 				}
-                cout<< "after selected position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 				while (true)
 				{
 					std::cout << "Input the end position letter and number:" << std::endl;
@@ -104,9 +101,7 @@ int game(
 						if ((gameboard.slots[end[0]][end[1]].isFree) ||
 							(gameboard.slots[end[0]][end[1]].player != Player::P1))
 						{
-                            cout<< "before valid end position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							validMovement = gameboard.validMovement(start, end);
-                            cout<< "after valid end position Pieza clave: "<<gameboard.slots[3][0].symbol<<endl;
 							if (validMovement)
 							{
 								// if (P1_isChecked)
@@ -175,9 +170,9 @@ int game(
                     end[0] = 3;
                     end[1] = 4;
                 }*/
-				std::cout << "nMinimax : " << numeval << std::endl;
-				std::cout << "nMOVE START " << start[0] << " " << start[1] << " piece: " << gameboard.slots[start[0]][start[1]].symbol << std::endl;
-				std::cout << "nMOVE END " << end[0] << " " << end[1] << " piece: " << gameboard.slots[end[0]][end[1]].symbol << std::endl;
+				std::cout << "Minimax : " << numeval << std::endl;
+				std::cout << "MOVE START " << start[0] << " " << start[1] << " piece: " << gameboard.slots[start[0]][start[1]].symbol << std::endl;
+				std::cout << "MOVE END " << end[0] << " " << end[1] << " piece: " << gameboard.slots[end[0]][end[1]].symbol << std::endl;
 
 				if (numeval < (-90))
 				{
@@ -216,7 +211,7 @@ int game(
 				}
 				turn = !turn;
 				movements++;
-                 
+				title.init();
 			}
 		}
 	}
@@ -369,6 +364,7 @@ int game(
 				gameboard.show();
 				turn = !turn;
 				movements++;
+
 			}
 		}
 	}
@@ -452,10 +448,10 @@ int main()
 	while (true)
 	{
 		clean_screan();
-		std::cout << "nWhat do you want to do now?" << std::endl;
-		std::cout << "t[P]lay" << std::endl;
-		std::cout << "t[Q]uit" << std::endl;
-		std::cout << "t[S]ettings (in progress)" << std::endl;
+		std::cout << "\nWhat do you want to do now?" << std::endl;
+		std::cout << "\t[P]lay" << std::endl;
+		std::cout << "\t[Q]uit" << std::endl;
+		std::cout << "\t[S]ettings (in progress)" << std::endl;
 		std::cout << std::endl;
 		std::cin >> command;
 		clean_screan();
@@ -464,20 +460,22 @@ int main()
 		switch (command)
 		{
 		case 'P':
-			std::cout << "nChoose a game mode (1 or 2)" << std::endl;
-			std::cout << "t1) P1 vs PC" << std::endl;
-			std::cout << "t2) P1 vs P2" << std::endl;
+			std::cout << "\nChoose a game mode (1 or 2)" << std::endl;
+			std::cout << "\t1) P1 vs PC" << std::endl;
+			std::cout << "\t2) P1 vs P2" << std::endl;
 			std::cin >> game_mode;
 
-			std::cout << "nLet's play!" << std::endl;
+			std::cout << "\nLet's play!" << std::endl;
 			result = game(P1PiecesInit, 16, P2PiecesInit, 16, 8, 8, game_mode);
 			if (result == 0)
 			{
-				std::cout << " 🥳 P1 won the game!" << std::endl;
+				std::cout << " \nP1 won the game!" << std::endl;
+                title.init();
 			}
 			else if (result == 1)
 			{
-				std::cout << " P2 won the game! 🥳" << std::endl;
+				std::cout << " \nP2 won the game! " << std::endl;
+                title.init();
 			}
 			else
 			{
@@ -486,7 +484,7 @@ int main()
 			break;
 
 		case 'Q':
-			std::cout << "nGood bye 😥" << std::endl;
+			std::cout << "\nGood bye 😥" << std::endl;
 			return 0;
 			break;
 		case 'S':
@@ -499,12 +497,12 @@ int main()
 
 			while (true)
 			{
-				std::cout << "nWhat do you want to modify?" << std::endl;
-				std::cout << "t[B]ack" << std::endl;
-				std::cout << "tP[1] settings" << std::endl;
-				std::cout << "tP[2] settings" << std::endl;
-				std::cout << "t[C]lear the gameboard" << std::endl;
-				std::cout << "t[G]ameboard settings" << std::endl;
+				std::cout << "\nWhat do you want to modify?" << std::endl;
+				std::cout << "\t[B]ack" << std::endl;
+				std::cout << "\tP[1] settings" << std::endl;
+				std::cout << "\tP[2] settings" << std::endl;
+				std::cout << "\t[C]lear the gameboard" << std::endl;
+				std::cout << "\t[G]ameboard settings" << std::endl;
 				// printf("t[S]how settingsn");
 				printf("t[S]how Gameboardn");
 				// printf("t[R]estart settingsn");
