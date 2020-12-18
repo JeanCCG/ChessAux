@@ -8,6 +8,8 @@ bool kingside_castling=false;
 bool queenside_castling=false;
 bool kingside_castling_P1=false;
 bool queenside_castling_P1=false;
+bool pawn_in_passing=true;
+bool movesvalidantpawn=false;
 bool checkmate;
 bool check;
 char temp;
@@ -770,7 +772,9 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
-
+                        if ((check)&&(checkmate)){
+                            return -100;
+                        }
                         break;
                     }
                     case PiecesChar::charP2_queen:
@@ -1177,7 +1181,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 100;
+                                    moves[p][2] = 20;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -1224,6 +1228,11 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             slotscopy[0][0]=PiecesChar::char_free;
                             slotscopy[0][3]=PiecesChar::charP2_rook;
                         }
+                        //Pawn in passing
+                        if((pawn_in_passing)&&(movesvalidantpawn)&&(slots[i][j]==PiecesChar::char_free)){
+                            slotscopy[i][j]=PiecesChar::char_free;
+                            slotscopy[i+1][j-1]=PiecesChar::charP2_pawn;
+                        }
                         temp = slotscopy[i][j];
                         slotscopy[i][j] = slotscopy[moves[p][0]][moves[p][1]];
                         slotscopy[moves[p][0]][moves[p][1]] = temp;
@@ -1238,13 +1247,8 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             cout<<endl;
                         }
                         //DEBUGGING---------------------*/
-                        int eval;
-                        if (check){
-                            continue;
-                        }else{
-                            eval=minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
-                            maxpt = max(eval, maxpt);
-                        }
+                        int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
+                        maxpt = max(eval, maxpt);
                         if(depth==Player::Difficulty){
                             arrr[arrrm][0]=moves[p][0];
                             arrr[arrrm][1]=moves[p][1];
@@ -1964,7 +1968,9 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         for (int m = 0; m < movesking_m; ++m) {
                             cout<<"["<<movesking[m][0]<<"]["<<movesking[m][1]<<"]"<<endl;
                         }*/
-
+                        if ((check)&&(checkmate)){
+                            return 100;
+                        }
                         break;
                     }
                     case PiecesChar::charP1_queen:
@@ -2379,7 +2385,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 100;
+                                    moves[p][2] = 20;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -2439,7 +2445,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                     /*cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;*/
                 }
             }
-
         }
         /*cout<<"End board"<<endl;
         cout<<"\nMainimo valor eval : "<<minpt<<endl;*/

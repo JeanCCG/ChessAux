@@ -394,27 +394,40 @@ int main()
 	int height = 8; //altura
 	int result;
 
-	int P1PiecesInit[16][3] = {
-		{7, 0, (int)PiecesChar::charP1_rook},
-		{5, 2, (int)PiecesChar::charP1_knight},
-		{7, 4, (int)PiecesChar::charP1_queen},
-        {3, 0, (int)PiecesChar::charP1_king},
-		{4, 0, (int)PiecesChar::charP1_pawn},
-		{5, 1, (int)PiecesChar::charP1_pawn},
-		{4, 4, (int)PiecesChar::charP1_pawn}};
-	int P2PiecesInit[16][3] = {
-		{0, 0, (int)PiecesChar::charP2_rook},
-		{0, 1, (int)PiecesChar::charP2_knight},
-		{6, 1, (int)PiecesChar::charP2_queen},
-		{1, 5, (int)PiecesChar::charP2_king},
-		{0, 5, (int)PiecesChar::charP2_bishop},
-		{0, 6, (int)PiecesChar::charP2_knight},
-		{0, 7, (int)PiecesChar::charP2_rook},
-		{1, 0, (int)PiecesChar::charP2_pawn},
-		{2, 2, (int)PiecesChar::charP2_pawn},
-		{2, 3, (int)PiecesChar::charP2_pawn},
-		{1, 6, (int)PiecesChar::charP2_pawn},
-		{2, 7, (int)PiecesChar::charP2_pawn}};
+    int P1PiecesInit[16][3] = {
+            {7, 0, (int)PiecesChar::charP1_rook},
+            {7, 1, (int)PiecesChar::charP1_knight},
+            {7, 2, (int)PiecesChar::charP1_bishop},
+            {7, 3, (int)PiecesChar::charP1_queen},
+            {7, 4, (int)PiecesChar::charP1_king},
+            {7, 5, (int)PiecesChar::charP1_bishop},
+            {7, 6, (int)PiecesChar::charP1_knight},
+            {7, 7, (int)PiecesChar::charP1_rook},
+            {6, 0, (int)PiecesChar::charP1_pawn},
+            {6, 1, (int)PiecesChar::charP1_pawn},
+            {6, 2, (int)PiecesChar::charP1_pawn},
+            {6, 3, (int)PiecesChar::charP1_pawn},
+            {6, 4, (int)PiecesChar::charP1_pawn},
+            {6, 5, (int)PiecesChar::charP1_pawn},
+            {6, 6, (int)PiecesChar::charP1_pawn},
+            {6, 7, (int)PiecesChar::charP1_pawn}};
+    int P2PiecesInit[16][3] = {
+            {0, 0, (int)PiecesChar::charP2_rook},
+            {0, 1, (int)PiecesChar::charP2_knight},
+            {0, 2, (int)PiecesChar::charP2_bishop},
+            {0, 3, (int)PiecesChar::charP2_queen},
+            {0, 4, (int)PiecesChar::charP2_king},
+            {0, 5, (int)PiecesChar::charP2_bishop},
+            {0, 6, (int)PiecesChar::charP2_knight},
+            {0, 7, (int)PiecesChar::charP2_rook},
+            {1, 0, (int)PiecesChar::charP2_pawn},
+            {1, 1, (int)PiecesChar::charP2_pawn},
+            {1, 2, (int)PiecesChar::charP2_pawn},
+            {1, 3, (int)PiecesChar::charP2_pawn},
+            {1, 4, (int)PiecesChar::charP2_pawn},
+            {1, 5, (int)PiecesChar::charP2_pawn},
+            {1, 6, (int)PiecesChar::charP2_pawn},
+            {1, 7, (int)PiecesChar::charP2_pawn}};
    /* int P1PiecesInit[16][3] = {
             {3, 1, (int)PiecesChar::charP1_rook},
             {4, 2, (int)PiecesChar::charP1_queen},
@@ -457,7 +470,7 @@ int main()
 			std::cin >> game_mode;
 
 			std::cout << "nLet's play!" << std::endl;
-			result = game(P1PiecesInit, 8, P2PiecesInit, 12, 8, 8, game_mode);
+			result = game(P1PiecesInit, 16, P2PiecesInit, 16, 8, 8, game_mode);
 			if (result == 0)
 			{
 				std::cout << " 🥳 P1 won the game!" << std::endl;
