@@ -36,7 +36,7 @@ enum PiecesChar
 
 enum Player
 {
-    Difficulty = 1,
+    Difficulty = 5,
 	P1 = true,
 	P2 = false
 };
