@@ -16,6 +16,7 @@ int game(
 	std::cout << "Creating the gameboard." << std::endl;
 	int result = 0;
 	int movements = 0;
+	int difficulty = 2; //movement projection, predicted or calculation in the future
 	bool turn = true;
 	bool availableMovement = false;
     int start_aux[2];
@@ -145,25 +146,11 @@ int game(
 						slotes[i][j] = gameboard.slots[i][j].symbol;
 					}
 				}
-				char debugslot[8][8]= {
-                        {' ',' ',' ',' ',' ',' ',' ',' '},
-                        {' ',' ',' ','P',' ',' ',' ',' '},
-                        {' ',' ',' ',' ',' ',' ',' ',' '},
-                        {'P','A',' ',' ',' ',' ',' ',' '},
-                        {' ','R','Q',' ',' ',' ',' ','t'},
-                        {' ',' ',' ',' ',' ',' ','a',' '},
-                        {' ',' ',' ',' ',' ',' ',' ',' '},
-                        {' ',' ',' ',' ','r',' ',' ',' '},
-				};
-                for (int i = 0; i < 8; ++i) {
-                    for (int j = 0; j < 8; ++j) {
-                        cout<<debugslot[i][j]<<" ";
-                    }
-                    cout<<endl;
-                }
+
 				int arrr[1000][5];
 				int arrrms;
 				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr, arrrms);
+
 				for (int i = 0; i < arrrms; ++i)
 				{
 					if (arrr[i][2] == numeval)
@@ -174,25 +161,22 @@ int game(
 						start[1] = arrr[i][4];
 					}
 				}
+                /*if(movements==1){
+                    start[0] = 1;
+                    start[1] = 4;
+                    end[0] = 3;
+                    end[1] = 4;
+                }*/
 				std::cout << "\nMinimax : " << numeval << std::endl;
-				std::cout << "\nMOVE START " << start[0] << " " << start[1] <<" piece: " << gameboard.slots[start[0]][start[1]].symbol<<std::endl;
-				std::cout << "\nMOVE END " << end[0] << " " << end[1] <<" piece: " << gameboard.slots[end[0]][end[1]].symbol<<std::endl;
-                char tempo;
-                tempo=gameboard.slots[start[0]][start[1]].symbol;
-                debugslot[start[0]][start[1]]=debugslot[end[0]][end[1]];
-                debugslot[end[0]][end[1]]=tempo;
-                std::cout << "tempo: " << tempo << std::endl;
-                for (int i = 0; i < 8; ++i) {
-                    for (int j = 0; j < 8; ++j) {
-                        cout<<debugslot[i][j]<<" ";
-                    }
-                    cout<<endl;
-                }
-                if (numeval < (-90)){
-                    result = 0;
-                    gameboard.show();
-                    break;
-                }
+				std::cout << "\nMOVE START " << start[0] << " " << start[1] << " piece: " << gameboard.slots[start[0]][start[1]].symbol << std::endl;
+				std::cout << "\nMOVE END " << end[0] << " " << end[1] << " piece: " << gameboard.slots[end[0]][end[1]].symbol << std::endl;
+
+				if (numeval < (-90))
+				{
+					result = 0;
+					gameboard.show();
+					break;
+				}
 
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
@@ -216,11 +200,12 @@ int game(
 				{
 					gameboard.eat(start, end);
 				}
-                if (numeval > 90){
-                    result = 1;
-                    gameboard.show();
-                    break;
-                }
+				if (numeval > 90)
+				{
+					result = 1;
+					gameboard.show();
+					break;
+				}
 				turn = !turn;
 				movements++;
 			}
@@ -400,28 +385,25 @@ int main()
 	int height = 8; //altura
 	int result;
 
-	/*int P1PiecesInit[16][3] = {
+	int P1PiecesInit[16][3] = {
 		{7, 0, (int)PiecesChar::charP1_rook},
 		{7, 1, (int)PiecesChar::charP1_knight},
-		{7, 2, (int)PiecesChar::charP1_bishop},
-		{7, 3, (int)PiecesChar::charP1_queen},
-		{7, 4, (int)PiecesChar::charP1_king},
+		{5, 4, (int)PiecesChar::charP1_queen},
+		{7, 2, (int)PiecesChar::charP1_king},
 		{7, 5, (int)PiecesChar::charP1_bishop},
 		{7, 6, (int)PiecesChar::charP1_knight},
 		{7, 7, (int)PiecesChar::charP1_rook},
 		{6, 0, (int)PiecesChar::charP1_pawn},
 		{6, 1, (int)PiecesChar::charP1_pawn},
-		{6, 2, (int)PiecesChar::charP1_pawn},
-		{6, 3, (int)PiecesChar::charP1_pawn},
-		{6, 4, (int)PiecesChar::charP1_pawn},
+		{5, 2, (int)PiecesChar::charP1_pawn},
+		{4, 4, (int)PiecesChar::charP1_pawn},
 		{6, 5, (int)PiecesChar::charP1_pawn},
-		{6, 6, (int)PiecesChar::charP1_pawn},
 		{6, 7, (int)PiecesChar::charP1_pawn}};
 	int P2PiecesInit[16][3] = {
 		{0, 0, (int)PiecesChar::charP2_rook},
 		{0, 1, (int)PiecesChar::charP2_knight},
 		{0, 2, (int)PiecesChar::charP2_bishop},
-		{0, 3, (int)PiecesChar::charP2_queen},
+		{4, 6, (int)PiecesChar::charP2_queen},
 		{0, 4, (int)PiecesChar::charP2_king},
 		{0, 5, (int)PiecesChar::charP2_bishop},
 		{0, 6, (int)PiecesChar::charP2_knight},
@@ -429,21 +411,20 @@ int main()
 		{1, 0, (int)PiecesChar::charP2_pawn},
 		{1, 1, (int)PiecesChar::charP2_pawn},
 		{1, 2, (int)PiecesChar::charP2_pawn},
-		{1, 3, (int)PiecesChar::charP2_pawn},
-		{1, 4, (int)PiecesChar::charP2_pawn},
+		{2, 3, (int)PiecesChar::charP2_pawn},
 		{1, 5, (int)PiecesChar::charP2_pawn},
 		{1, 6, (int)PiecesChar::charP2_pawn},
-		{1, 7, (int)PiecesChar::charP2_pawn}};*/
-    int P1PiecesInit[16][3] = {
-            {7, 4, (int)PiecesChar::charP1_king},
-            {7, 1, (int)PiecesChar::charP1_rook},
-            {7, 7, (int)PiecesChar::charP1_rook},
+		{1, 7, (int)PiecesChar::charP2_pawn}};
+   /* int P1PiecesInit[16][3] = {
+            {3, 1, (int)PiecesChar::charP1_rook},
+            {4, 2, (int)PiecesChar::charP1_queen},
+            {4, 1, (int)PiecesChar::charP1_king},
     };
     int P2PiecesInit[16][3] = {
-            {0, 4, (int)PiecesChar::charP2_king},
-            {0, 7, (int)PiecesChar::charP2_rook},
-            {0, 0, (int)PiecesChar::charP2_rook},
-    };
+            {5, 7, (int)PiecesChar::charP2_rook},
+            {5, 6, (int)PiecesChar::charP2_queen},
+            {7, 4, (int)PiecesChar::charP2_king},
+    };*/
 
 
 	//* INTERFACE
@@ -476,7 +457,7 @@ int main()
 			std::cin >> game_mode;
 
 			std::cout << "\nLet's play!" << std::endl;
-			result = game(P1PiecesInit, 3, P2PiecesInit, 3, 8, 8, game_mode);
+			result = game(P1PiecesInit, 13, P2PiecesInit, 15, 8, 8, game_mode);
 			if (result == 0)
 			{
 				std::cout << " 🥳 P1 won the game!" << std::endl;

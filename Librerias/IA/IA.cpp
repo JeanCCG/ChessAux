@@ -83,7 +83,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
         if(depth==3) {
             arrrm = 0;
         }
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i){
             for (int j = 0; j < 8; ++j) {
                 int moves[26][3];
                 int movesm;
@@ -663,7 +663,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                                     movesp1[movesp1m][1] = o + 1;
                                                     movesp1m++;
                                                 }
-                                                if ((p>0)&&(o>0)&&((p2validpieces(slots[p - 1][o - 1])) || (slots[p - 1][o + 1] == PiecesChar::char_free)))
+                                                if ((p>0)&&(o>0)&&((p2validpieces(slots[p - 1][o - 1])) || (slots[p - 1][o - 1] == PiecesChar::char_free)))
                                                 {
                                                     movesp1[movesp1m][0] = p - 1;
                                                     movesp1[movesp1m][1] = o - 1;
@@ -681,49 +681,51 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         int movesking_m=0;
                         int movesking[8][2];
                         if (i>0) {
-                            if (j>0){
+                            if ((j>0)&&((slots[i-1][j-1] == PiecesChar::char_free)||(p2validpieces(slots[i-1][j-1])))){
                                 movesking[movesking_m][0]=i-1;
                                 movesking[movesking_m][1]=j-1;
                                 movesking_m++;
                             }
-                            if (j<7){
+                            if ((j<7)&&((slots[i-1][j+1] == PiecesChar::char_free)||(p2validpieces(slots[i-1][j+1])))){
                                 movesking[movesking_m][0]=i-1;
                                 movesking[movesking_m][1]=j+1;
                                 movesking_m++;
                             }
-                            movesking[movesking_m][0]=i-1;
-                            movesking[movesking_m][1]=j;
-                            movesking_m++;
+                            if((slots[i-1][j] == PiecesChar::char_free)||(p2validpieces(slots[i-1][j]))){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j;
+                                movesking_m++;
+                            }
                         }
                         if (i<7) {
-                            if (j>0){
+                            if ((j>0)&&((slots[i+1][j-1] == PiecesChar::char_free)||(p2validpieces(slots[i+1][j-1])))){
                                 movesking[movesking_m][0]=i+1;
                                 movesking[movesking_m][1]=j-1;
                                 movesking_m++;
                             }
-                            if (j<7){
+                            if ((j<7)&&((slots[i+1][j+1] == PiecesChar::char_free)||(p2validpieces(slots[i+1][j+1])))){
                                 movesking[movesking_m][0]=i+1;
                                 movesking[movesking_m][1]=j+1;
                                 movesking_m++;
                             }
-                            movesking[movesking_m][0]=i+1;
-                            movesking[movesking_m][1]=j;
-                            movesking_m++;
+                            if((slots[i+1][j] == PiecesChar::char_free)||(p2validpieces(slots[i+1][j]))){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j;
+                                movesking_m++;
+                            }
                         }
-                        if (j<7){
+                        if ((j<7)&&((slots[i][j+1] == PiecesChar::char_free)||(p2validpieces(slots[i][j+1])))){
                             movesking[movesking_m][0]=i;
                             movesking[movesking_m][1]=j+1;
                             movesking_m++;
                         }
-                        if (j>0){
+                        if ((j>0)&&((slots[i][j-1] == PiecesChar::char_free)||(p2validpieces(slots[i][j-1])))){
                             movesking[movesking_m][0]=i;
                             movesking[movesking_m][1]=j-1;
                             movesking_m++;
                         }
                         if((i == 0)&&(j==4)){
-                            cout<<"if i==0 j==4"<<endl;
                             if((slots[0][7]==PiecesChar::charP2_rook)&&(slots[0][5]==PiecesChar::char_free)&&(slots[0][6]==PiecesChar::char_free)){
-                                cout<<"if slots free"<<endl;
                                 movesking[movesking_m][0] = 0;
                                 movesking[movesking_m][1] = 6;
                                 movesking_m++;
@@ -737,7 +739,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                         }
                         bool valid_move_king;
-                        for (int m = 0; m < 8; ++m) {
+                        for (int m = 0; m < movesking_m; ++m) {
                             valid_move_king=true;
                             for (int n = 0; n < movesp1m; ++n) {
                                 if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
@@ -1240,7 +1242,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         //DEBUGGING---------------------
                         int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
                         maxpt = max(eval, maxpt);
-                        cout<<"End minimax"<<endl;
                         if(depth==Player::Difficulty){
                             arrr[arrrm][0]=moves[p][0];
                             arrr[arrrm][1]=moves[p][1];
@@ -1837,15 +1838,15 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                         {
                                             if (k == 1)
                                             {
-                                                if ((p>0)&&(o<7)&&((p1validpieces(slots[p - 1][o + 1])) || (slots[p - 1][o + 1] == PiecesChar::char_free)))
+                                                if ((p<7)&&(o<7)&&((p1validpieces(slots[p + 1][o + 1])) || (slots[p + 1][o + 1] == PiecesChar::char_free)))
                                                 {
-                                                    movesp1[movesp1m][0] = p - 1;
+                                                    movesp1[movesp1m][0] = p + 1;
                                                     movesp1[movesp1m][1] = o + 1;
                                                     movesp1m++;
                                                 }
-                                                if ((p>0)&&(o>0)&&((p1validpieces(slots[p - 1][o - 1])) || (slots[p - 1][o + 1] == PiecesChar::char_free)))
+                                                if ((p<7)&&(o>0)&&((p1validpieces(slots[p + 1][o - 1])) || (slots[p + 1][o - 1] == PiecesChar::char_free)))
                                                 {
-                                                    movesp1[movesp1m][0] = p - 1;
+                                                    movesp1[movesp1m][0] = p + 1;
                                                     movesp1[movesp1m][1] = o - 1;
                                                     movesp1m++;
                                                 }
@@ -1861,41 +1862,46 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         int movesking_m=0;
                         int movesking[8][2];
                         if (i>0) {
-                            if (j>0){
+                            if ((j>0)&&((slots[i-1][j-1] == PiecesChar::char_free)||(p1validpieces(slots[i-1][j-1])))){
                                 movesking[movesking_m][0]=i-1;
                                 movesking[movesking_m][1]=j-1;
                                 movesking_m++;
                             }
-                            if (j<7){
+                            if ((j<7)&&((slots[i-1][j+1] == PiecesChar::char_free)||(p1validpieces(slots[i-1][j+1])))){
                                 movesking[movesking_m][0]=i-1;
                                 movesking[movesking_m][1]=j+1;
                                 movesking_m++;
                             }
-                            movesking[movesking_m][0]=i-1;
-                            movesking[movesking_m][1]=j;
-                            movesking_m++;
+                            if((slots[i-1][j] == PiecesChar::char_free)||(p1validpieces(slots[i-1][j]))){
+                                movesking[movesking_m][0]=i-1;
+                                movesking[movesking_m][1]=j;
+                                movesking_m++;
+                            }
                         }
                         if (i<7) {
-                            if (j>0){
+                            if ((j>0)&&((slots[i+1][j-1] == PiecesChar::char_free)||(p1validpieces(slots[i+1][j-1])))){
                                 movesking[movesking_m][0]=i+1;
                                 movesking[movesking_m][1]=j-1;
                                 movesking_m++;
                             }
-                            if (j<7){
+                            if ((j<7)&&((slots[i+1][j+1] == PiecesChar::char_free)||(p1validpieces(slots[i+1][j+1])))){
                                 movesking[movesking_m][0]=i+1;
                                 movesking[movesking_m][1]=j+1;
                                 movesking_m++;
                             }
-                            movesking[movesking_m][0]=i+1;
-                            movesking[movesking_m][1]=j;
-                            movesking_m++;
+                            if((slots[i+1][j] == PiecesChar::char_free)||(p1validpieces(slots[i+1][j]))){
+                                movesking[movesking_m][0]=i+1;
+                                movesking[movesking_m][1]=j;
+                                movesking_m++;
+                            }
                         }
-                        if (j<7){
+                        if ((j<7)&&((slots[i][j+1] == PiecesChar::char_free)||(p1validpieces(slots[i][j+1])))){
+                            cout<<"valid king move"<<endl;
                             movesking[movesking_m][0]=i;
                             movesking[movesking_m][1]=j+1;
                             movesking_m++;
                         }
-                        if (j>0){
+                        if ((j>0)&&((slots[i][j-1] == PiecesChar::char_free)||(p1validpieces(slots[i][j-1])))){
                             movesking[movesking_m][0]=i;
                             movesking[movesking_m][1]=j-1;
                             movesking_m++;
@@ -1915,7 +1921,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                         }
                         bool valid_move_king;
-                        for (int m = 0; m < 8; ++m) {
+                        for (int m = 0; m < movesking_m; ++m) {
                             valid_move_king=true;
                             for (int n = 0; n < movesp1m; ++n) {
                                 if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
@@ -2327,7 +2333,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         for (k = 1; k <= cas; k++) {
                             if (k==1){
-                                if((i>07)&&(j<7)&&(p1validpieces(slots[i-1][j+1]))){
+                                if((i>0)&&(j<7)&&(p1validpieces(slots[i-1][j+1]))){
                                     moves[movesm][0] = i-1;
                                     moves[movesm][1] = j+1;
                                     movesm++;
@@ -2417,7 +2423,6 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         //DEBUGGING---------------------
                         int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
-                        cout<<"End minimax, eval = "<<eval<<endl;
                         minpt = min(eval, minpt);
                     }
                     cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;

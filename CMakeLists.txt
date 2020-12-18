@@ -7,5 +7,4 @@ add_executable(Proyectos_en_Clion main.cpp
         Librerias/gameboard/gameboard.cpp
         Librerias/IA/IA.cpp
         Librerias/interface/interface.cpp
-        Librerias/minMax/minMax.cpp
         Librerias/pieces/pieces.cpp)

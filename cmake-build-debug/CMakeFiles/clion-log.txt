@@ -1,4 +1,4 @@
-"C:\Program Files\JetBrains\CLion 2020.3\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" "C:\Users\Usuario\Desktop\Gabriel\San Pablo\Programing Projects\Proyectos en Clion"
+"C:\Program Files\JetBrains\CLion 2020.2.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\Javier\CLionProjects\ChessAux
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/Usuario/Desktop/Gabriel/San Pablo/Programing Projects/Proyectos en Clion/cmake-build-debug
+-- Build files have been written to: C:/Users/Javier/CLionProjects/ChessAux/cmake-build-debug
