@@ -660,6 +660,46 @@ bool Gameboard::validMovement(int start[2], int end[2])
 				std::cout << "<--<--| IS MENACEEEEEEEEEEED |-->-->" << std::endl;
 			}
 		}
+		else if (distance[1] == 2)
+		{
+			int startRook[2];
+			int endRook[2];
+			startRook[0] = start[0];
+			endRook[0] = start[0];
+			if (slots[start[0]][start[1]].movements == 0) //* Castling
+			{
+				if ((slots[start[0]][0].movements == 0) && (start[1] < end[1])) // KingsideCastling
+				{
+					std::cout << " DO KingSide CASTLING" << std::endl;
+					P1_kingBearings[0] = end[0];
+					P1_kingBearings[1] = end[1];
+					startRook[1] = width - 1;
+					endRook[1] = start[1] + 1;
+					move(start, end);
+					std::cout << "start : " << start[0] << " , " << start[1] << std::endl;
+					std::cout << "end   : " << end[0] << " , " << end[1] << std::endl;
+					move(startRook, endRook);
+					std::cout << "startRk: " << startRook[0] << " , " << startRook[1] << std::endl;
+					std::cout << "endRk  : " << endRook[0] << " , " << endRook[1] << std::endl;
+					valid = true;
+				}
+				else if ((slots[start[0]][width - 1].movements == 0) && (start[1] > end[1])) // QueensideCastling
+				{
+					P1_kingBearings[0] = end[0];
+					P1_kingBearings[1] = end[1];
+					std::cout << " DO QueenSide CASTLING" << std::endl;
+					startRook[1] = 0;
+					endRook[1] = start[1] - 1;
+					move(start, end);
+					std::cout << "start : " << start[0] << " , " << start[1] << std::endl;
+					std::cout << "end   : " << end[0] << " , " << end[1] << std::endl;
+					move(startRook, endRook);
+					std::cout << "startRk: " << startRook[0] << " , " << startRook[1] << std::endl;
+					std::cout << "endRk  : " << endRook[0] << " , " << endRook[1] << std::endl;
+					valid = true;
+				}
+			}
+		}
 		break;
 	case PiecesChar::charP1_queen:
 		valid = (goDiagonal(start, end) || goStraight(start, end));
@@ -779,12 +819,12 @@ void Gameboard::undrawKingDots(int kingBearings[2])
 	{
 		if (slots[kingBearings[0]][0].movements == 0)
 		{
-			std::cout << "---------------- queensideCastling is true -------" << std::endl;
+			// std::cout << "---------------- queensideCastling is true -------" << std::endl;
 			availableQueensideCastling = true;
 		}
 		if (slots[kingBearings[0]][width - 1].movements == 0)
 		{
-			std::cout << "---------------- kingsideCastling is true ---------" << std::endl;
+			// std::cout << "---------------- kingsideCastling is true ---------" << std::endl;
 			availableKingsideCastling = true;
 		}
 	}
