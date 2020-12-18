@@ -1,5 +1,6 @@
-#include "../pieces/pieces.h"
 #pragma once
+#include "../pieces/pieces.h"
+
 
 void clean_screan();
 
