@@ -38,6 +38,7 @@ int game(
 	bool isFree;
 	bool validMovement = false;
 	bool player;
+
 	///IA
 	char slotes[8][8];
 
@@ -149,20 +150,14 @@ int game(
 					}
 				}
 
-				int arrr[1000][5];
+				int arrr[5];
 				int arrrms;
-				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr);
+				end[0] = arrr[0];
+				end[1] = arrr[1];
+				start[0] = arrr[3];
+				start[1] = arrr[4];
 
-				for (int i = 0; i < arrrms; ++i)
-				{
-					if (arrr[i][2] == numeval)
-					{
-						end[0] = arrr[i][0];
-						end[1] = arrr[i][1];
-						start[0] = arrr[i][3];
-						start[1] = arrr[i][4];
-					}
-				}
 				/*if(movements==1){
                     start[0] = 1;
                     start[1] = 4;
@@ -426,10 +421,20 @@ int main()
 		{1, 5, (int)PiecesChar::charP2_pawn},
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};
+	/* int P1PiecesInit[16][3] = {
+            {3, 1, (int)PiecesChar::charP1_rook},
+            {4, 2, (int)PiecesChar::charP1_queen},
+            {4, 1, (int)PiecesChar::charP1_king},
+    };
+    int P2PiecesInit[16][3] = {
+            {5, 7, (int)PiecesChar::charP2_rook},
+            {5, 6, (int)PiecesChar::charP2_queen},
+            {7, 4, (int)PiecesChar::charP2_king},
+    };*/
 
-	/////////*
+	////////////*
 	//* CASTLING
-	/////////*
+	////////////*
 	// int nP1Pieces = 3;
 	// int nP2Pieces = 3;
 	// int P1PiecesInit[16][3] = {
