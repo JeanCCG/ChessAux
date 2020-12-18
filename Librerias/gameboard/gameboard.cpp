@@ -746,8 +746,8 @@ void Gameboard::undrawKingDots(int kingBearings[2])
 	bool inTheBottomBorder = (kingBearings[0] == height - 1) ? true : false;
 	bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
 	bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
-	bool availableQueensideCastling = true;
-	bool availableKingsideCastling = true;
+	bool availableQueensideCastling = false;
+	bool availableKingsideCastling = false;
 
 	// std::cout << "borders" << std::endl;
 	// std::cout << inTheUpperBorder << inTheBottomBorder << inTheLeftBorder << inTheRightBorder << std::endl;
@@ -775,41 +775,32 @@ void Gameboard::undrawKingDots(int kingBearings[2])
 				unDrawDot(end);
 		}
 	}
-	// if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
-	// {
-	// 	if (slots[kingBearings[0]][0].movements == 0)
-	// 	{
-	// 		for (int j = kingBearings[1] - 1; 0 < j; j--)
-	// 			if (slots[kingBearings[0]][j].isFree == false)
-	// 			{
-	// 				availableQueensideCastling = false;
-	// 				break;
-	// 			}
-	// 	}
-	// 	if (slots[kingBearings[0]][width - 1].movements == 0)
-	// 	{
-	// 		for (int j = kingBearings[1] + 1; j < width - 1; j++)
-	// 			if (slots[kingBearings[0]][j].isFree == false)
-	// 			{
-	// 				availableKingsideCastling = false;
-	// 				break;
-	// 			}
-	// 	}
-	// }
-	// if (availableKingsideCastling)
-	// {
-	// 	availableMovement = true;
-	// 	end[0] = kingBearings[0];
-	// 	end[1] = 2;
-	// 	drawDot(end);
-	// }
-	// if (availableQueensideCastling)
-	// {
-	// 	availableMovement = true;
-	// 	end[0] = kingBearings[0];
-	// 	end[1] = width - 3;
-	// 	drawDot(end);
-	// }
+	if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+	{
+		if (slots[kingBearings[0]][0].movements == 0)
+		{
+			std::cout << "---------------- queensideCastling is true -------" << std::endl;
+			availableQueensideCastling = true;
+		}
+		if (slots[kingBearings[0]][width - 1].movements == 0)
+		{
+			std::cout << "---------------- kingsideCastling is true ---------" << std::endl;
+			availableKingsideCastling = true;
+		}
+	}
+	end[0] = kingBearings[0];
+	if (availableKingsideCastling)
+	{
+		end[1] = 2;
+		if (slots[end[0]][end[1]].symbol == PiecesChar::char_dot)
+			unDrawDot(end);
+	}
+	if (availableQueensideCastling)
+	{
+		end[1] = width - 2;
+		if (slots[end[0]][end[1]].symbol == PiecesChar::char_dot)
+			unDrawDot(end);
+	}
 }
 
 bool Gameboard::piecePossibilities(int place[2]) // ONLY humans need visual reference
