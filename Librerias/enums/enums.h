@@ -1,7 +1,3 @@
-// #ifndef CHESS_UCSP_ENUMS_H
-// #define CHESS_UCSP_ENUMS_H
-// #endif
-
 #pragma once
 
 enum PiecesPoints
@@ -19,6 +15,7 @@ enum PiecesPoints
 enum PiecesChar
 {
 	char_free = ' ',
+	char_dot = '*',
 	// P1 is always in minuscules
 	charP1_king = 'r',
 	charP1_queen = 'q',
@@ -35,4 +32,11 @@ enum PiecesChar
 	charP2_bishop = 'A',
 	charP2_pawn = 'P'
 
+};
+
+enum Player
+{
+    Difficulty = 1,
+	P1 = true,
+	P2 = false
 };

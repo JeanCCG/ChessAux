@@ -1,9 +1,10 @@
+.vs
 .vscode/
+.idea
 cmake-build-debug
 build
-.idea
 main
-.vs
-helper
 cmake
-cmake/
+helper
+out
+cmake-build-debug/CMakeFiles/clion-log.txt
