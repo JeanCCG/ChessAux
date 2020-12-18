@@ -1,5 +1,14 @@
 #pragma once
 
+/*** REPOSITORIO EN GITHUB
+ * https://github.com/JeanCCG/ChessAux
+ * Autores:
+ * Jean Carlo Gino Condori Gonzales
+ * Geraldo Mark Romero Guillén
+ * Gabriel Santiago Choque Mayta
+ * José Enrique Vilca Campana
+ */
+
 enum PiecesPoints
 {
 	int_eaten = -1,
@@ -36,7 +45,7 @@ enum PiecesChar
 
 enum Player
 {
-    Difficulty = 5,
+	Difficulty = 5,
 	P1 = true,
 	P2 = false
 };

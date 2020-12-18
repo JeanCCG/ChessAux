@@ -1,5 +1,14 @@
 #pragma once
 
+/*** REPOSITORIO EN GITHUB
+ * https://github.com/JeanCCG/ChessAux
+ * Autores:
+ * Jean Carlo Gino Condori Gonzales
+ * Geraldo Mark Romero Guillén
+ * Gabriel Santiago Choque Mayta
+ * José Enrique Vilca Campana
+ */
+
 #include "../gameboard/gameboard.h"
 
 using namespace std;
