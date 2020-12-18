@@ -74,17 +74,13 @@ int p1validpieces(char piece){
             return 0;
     }
 }
-int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][5],int& arrrms) { //Player = True
+int minimax(char slots[8][8], int depth, bool player, int points,int arrr[5]) { //Player = True
     if (depth == 0) {
         return points;
     }
     if (player) {
-        int maxpt = -50;
+        int maxpt = -200;
         int pts=points;
-        int arrrm;
-        if(depth==3) {
-            arrrm = 0;
-        }
         for (int i = 0; i < 8; ++i){
             for (int j = 0; j < 8; ++j) {
                 int moves[26][3];
@@ -749,7 +745,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     break;
                                 }
                                 if ((kingside_castling)&&(movesp1[n][0]==0)&&(movesp1[n][1]==5)){
-                                    //cout<<"if kingside_castling not work"<<endl;
+                                    /*cout<<"if kingside_castling not work"<<endl;*/
                                     valid_move_king=false;
                                     kingside_castling=false;
                                     break;
@@ -1247,16 +1243,17 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             cout<<endl;
                         }
                         //DEBUGGING---------------------*/
-                        int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
-                        maxpt = max(eval, maxpt);
+                        int eval =minimax(slotscopy, depth - 1, false,points,arrr);
                         if(depth==Player::Difficulty){
-                            arrr[arrrm][0]=moves[p][0];
-                            arrr[arrrm][1]=moves[p][1];
-                            arrr[arrrm][2]=eval;
-                            arrr[arrrm][3]=i;
-                            arrr[arrrm][4]=j;
-                            arrrm++;
+                            if (eval>maxpt) {
+                                arrr[0] = moves[p][0];
+                                arrr[1] = moves[p][1];
+                                arrr[2] = eval;
+                                arrr[3] = i;
+                                arrr[4] = j;
+                            }
                         }
+                        maxpt = max(eval, maxpt);
                     }
                     /*cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;//DEBBUGING*/
                 }
@@ -1264,12 +1261,9 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
         }
         /*cout<<"End Board"<<endl;
         cout<<"\nMaximo valor eval : "<<maxpt<<endl;*/
-        if(depth == Player::Difficulty){
-            arrrms=arrrm;
-        }
         return  maxpt;
     }else{// MIN
-        int minpt = 50;
+        int minpt = 200;
         int pts=points;
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
@@ -2438,7 +2432,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             cout<<endl;
                         }
                         //DEBUGGING---------------------*/
-                        int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
+                        int eval=minimax(slotscopy, depth - 1, true, points,arrr);
                         minpt = min(eval, minpt);
                     }
                     /*cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;*/

@@ -49,7 +49,7 @@ int game(
 			gameboard.show();
 			if (turn) //* P1 turn
 			{
-
+                 
 				// select a piece
 				while (true)
 				{
@@ -137,10 +137,11 @@ int game(
 				gameboard.show();
 				turn = !turn;
 				movements++;
+                 
 			}
 			else //* BOT turn
 			{
-
+                 
 				for (int i = 0; i < 8; ++i)
 				{
 					for (int j = 0; j < 8; ++j)
@@ -149,21 +150,15 @@ int game(
 					}
 				}
 
-				int arrr[1000][5];
+				int arrr[5];
 				int arrrms;
-				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr, arrrms);
+				int numeval = minimax(slotes, Player::Difficulty, true, 0, arrr);
+                end[0] = arrr[0];
+                end[1] = arrr[1];
+                start[0] = arrr[3];
+                start[1] = arrr[4];
 
-				for (int i = 0; i < arrrms; ++i)
-				{
-					if (arrr[i][2] == numeval)
-					{
-						end[0] = arrr[i][0];
-						end[1] = arrr[i][1];
-						start[0] = arrr[i][3];
-						start[1] = arrr[i][4];
-					}
-				}
-				/*if(movements==1){
+                /*if(movements==1){
                     start[0] = 1;
                     start[1] = 4;
                     end[0] = 3;
@@ -183,22 +178,20 @@ int game(
 				if (gameboard.slots[end[0]][end[1]].isFree)
 				{
 					gameboard.move(start, end);
-					if ((gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP2_king) && (end[0] == 0) && (end[1] == 6))
-					{
-						start_aux[0] = 0;
-						start_aux[1] = 7;
-						end_aux[0] = 0;
-						end_aux[1] = 5;
-						gameboard.move(start_aux, end_aux);
-					}
-					if ((gameboard.slots[start[0]][start[1]].symbol == PiecesChar::charP2_king) && (end[0] == 0) && (end[1] == 2))
-					{
-						start_aux[0] = 0;
-						start_aux[1] = 0;
-						end_aux[0] = 0;
-						end_aux[1] = 3;
-						gameboard.move(start_aux, end_aux);
-					}
+                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==6)){
+                        start_aux[0]=0;
+                        start_aux[1]=7;
+                        end_aux[0]=0;
+                        end_aux[1]=5;
+                        gameboard.move(start_aux,end_aux);
+                    }
+                    if((gameboard.slots[start[0]][start[1]].symbol==PiecesChar::charP2_king)&&(end[0]==0)&&(end[1]==2)){
+                        start_aux[0]=0;
+                        start_aux[1]=0;
+                        end_aux[0]=0;
+                        end_aux[1]=3;
+                        gameboard.move(start_aux,end_aux);
+                    }
 				}
 				else
 				{
@@ -365,6 +358,7 @@ int game(
 				gameboard.show();
 				turn = !turn;
 				movements++;
+
 			}
 		}
 	}
@@ -392,40 +386,50 @@ int main()
 	int nP2Pieces = 16;
 	int result;
 
-	int P1PiecesInit[16][3] = {
-		{7, 0, (int)PiecesChar::charP1_rook},
-		{7, 1, (int)PiecesChar::charP1_knight},
-		{7, 2, (int)PiecesChar::charP1_bishop},
-		{7, 3, (int)PiecesChar::charP1_queen},
-		{7, 4, (int)PiecesChar::charP1_king},
-		{7, 5, (int)PiecesChar::charP1_bishop},
-		{7, 6, (int)PiecesChar::charP1_knight},
-		{7, 7, (int)PiecesChar::charP1_rook},
-		{6, 0, (int)PiecesChar::charP1_pawn},
-		{6, 1, (int)PiecesChar::charP1_pawn},
-		{6, 2, (int)PiecesChar::charP1_pawn},
-		{6, 3, (int)PiecesChar::charP1_pawn},
-		{6, 4, (int)PiecesChar::charP1_pawn},
-		{6, 5, (int)PiecesChar::charP1_pawn},
-		{6, 6, (int)PiecesChar::charP1_pawn},
-		{6, 7, (int)PiecesChar::charP1_pawn}};
-	int P2PiecesInit[16][3] = {
-		{0, 0, (int)PiecesChar::charP2_rook},
-		{0, 1, (int)PiecesChar::charP2_knight},
-		{0, 2, (int)PiecesChar::charP2_bishop},
-		{0, 3, (int)PiecesChar::charP2_queen},
-		{0, 4, (int)PiecesChar::charP2_king},
-		{0, 5, (int)PiecesChar::charP2_bishop},
-		{0, 6, (int)PiecesChar::charP2_knight},
-		{0, 7, (int)PiecesChar::charP2_rook},
-		{1, 0, (int)PiecesChar::charP2_pawn},
-		{1, 1, (int)PiecesChar::charP2_pawn},
-		{1, 2, (int)PiecesChar::charP2_pawn},
-		{1, 3, (int)PiecesChar::charP2_pawn},
-		{1, 4, (int)PiecesChar::charP2_pawn},
-		{1, 5, (int)PiecesChar::charP2_pawn},
-		{1, 6, (int)PiecesChar::charP2_pawn},
-		{1, 7, (int)PiecesChar::charP2_pawn}};
+    int P1PiecesInit[16][3] = {
+            {7, 0, (int)PiecesChar::charP1_rook},
+            {7, 1, (int)PiecesChar::charP1_knight},
+            {7, 2, (int)PiecesChar::charP1_bishop},
+            {7, 3, (int)PiecesChar::charP1_queen},
+            {7, 4, (int)PiecesChar::charP1_king},
+            {7, 5, (int)PiecesChar::charP1_bishop},
+            {7, 6, (int)PiecesChar::charP1_knight},
+            {7, 7, (int)PiecesChar::charP1_rook},
+            {6, 0, (int)PiecesChar::charP1_pawn},
+            {6, 1, (int)PiecesChar::charP1_pawn},
+            {6, 2, (int)PiecesChar::charP1_pawn},
+            {6, 3, (int)PiecesChar::charP1_pawn},
+            {6, 4, (int)PiecesChar::charP1_pawn},
+            {6, 5, (int)PiecesChar::charP1_pawn},
+            {6, 6, (int)PiecesChar::charP1_pawn},
+            {6, 7, (int)PiecesChar::charP1_pawn}};
+    int P2PiecesInit[16][3] = {
+            {0, 0, (int)PiecesChar::charP2_rook},
+            {0, 1, (int)PiecesChar::charP2_knight},
+            {0, 2, (int)PiecesChar::charP2_bishop},
+            {0, 3, (int)PiecesChar::charP2_queen},
+            {0, 4, (int)PiecesChar::charP2_king},
+            {0, 5, (int)PiecesChar::charP2_bishop},
+            {0, 6, (int)PiecesChar::charP2_knight},
+            {0, 7, (int)PiecesChar::charP2_rook},
+            {1, 0, (int)PiecesChar::charP2_pawn},
+            {1, 1, (int)PiecesChar::charP2_pawn},
+            {1, 2, (int)PiecesChar::charP2_pawn},
+            {1, 3, (int)PiecesChar::charP2_pawn},
+            {1, 4, (int)PiecesChar::charP2_pawn},
+            {1, 5, (int)PiecesChar::charP2_pawn},
+            {1, 6, (int)PiecesChar::charP2_pawn},
+            {1, 7, (int)PiecesChar::charP2_pawn}};
+   /* int P1PiecesInit[16][3] = {
+            {3, 1, (int)PiecesChar::charP1_rook},
+            {4, 2, (int)PiecesChar::charP1_queen},
+            {4, 1, (int)PiecesChar::charP1_king},
+    };
+    int P2PiecesInit[16][3] = {
+            {5, 7, (int)PiecesChar::charP2_rook},
+            {5, 6, (int)PiecesChar::charP2_queen},
+            {7, 4, (int)PiecesChar::charP2_king},
+    };*/
 
 	////////////*
 	//* CASTLING
@@ -475,12 +479,12 @@ int main()
 			if (result == 0)
 			{
 				std::cout << " \nP1 won the game!" << std::endl;
-				title.init();
+                title.init();
 			}
 			else if (result == 1)
 			{
 				std::cout << " \nP2 won the game! " << std::endl;
-				title.init();
+                title.init();
 			}
 			else
 			{
