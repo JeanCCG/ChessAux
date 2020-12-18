@@ -385,50 +385,50 @@ int main()
 	title.init();
 	int width = 8;	//ancho
 	int height = 8; //altura
-	int nP1Pieces = 13;
-	int nP2Pieces = 15;
+	// int nP1Pieces = 13;
+	// int nP2Pieces = 15;
+	int nP1Pieces = 3;
+	int nP2Pieces = 3;
 	int result;
 
-	int P1PiecesInit[nP1Pieces][3] = {
+	// int P1PiecesInit[nP1Pieces][3] = {
+	// 	{7, 0, (int)PiecesChar::charP1_rook},
+	// 	{7, 1, (int)PiecesChar::charP1_knight},
+	// 	{5, 4, (int)PiecesChar::charP1_queen},
+	// 	{7, 2, (int)PiecesChar::charP1_king},
+	// 	{7, 5, (int)PiecesChar::charP1_bishop},
+	// 	{7, 6, (int)PiecesChar::charP1_knight},
+	// 	{7, 7, (int)PiecesChar::charP1_rook},
+	// 	{6, 0, (int)PiecesChar::charP1_pawn},
+	// 	{6, 1, (int)PiecesChar::charP1_pawn},
+	// 	{5, 2, (int)PiecesChar::charP1_pawn},
+	// 	{4, 4, (int)PiecesChar::charP1_pawn},
+	// 	{6, 5, (int)PiecesChar::charP1_pawn},
+	// 	{6, 7, (int)PiecesChar::charP1_pawn}};
+	// int P2PiecesInit[nP1Pieces][3] = {
+	// 	{0, 0, (int)PiecesChar::charP2_rook},
+	// 	{0, 1, (int)PiecesChar::charP2_knight},
+	// 	{0, 2, (int)PiecesChar::charP2_bishop},
+	// 	{4, 6, (int)PiecesChar::charP2_queen},
+	// 	{0, 4, (int)PiecesChar::charP2_king},
+	// 	{0, 5, (int)PiecesChar::charP2_bishop},
+	// 	{0, 6, (int)PiecesChar::charP2_knight},
+	// 	{0, 7, (int)PiecesChar::charP2_rook},
+	// 	{1, 0, (int)PiecesChar::charP2_pawn},
+	// 	{1, 1, (int)PiecesChar::charP2_pawn},
+	// 	{1, 2, (int)PiecesChar::charP2_pawn},
+	// 	{2, 3, (int)PiecesChar::charP2_pawn},
+	// 	{1, 5, (int)PiecesChar::charP2_pawn},
+	// 	{1, 6, (int)PiecesChar::charP2_pawn},
+	// 	{1, 7, (int)PiecesChar::charP2_pawn}};
+	int P1PiecesInit[16][3] = {
 		{7, 0, (int)PiecesChar::charP1_rook},
-		{7, 1, (int)PiecesChar::charP1_knight},
-		{5, 4, (int)PiecesChar::charP1_queen},
-		{7, 2, (int)PiecesChar::charP1_king},
-		{7, 5, (int)PiecesChar::charP1_bishop},
-		{7, 6, (int)PiecesChar::charP1_knight},
-		{7, 7, (int)PiecesChar::charP1_rook},
-		{6, 0, (int)PiecesChar::charP1_pawn},
-		{6, 1, (int)PiecesChar::charP1_pawn},
-		{5, 2, (int)PiecesChar::charP1_pawn},
-		{4, 4, (int)PiecesChar::charP1_pawn},
-		{6, 5, (int)PiecesChar::charP1_pawn},
-		{6, 7, (int)PiecesChar::charP1_pawn}};
-	int P2PiecesInit[nP1Pieces][3] = {
+		{7, 4, (int)PiecesChar::charP1_king},
+		{7, 7, (int)PiecesChar::charP1_rook}};
+	int P2PiecesInit[16][3] = {
 		{0, 0, (int)PiecesChar::charP2_rook},
-		{0, 1, (int)PiecesChar::charP2_knight},
-		{0, 2, (int)PiecesChar::charP2_bishop},
-		{4, 6, (int)PiecesChar::charP2_queen},
 		{0, 4, (int)PiecesChar::charP2_king},
-		{0, 5, (int)PiecesChar::charP2_bishop},
-		{0, 6, (int)PiecesChar::charP2_knight},
-		{0, 7, (int)PiecesChar::charP2_rook},
-		{1, 0, (int)PiecesChar::charP2_pawn},
-		{1, 1, (int)PiecesChar::charP2_pawn},
-		{1, 2, (int)PiecesChar::charP2_pawn},
-		{2, 3, (int)PiecesChar::charP2_pawn},
-		{1, 5, (int)PiecesChar::charP2_pawn},
-		{1, 6, (int)PiecesChar::charP2_pawn},
-		{1, 7, (int)PiecesChar::charP2_pawn}};
-	/* int P1PiecesInit[16][3] = {
-            {3, 1, (int)PiecesChar::charP1_rook},
-            {4, 2, (int)PiecesChar::charP1_queen},
-            {4, 1, (int)PiecesChar::charP1_king},
-    };
-    int P2PiecesInit[16][3] = {
-            {5, 7, (int)PiecesChar::charP2_rook},
-            {5, 6, (int)PiecesChar::charP2_queen},
-            {7, 4, (int)PiecesChar::charP2_king},
-    };*/
+		{0, 7, (int)PiecesChar::charP2_rook}};
 
 	//* INTERFACE
 	char command;
