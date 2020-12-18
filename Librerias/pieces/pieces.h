@@ -14,13 +14,10 @@ public:
 
     Piece();
 
-    // Piece(char, bool, bool, int);
     Piece(char, bool, bool, int);
 
-    // void moveTo(int[2]);
     void moveTo(int [2]);
 
-    // void setFree();
     void setFree();
 
     void setPiece(Piece);

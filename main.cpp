@@ -19,8 +19,8 @@ int game(
 	int difficulty = 2; //movement projection, predicted or calculation in the future
 	bool turn = true;
 	bool availableMovement = false;
-    int start_aux[2];
-    int end_aux[2];
+	int start_aux[2];
+	int end_aux[2];
 	// construct/ declaring the pieces
 	Gameboard gameboard(P1PiecesInit, nP1Pieces, P2PiecesInit, nP2Pieces, width, height);
 
@@ -382,6 +382,8 @@ int main()
 	title.init();
 	int width = 8;	//ancho
 	int height = 8; //altura
+	int nP1Pieces = 16;
+	int nP2Pieces = 16;
 	int result;
 
     int P1PiecesInit[16][3] = {
@@ -429,6 +431,19 @@ int main()
             {7, 4, (int)PiecesChar::charP2_king},
     };*/
 
+	////////////*
+	//* CASTLING
+	////////////*
+	// int nP1Pieces = 3;
+	// int nP2Pieces = 3;
+	// int P1PiecesInit[16][3] = {
+	// 	{7, 0, (int)PiecesChar::charP1_rook},
+	// 	{7, 4, (int)PiecesChar::charP1_king},
+	// 	{7, 7, (int)PiecesChar::charP1_rook}};
+	// int P2PiecesInit[16][3] = {
+	// 	{0, 0, (int)PiecesChar::charP2_rook},
+	// 	{0, 4, (int)PiecesChar::charP2_king},
+	// 	{0, 7, (int)PiecesChar::charP2_rook}};
 
 	//* INTERFACE
 	char command;
