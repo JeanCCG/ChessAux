@@ -17,7 +17,7 @@ void clean_screan()
 
 Gameboard::Gameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces, int iWidth, int iHeight)
 {
-	cout << "Inside the Gameboard" << endl;
+	// cout << "Inside the Gameboard" << endl;
 	width = iWidth;
 	height = iHeight;
 
@@ -1028,7 +1028,7 @@ bool Gameboard::drawLines_P(int place[2])
 	{
 		if (slots[p_y][place[1]].symbol == PiecesChar::char_free)
 		{
-			slots[p_y][place[1]].symbol = '*';
+			slots[p_y][place[1]].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 			p_y--;
 		}
@@ -1053,7 +1053,7 @@ void Gameboard::undrawLines_P(int place[2])
 		cas = 1;
 	for (int j = 0; j < cas; j++)
 	{
-		if (slots[p_y][place[1]].symbol == '*')
+		if (slots[p_y][place[1]].symbol == PiecesChar::char_dot)
 		{
 			slots[p_y][place[1]].symbol = PiecesChar::char_free;
 			p_y--;
@@ -1068,7 +1068,7 @@ void Gameboard::undrawLines(int place[2])
 	//(+x) line
 	for (int j = place[1] + 1; j < width; j++)
 	{
-		if (slots[place[0]][j].symbol == '*')
+		if (slots[place[0]][j].symbol == PiecesChar::char_dot)
 			slots[place[0]][j].symbol = PiecesChar::char_free;
 		else
 			break;
@@ -1076,7 +1076,7 @@ void Gameboard::undrawLines(int place[2])
 	//(+y) line
 	for (int i = place[0] - 1; - 1 < i; i--)
 	{
-		if (slots[i][place[1]].symbol == '*')
+		if (slots[i][place[1]].symbol == PiecesChar::char_dot)
 			slots[i][place[1]].symbol = PiecesChar::char_free;
 		else
 			break;
@@ -1084,7 +1084,7 @@ void Gameboard::undrawLines(int place[2])
 	//(-x) line
 	for (int j = place[1] - 1; - 1 < j; j--)
 	{
-		if (slots[place[0]][j].symbol == '*')
+		if (slots[place[0]][j].symbol == PiecesChar::char_dot)
 			slots[place[0]][j].symbol = PiecesChar::char_free;
 		else
 			break;
@@ -1092,7 +1092,7 @@ void Gameboard::undrawLines(int place[2])
 	//(-y) line
 	for (int i = place[0] + 1; i < height; i++)
 	{
-		if (slots[i][place[1]].symbol == '*')
+		if (slots[i][place[1]].symbol == PiecesChar::char_dot)
 			slots[i][place[1]].symbol = PiecesChar::char_free;
 		else
 			break;
@@ -1104,42 +1104,42 @@ bool Gameboard::drawJumps(int place[2]) //Knight Jumps
 	bool availableMovement = false;
 	if ((place[0] > 1) && (place[1] > 0) && (slots[place[0] - 2][place[1] - 1].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] - 2][place[1] - 1].symbol = '*';
+		slots[place[0] - 2][place[1] - 1].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] > 1) && (place[1] < 7) && (slots[place[0] - 2][place[1] + 1].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] - 2][place[1] + 1].symbol = '*';
+		slots[place[0] - 2][place[1] + 1].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] > 0) && (place[1] > 1) && (slots[place[0] - 1][place[1] - 2].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] - 1][place[1] - 2].symbol = '*';
+		slots[place[0] - 1][place[1] - 2].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] < 7) && (place[1] > 1) && (slots[place[0] + 1][place[1] - 2].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] + 1][place[1] - 2].symbol = '*';
+		slots[place[0] + 1][place[1] - 2].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] < 6) && (place[1] > 0) && (slots[place[0] + 2][place[1] - 1].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] + 2][place[1] - 1].symbol = '*';
+		slots[place[0] + 2][place[1] - 1].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] < 6) && (place[1] < 7) && (slots[place[0] + 2][place[1] + 1].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] + 2][place[1] + 1].symbol = '*';
+		slots[place[0] + 2][place[1] + 1].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] > 0) && (place[1] < 6) && (slots[place[0] - 1][place[1] + 2].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] - 1][place[1] + 2].symbol = '*';
+		slots[place[0] - 1][place[1] + 2].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == PiecesChar::char_free))
 	{
-		slots[place[0] + 1][place[1] + 2].symbol = '*';
+		slots[place[0] + 1][place[1] + 2].symbol = PiecesChar::char_dot;
 		availableMovement = true;
 	}
 	return availableMovement;
@@ -1147,35 +1147,35 @@ bool Gameboard::drawJumps(int place[2]) //Knight Jumps
 
 void Gameboard::undrawJumps(int place[2])
 {
-	if ((place[0] > 1) && (place[1] > 0) && (slots[place[0] - 2][place[1] - 1].symbol == '*'))
+	if ((place[0] > 1) && (place[1] > 0) && (slots[place[0] - 2][place[1] - 1].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] - 2][place[1] - 1].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] > 1) && (place[1] < 7) && (slots[place[0] - 2][place[1] + 1].symbol == '*'))
+	if ((place[0] > 1) && (place[1] < 7) && (slots[place[0] - 2][place[1] + 1].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] - 2][place[1] + 1].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] > 0) && (place[1] > 1) && (slots[place[0] - 1][place[1] - 2].symbol == '*'))
+	if ((place[0] > 0) && (place[1] > 1) && (slots[place[0] - 1][place[1] - 2].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] - 1][place[1] - 2].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] < 7) && (place[1] > 1) && (slots[place[0] + 1][place[1] - 2].symbol == '*'))
+	if ((place[0] < 7) && (place[1] > 1) && (slots[place[0] + 1][place[1] - 2].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] + 1][place[1] - 2].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] < 6) && (place[1] > 0) && (slots[place[0] + 2][place[1] - 1].symbol == '*'))
+	if ((place[0] < 6) && (place[1] > 0) && (slots[place[0] + 2][place[1] - 1].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] + 2][place[1] - 1].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] < 6) && (place[1] < 7) && (slots[place[0] + 2][place[1] + 1].symbol == '*'))
+	if ((place[0] < 6) && (place[1] < 7) && (slots[place[0] + 2][place[1] + 1].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] + 2][place[1] + 1].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] > 0) && (place[1] < 6) && (slots[place[0] - 1][place[1] + 2].symbol == '*'))
+	if ((place[0] > 0) && (place[1] < 6) && (slots[place[0] - 1][place[1] + 2].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] - 1][place[1] + 2].symbol = PiecesChar::char_free;
 	}
-	if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == '*'))
+	if ((place[0] < 7) && (place[1] < 6) && (slots[place[0] + 1][place[1] + 2].symbol == PiecesChar::char_dot))
 	{
 		slots[place[0] + 1][place[1] + 2].symbol = PiecesChar::char_free;
 	}
@@ -1190,7 +1190,7 @@ bool Gameboard::drawLines(int place[2])
 	{
 		if (slots[place[0]][j].symbol == PiecesChar::char_free)
 		{
-			slots[place[0]][j].symbol = '*';
+			slots[place[0]][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[place[0]][j].isFree == false) && (slots[place[0]][j].player != player))
@@ -1206,7 +1206,7 @@ bool Gameboard::drawLines(int place[2])
 	{
 		if (slots[i][place[1]].symbol == PiecesChar::char_free)
 		{
-			slots[i][place[1]].symbol = '*';
+			slots[i][place[1]].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][place[1]].isFree == false) && (slots[i][place[1]].player != player))
@@ -1222,7 +1222,7 @@ bool Gameboard::drawLines(int place[2])
 	{
 		if (slots[place[0]][j].symbol == PiecesChar::char_free)
 		{
-			slots[place[0]][j].symbol = '*';
+			slots[place[0]][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[place[0]][j].isFree == false) && (slots[place[0]][j].player != player))
@@ -1238,7 +1238,7 @@ bool Gameboard::drawLines(int place[2])
 	{
 		if (slots[i][place[1]].symbol == PiecesChar::char_free)
 		{
-			slots[i][place[1]].symbol = '*';
+			slots[i][place[1]].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][place[1]].isFree == false) && (slots[i][place[1]].player != player))
@@ -1260,7 +1260,7 @@ void Gameboard::undrawDiagonals(int place[2])
 	j = place[1] + 1;
 	for (; (-1 < i) && (j < width); (i--) && (j++))
 	{
-		if (slots[i][j].symbol == '*')
+		if (slots[i][j].symbol == PiecesChar::char_dot)
 		{
 			slots[i][j].symbol = PiecesChar::char_free;
 		}
@@ -1272,7 +1272,7 @@ void Gameboard::undrawDiagonals(int place[2])
 	j = place[1] - 1;
 	for (; (-1 < i) && (-1 < j); (i--) && (j--))
 	{
-		if (slots[i][j].symbol == '*')
+		if (slots[i][j].symbol == PiecesChar::char_dot)
 		{
 			slots[i][j].symbol = PiecesChar::char_free;
 		}
@@ -1284,7 +1284,7 @@ void Gameboard::undrawDiagonals(int place[2])
 	j = place[1] - 1;
 	for (; (i < height) && (-1 < j); (i++) && (j--))
 	{
-		if (slots[i][j].symbol == '*')
+		if (slots[i][j].symbol == PiecesChar::char_dot)
 		{
 			slots[i][j].symbol = PiecesChar::char_free;
 		}
@@ -1296,7 +1296,7 @@ void Gameboard::undrawDiagonals(int place[2])
 	j = place[1] + 1;
 	for (; (i < height) && (j < width); (i++) && (j++))
 	{
-		if (slots[i][j].symbol == '*')
+		if (slots[i][j].symbol == PiecesChar::char_dot)
 		{
 			slots[i][j].symbol = PiecesChar::char_free;
 		}
@@ -1317,7 +1317,7 @@ bool Gameboard::drawDiagonals(int place[2])
 	{
 		if (slots[i][j].symbol == PiecesChar::char_free)
 		{
-			slots[i][j].symbol = '*';
+			slots[i][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
@@ -1334,7 +1334,7 @@ bool Gameboard::drawDiagonals(int place[2])
 	{
 		if (slots[i][j].symbol == PiecesChar::char_free)
 		{
-			slots[i][j].symbol = '*';
+			slots[i][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
@@ -1352,7 +1352,7 @@ bool Gameboard::drawDiagonals(int place[2])
 	{
 		if (slots[i][j].symbol == PiecesChar::char_free)
 		{
-			slots[i][j].symbol = '*';
+			slots[i][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
@@ -1370,7 +1370,7 @@ bool Gameboard::drawDiagonals(int place[2])
 	{
 		if (slots[i][j].symbol == PiecesChar::char_free)
 		{
-			slots[i][j].symbol = '*';
+			slots[i][j].symbol = PiecesChar::char_dot;
 			availableMovement = true;
 		}
 		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
