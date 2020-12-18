@@ -770,9 +770,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
-                        if ((check)&&(checkmate)){
-                            return -100;
-                        }
+
                         break;
                     }
                     case PiecesChar::charP2_queen:
@@ -1179,7 +1177,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 20;
+                                    moves[p][2] = 100;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -1200,7 +1198,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         char slotscopy[8][8];
                         points =pts+moves[p][2];
-                        //DEBUGGING---------------------
+                        /*//DEBUGGING---------------------
                         contadora++;
                         cout<<contadora<<": Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                         contador=0;
@@ -1210,14 +1208,14 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                             cout<<endl;
                         }
-                        //DEBUGGING---------------------
+                        //DEBUGGING---------------------*/
 
                         for (int i = 0; i < 8; ++i) {
                             for (int j = 0; j < 8; ++j) {
                                 slotscopy[i][j]=slots[i][j];
                             }
                         }
-                        cout<<"kingside_castling: "<<kingside_castling<<"move :"<<moves[p][0]<<moves[p][1]<<endl;
+                        /*cout<<"kingside_castling: "<<kingside_castling<<"move :"<<moves[p][0]<<moves[p][1]<<endl;*/
                         if((slots[i][j]==PiecesChar::charP2_king)&&(kingside_castling)&&(moves[p][0]==0)&&(moves[p][1]==6)){
                             slotscopy[0][7]=PiecesChar::char_free;
                             slotscopy[0][5]=PiecesChar::charP2_rook;
@@ -1232,16 +1230,21 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         if (availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
-                        //DEBUGGING---------------------
+                        /*//DEBUGGING---------------------
                         for (int i = 0; i < 8; ++i) {
                             for (int j = 0; j < 8; ++j) {
                                 cout<<slotscopy[i][j]<<" ";
                             }
                             cout<<endl;
                         }
-                        //DEBUGGING---------------------
-                        int eval =minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
-                        maxpt = max(eval, maxpt);
+                        //DEBUGGING---------------------*/
+                        int eval;
+                        if (check){
+                            continue;
+                        }else{
+                            eval=minimax(slotscopy, depth - 1, false,points,arrr, arrrms);
+                            maxpt = max(eval, maxpt);
+                        }
                         if(depth==Player::Difficulty){
                             arrr[arrrm][0]=moves[p][0];
                             arrr[arrrm][1]=moves[p][1];
@@ -1251,12 +1254,12 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             arrrm++;
                         }
                     }
-                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;//DEBBUGING
+                    /*cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;//DEBBUGING*/
                 }
             }
         }
-        cout<<"End Board"<<endl;
-        cout<<"\nMaximo valor eval : "<<maxpt<<endl;
+        /*cout<<"End Board"<<endl;
+        cout<<"\nMaximo valor eval : "<<maxpt<<endl;*/
         if(depth == Player::Difficulty){
             arrrms=arrrm;
         }
@@ -1921,9 +1924,15 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                         }
                         bool valid_move_king;
+                        /*cout<<"checkmate: "<<checkmate<<" , King moves before:"<<endl;
+                        for (int m = 0; m < movesking_m; ++m) {
+                            cout<<"["<<movesking[m][0]<<"]["<<movesking[m][1]<<"]"<<endl;
+                        }*/
                         for (int m = 0; m < movesking_m; ++m) {
                             valid_move_king=true;
                             for (int n = 0; n < movesp1m; ++n) {
+                                if((movesp1[n][0]==7)&&(movesp1[n][1]==3)){
+                                }
                                 if((movesking[m][0]==movesp1[n][0])&&(movesking[m][1]==movesp1[n][1])){
                                     valid_move_king=false;
                                     break;
@@ -1943,7 +1952,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                             if(valid_move_king){
-                                if(slots[movesking[m][0]][movesking[m][1]]==PiecesChar::char_free || (p2validpieces(slots[movesking[m][0]][movesking[m][1]]))) {
+                                if((slots[movesking[m][0]][movesking[m][1]]==PiecesChar::char_free) || (p1validpieces(slots[movesking[m][0]][movesking[m][1]]))) {
                                     moves[movesm][0] = movesking[m][0];
                                     moves[movesm][1] = movesking[m][1];
                                     movesm++;
@@ -1951,9 +1960,11 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                 }
                             }
                         }
-                        if ((check)&&(checkmate)){
-                            return 100;
-                        }
+                        /*cout<<"checkmate: "<<checkmate<<" , King moves after :"<<endl;
+                        for (int m = 0; m < movesking_m; ++m) {
+                            cout<<"["<<movesking[m][0]<<"]["<<movesking[m][1]<<"]"<<endl;
+                        }*/
+
                         break;
                     }
                     case PiecesChar::charP1_queen:
@@ -2368,7 +2379,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     moves[p][2] = 0;
                                     break;
                                 case 1://king
-                                    moves[p][2] = 20;
+                                    moves[p][2] = 100;
                                     break;
                                 case 2://queen
                                     moves[p][2] = 9;
@@ -2389,7 +2400,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         }
                         char slotscopy[8][8];
                         points =pts-moves[p][2];
-                        //DEBUGGING---------------------
+                        /*//DEBUGGING---------------------
                         contador++;
                         cout<<contador<<" Profundidad: "<<depth<<" Retornando points:" <<points<<" Player = "<<player<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
                         for (int m = 0; m < movesm; ++m) {
@@ -2398,7 +2409,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                             }
                             cout<<endl;
                         }
-                        //DEBUGGING---------------------
+                        //DEBUGGING---------------------*/
                         copy(slots,slotscopy);
                         if((slots[i][j]==PiecesChar::charP1_king)&&(kingside_castling_P1)&&(moves[p][0]==7)&&(moves[p][1]==6)){
                             slotscopy[7][7]=PiecesChar::char_free;
@@ -2414,23 +2425,24 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                         if(availableeat){
                             slotscopy[i][j]=PiecesChar::char_free;
                         }
-                        //DEBUGGING---------------------
+                        /*//DEBUGGING---------------------
                         for (int i = 0; i < 8; ++i) {
                             for (int j = 0; j < 8; ++j) {
                                 cout<<slotscopy[i][j]<<" ";
                             }
                             cout<<endl;
                         }
-                        //DEBUGGING---------------------
+                        //DEBUGGING---------------------*/
                         int eval=minimax(slotscopy, depth - 1, true, points,arrr,arrrms);
                         minpt = min(eval, minpt);
                     }
-                    cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;
+                    /*cout<<"End moves"<<" Pieza["<<i<<"]["<<j<<"] : "<<slots[i][j] <<endl;*/
                 }
             }
+
         }
-        cout<<"End board"<<endl;
-        cout<<"\nMainimo valor eval : "<<minpt<<endl;
+        /*cout<<"End board"<<endl;
+        cout<<"\nMainimo valor eval : "<<minpt<<endl;*/
         return  minpt;
     }
 }

@@ -11,7 +11,7 @@ int P2_kingBearings[2];
 
 void clean_screan()
 {
-	system("cls");
+	//system("cls");
 	OnceAnnouncement title(5);
 }
 
@@ -450,7 +450,7 @@ int Gameboard::validPawnMovement(int start[2], int end[2])
 	bool player = slots[start[0]][start[1]].player;
 	int direction = (player == Player::P1) ? 1 : -1;
 	std::cout << "inside Pawn Movement Validator" << std::endl;
-	if (slots[start[0]][start[1]].movements == 0)
+	if (start[0] == 6)
 	{
 		std::cout << "first Movement" << std::endl;
 		if ((start[0] - end[0]) <= direction * 2)
