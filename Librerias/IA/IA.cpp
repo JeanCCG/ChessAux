@@ -749,7 +749,7 @@ int minimax(char slots[8][8], int depth, bool player, int points,int arrr[1000][
                                     break;
                                 }
                                 if ((kingside_castling)&&(movesp1[n][0]==0)&&(movesp1[n][1]==5)){
-                                    cout<<"if kingside_castling not work"<<endl;
+                                    //cout<<"if kingside_castling not work"<<endl;
                                     valid_move_king=false;
                                     kingside_castling=false;
                                     break;
