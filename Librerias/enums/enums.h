@@ -6,7 +6,7 @@
  * Jean Carlo Gino Condori Gonzales
  * Geraldo Mark Romero Guillén
  * Gabriel Santiago Choque Mayta
- * José Enrique Vilca Campana
+ * José Enrique Vilca Campana <@marcusmors> <alivezeh@gmai.com> <marcusmors.com>
  */
 
 enum PiecesPoints
