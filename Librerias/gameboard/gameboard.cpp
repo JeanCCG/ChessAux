@@ -402,7 +402,10 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 					availableMovement = true;
 				}
 				else if (slots[end[0]][end[1]].player != player)
+				{
 					availableMovement = true;
+					break;
+				}
 			}
 		}
 	}
@@ -860,6 +863,7 @@ void Gameboard::initShowVars()
 
 bool Gameboard::drawLines_P(int place[2])
 {
+	bool player = slots[place[0]][place[1]].player;
 	bool availableMovement = false;
 	int p_y = place[0] - 1;
 	int cas = 0;
@@ -879,10 +883,13 @@ bool Gameboard::drawLines_P(int place[2])
 			availableMovement = true;
 			p_y--;
 		}
-		else
+		else if ((slots[p_y][place[1]].isFree == false) && (slots[p_y][place[1]].player != player))
 		{
+			availableMovement = true;
 			break;
 		}
+		else
+			break;
 	}
 	return availableMovement;
 }
@@ -892,13 +899,9 @@ void Gameboard::undrawLines_P(int place[2])
 	int p_y = place[0] - 1;
 	int cas = 0;
 	if (place[0] == 6)
-	{
 		cas = 2;
-	}
 	else
-	{
 		cas = 1;
-	}
 	for (int j = 0; j < cas; j++)
 	{
 		if (slots[p_y][place[1]].symbol == '*')
@@ -907,9 +910,7 @@ void Gameboard::undrawLines_P(int place[2])
 			p_y--;
 		}
 		else
-		{
 			break;
-		}
 	}
 }
 
@@ -1034,6 +1035,7 @@ void Gameboard::undrawJumps(int place[2])
 bool Gameboard::drawLines(int place[2])
 {
 	bool availableMovement = false;
+	bool player = slots[place[0]][place[1]].player;
 	//(+x) line
 	for (int j = place[1] + 1; j < width; j++)
 	{
@@ -1041,6 +1043,11 @@ bool Gameboard::drawLines(int place[2])
 		{
 			slots[place[0]][j].symbol = '*';
 			availableMovement = true;
+		}
+		else if ((slots[place[0]][j].isFree == false) && (slots[place[0]][j].player != player))
+		{
+			availableMovement = true;
+			break;
 		}
 		else
 			break;
@@ -1053,6 +1060,11 @@ bool Gameboard::drawLines(int place[2])
 			slots[i][place[1]].symbol = '*';
 			availableMovement = true;
 		}
+		else if ((slots[i][place[1]].isFree == false) && (slots[i][place[1]].player != player))
+		{
+			availableMovement = true;
+			break;
+		}
 		else
 			break;
 	}
@@ -1064,6 +1076,11 @@ bool Gameboard::drawLines(int place[2])
 			slots[place[0]][j].symbol = '*';
 			availableMovement = true;
 		}
+		else if ((slots[place[0]][j].isFree == false) && (slots[place[0]][j].player != player))
+		{
+			availableMovement = true;
+			break;
+		}
 		else
 			break;
 	}
@@ -1074,6 +1091,11 @@ bool Gameboard::drawLines(int place[2])
 		{
 			slots[i][place[1]].symbol = '*';
 			availableMovement = true;
+		}
+		else if ((slots[i][place[1]].isFree == false) && (slots[i][place[1]].player != player))
+		{
+			availableMovement = true;
+			break;
 		}
 		else
 			break;
@@ -1137,6 +1159,7 @@ void Gameboard::undrawDiagonals(int place[2])
 bool Gameboard::drawDiagonals(int place[2])
 {
 	bool availableMovement = false;
+	bool player = slots[place[0]][place[1]].player;
 	int i, j;
 
 	i = place[0] - 1;
@@ -1147,6 +1170,11 @@ bool Gameboard::drawDiagonals(int place[2])
 		{
 			slots[i][j].symbol = '*';
 			availableMovement = true;
+		}
+		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
+		{
+			availableMovement = true;
+			break;
 		}
 		else
 			break;
@@ -1159,6 +1187,11 @@ bool Gameboard::drawDiagonals(int place[2])
 		{
 			slots[i][j].symbol = '*';
 			availableMovement = true;
+		}
+		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
+		{
+			availableMovement = true;
+			break;
 		}
 		else
 			break;
@@ -1173,6 +1206,11 @@ bool Gameboard::drawDiagonals(int place[2])
 			slots[i][j].symbol = '*';
 			availableMovement = true;
 		}
+		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
+		{
+			availableMovement = true;
+			break;
+		}
 		else
 			break;
 	}
@@ -1186,6 +1224,11 @@ bool Gameboard::drawDiagonals(int place[2])
 			slots[i][j].symbol = '*';
 			availableMovement = true;
 		}
+		else if ((slots[i][j].isFree == false) && (slots[i][j].player != player))
+		{
+			availableMovement = true;
+			break;
+		}
 		else
 			break;
 	}
@@ -1194,14 +1237,10 @@ bool Gameboard::drawDiagonals(int place[2])
 
 void Gameboard::initGameboard(int P1PiecesInit[][3], int nP1Pieces, int P2PiecesInit[][3], int nP2Pieces)
 {
-	for (int i = 0; i < width; i++)
-	{
-		for (int j = 0; j < height; j++)
-		{
-			slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
-		}
-	}
 	int points;
+	for (int i = 0; i < width; i++)
+		for (int j = 0; j < height; j++)
+			slots[i][j] = Piece(PiecesChar::char_free, 1, 0, 0);
 	for (int i = 0; i < nP1Pieces; i++)
 	{
 		switch (P1PiecesInit[i][2])
