@@ -182,7 +182,7 @@ bool Gameboard::jump(int start[2], int end[2]) // Salto de caballo
 bool Gameboard::isMenaced(int place[2], bool player)
 {
 	std::cout << place[0] << " , " << place[1] << std::endl;
-	std::cout << player << std::endl;
+	// std::cout << player << std::endl;
 	char bishop;
 	char queen;
 	char rook;
@@ -276,6 +276,7 @@ bool Gameboard::isMenaced(int place[2], bool player)
 	}
 	//queens or bishops
 	int i, j;
+	//(+x;+y) diagonal
 	i = place[0] - 1;
 	j = place[1] + 1;
 	for (; (-1 < i) && (j < width); (i--) && (j++))
@@ -288,6 +289,7 @@ bool Gameboard::isMenaced(int place[2], bool player)
 			else if ((slots[i][j].player == player))
 				break;
 		}
+	//(-x;+y) diagonal
 	i = place[0] - 1;
 	j = place[1] - 1;
 	for (; (-1 < i) && (-1 < j); (i--) && (j--))
@@ -354,6 +356,10 @@ void Gameboard::drawDot(int place[2])
 {
 	slots[place[0]][place[1]].symbol = PiecesChar::char_dot;
 }
+void Gameboard::unDrawDot(int place[2])
+{
+	slots[place[0]][place[1]].symbol = PiecesChar::char_free;
+}
 
 bool Gameboard::availableKingMovement(int kingBearings[2])
 {
@@ -369,68 +375,72 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 
 	int end[2];
 	// int i = 0;
-	int iLimit = 4;
+	int iLimit = 3;
 	// int j = 0;
-	int jLimit = 4;
+	int jLimit = 3;
 	// if (inTheUpperBorder)
 	// 	i = 1;
 	if (inTheBottomBorder)
-		iLimit = 3;
+		iLimit = 2;
 	if (inTheRightBorder)
-		jLimit = 3;
+		jLimit = 2;
 	// if (inTheLeftBorder)
 	// 	j = 1;
 
 	for (int i = (inTheUpperBorder) ? 1 : 0; i < iLimit; i++)
+	{
+		end[0] = kingBearings[0] + (-1 + i);
 		for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
 		{
-			end[0] = kingBearings[0] + (-1 + i);
 			end[1] = kingBearings[1] + (-1 + j);
 			slotMenaced = isMenaced(end, slots[kingBearings[0]][kingBearings[1]].player);
-			if ((slotMenaced == false) &&
-				(slots[end[0]][end[1]].isFree))
+			if (slotMenaced == false)
 			{
-				drawDot(end);
-				availableMovement = true;
+				if (slots[end[0]][end[1]].isFree)
+				{
+					drawDot(end);
+					availableMovement = true;
+				}
+				else if (slots[end[0]][end[1]].player != player)
+					availableMovement = true;
 			}
-			else if (slots[end[0]][end[1]].player != player)
-				availableMovement = true;
-		}
-	if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
-	{
-		if (slots[kingBearings[0]][0].movements == 0)
-		{
-			for (int j = kingBearings[1] - 1; 0 < j; j--)
-				if (slots[kingBearings[0]][j].isFree == false)
-				{
-					availableQueensideCastling = false;
-					break;
-				}
-		}
-		if (slots[kingBearings[0]][width - 1].movements == 0)
-		{
-			for (int j = kingBearings[1] + 1; j < width - 1; j++)
-				if (slots[kingBearings[0]][j].isFree == false)
-				{
-					availableKingsideCastling = false;
-					break;
-				}
 		}
 	}
-	if (availableKingsideCastling)
-	{
-		availableMovement = true;
-		end[0] = kingBearings[0];
-		end[1] = 2;
-		drawDot(end);
-	}
-	if (availableQueensideCastling)
-	{
-		availableMovement = true;
-		end[0] = kingBearings[0];
-		end[1] = width - 3;
-		drawDot(end);
-	}
+	// if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+	// {
+	// 	if (slots[kingBearings[0]][0].movements == 0)
+	// 	{
+	// 		for (int j = kingBearings[1] - 1; 0 < j; j--)
+	// 			if (slots[kingBearings[0]][j].isFree == false)
+	// 			{
+	// 				availableQueensideCastling = false;
+	// 				break;
+	// 			}
+	// 	}
+	// 	if (slots[kingBearings[0]][width - 1].movements == 0)
+	// 	{
+	// 		for (int j = kingBearings[1] + 1; j < width - 1; j++)
+	// 			if (slots[kingBearings[0]][j].isFree == false)
+	// 			{
+	// 				availableKingsideCastling = false;
+	// 				break;
+	// 			}
+	// 	}
+	// }
+	// if (availableKingsideCastling)
+	// {
+	// 	availableMovement = true;
+	// 	end[0] = kingBearings[0];
+	// 	end[1] = 2;
+	// 	drawDot(end);
+	// }
+	// if (availableQueensideCastling)
+	// {
+	// 	availableMovement = true;
+	// 	end[0] = kingBearings[0];
+	// 	end[1] = width - 3;
+	// 	drawDot(end);
+	// }
 	return availableMovement;
 }
 
@@ -498,7 +508,8 @@ int Gameboard::validPawnMovement(int start[2], int end[2])
 	return valid;
 }
 
-bool Gameboard::validMovement(int start[2], int end[2])
+bool Gameboard::
+	validMovement(int start[2], int end[2])
 {
 	cout << "validMovement analysis" << endl;
 	bool player = (slots[start[0]][start[1]].player == Player::P1) ? Player::P1 : Player::P2;
@@ -523,6 +534,9 @@ bool Gameboard::validMovement(int start[2], int end[2])
 			valid = !isMenaced(end, slots[start[0]][start[1]].player);
 			if (valid)
 			{
+				P1_kingBearings[0] = end[0];
+				P1_kingBearings[1] = end[1];
+				// P2_kingBearings[2];
 				if (slots[end[0]][end[1]].isFree)
 					move(start, end);
 				else
@@ -570,6 +584,8 @@ bool Gameboard::validMovement(int start[2], int end[2])
 				slots[end[0]][end[1]].movements--;
 				std::cout << "Your king would be in Danger" << std::endl;
 			}
+			P1_kingBearings[0] = start[0];
+			P1_kingBearings[1] = start[1];
 			return false;
 		}
 	}
@@ -599,11 +615,88 @@ bool Gameboard::validMovement(int start[2], int end[2])
 	return valid;
 }
 
-bool Gameboard::piecePossibilities(int place[2]) // ONLY P1 need visual reference
+void Gameboard::undrawKingDots(int kingBearings[2])
+{
+	bool inTheUpperBorder = (kingBearings[0] == 0) ? true : false;
+	bool inTheBottomBorder = (kingBearings[0] == height - 1) ? true : false;
+	bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
+	bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
+	bool availableQueensideCastling = true;
+	bool availableKingsideCastling = true;
+
+	std::cout << "borders" << std::endl;
+	std::cout << inTheUpperBorder << inTheBottomBorder << inTheLeftBorder << inTheRightBorder << std::endl;
+
+	int end[2];
+	// int i = 0;
+	int iLimit = 3;
+	// int j = 0;
+	int jLimit = 3;
+	// if (inTheUpperBorder)
+	// 	i = 1;
+	if (inTheBottomBorder)
+		iLimit = 2;
+	if (inTheRightBorder)
+		jLimit = 2;
+	// if (inTheLeftBorder)
+	// 	j = 1;
+	for (int i = (inTheUpperBorder) ? 1 : 0; i < iLimit; i++)
+	{
+		end[0] = kingBearings[0] + (-1 + i);
+		for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
+		{
+			end[1] = kingBearings[1] + (-1 + j);
+			if (slots[end[0]][end[1]].symbol == PiecesChar::char_dot)
+			{
+				std::cout << "*" << i << "-" << j << std::endl;
+				unDrawDot(end);
+			}
+			std::cout << "?" << i << "-" << j << std::endl;
+		}
+	}
+	// if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+	// {
+	// 	if (slots[kingBearings[0]][0].movements == 0)
+	// 	{
+	// 		for (int j = kingBearings[1] - 1; 0 < j; j--)
+	// 			if (slots[kingBearings[0]][j].isFree == false)
+	// 			{
+	// 				availableQueensideCastling = false;
+	// 				break;
+	// 			}
+	// 	}
+	// 	if (slots[kingBearings[0]][width - 1].movements == 0)
+	// 	{
+	// 		for (int j = kingBearings[1] + 1; j < width - 1; j++)
+	// 			if (slots[kingBearings[0]][j].isFree == false)
+	// 			{
+	// 				availableKingsideCastling = false;
+	// 				break;
+	// 			}
+	// 	}
+	// }
+	// if (availableKingsideCastling)
+	// {
+	// 	availableMovement = true;
+	// 	end[0] = kingBearings[0];
+	// 	end[1] = 2;
+	// 	drawDot(end);
+	// }
+	// if (availableQueensideCastling)
+	// {
+	// 	availableMovement = true;
+	// 	end[0] = kingBearings[0];
+	// 	end[1] = width - 3;
+	// 	drawDot(end);
+	// }
+}
+
+bool Gameboard::piecePossibilities(int place[2]) // ONLY humans need visual reference
 {
 	cout << "piecePossibilities" << endl;
 	int piecePossibilities;
 	bool availableMovement = false;
+
 	switch (slots[place[0]][place[1]].symbol)
 	{
 	case PiecesChar::charP1_king:
@@ -643,7 +736,7 @@ bool Gameboard::piecePossibilities(int place[2]) // ONLY P1 need visual referenc
 		switch (piecePossibilities)
 		{
 		case 0:
-			// undrawKingDots(place);
+			undrawKingDots(place);
 			break;
 		case 1:
 			undrawDiagonals(place);
@@ -1115,6 +1208,8 @@ void Gameboard::initGameboard(int P1PiecesInit[][3], int nP1Pieces, int P2Pieces
 		{
 		case PiecesChar::charP1_king:
 			points = PiecesPoints::kingPoints;
+			P1_kingBearings[0] = P1PiecesInit[i][0];
+			P1_kingBearings[1] = P1PiecesInit[i][1];
 			break;
 		case PiecesChar::charP1_queen:
 			points = PiecesPoints::queenPoints;
@@ -1144,6 +1239,8 @@ void Gameboard::initGameboard(int P1PiecesInit[][3], int nP1Pieces, int P2Pieces
 		{
 		case PiecesChar::charP2_king:
 			points = PiecesPoints::kingPoints;
+			P2_kingBearings[0] = P2PiecesInit[i][0];
+			P2_kingBearings[1] = P2PiecesInit[i][1];
 			break;
 		case PiecesChar::charP2_queen:
 			points = PiecesPoints::queenPoints;
