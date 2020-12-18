@@ -427,9 +427,9 @@ int main()
 		{1, 6, (int)PiecesChar::charP2_pawn},
 		{1, 7, (int)PiecesChar::charP2_pawn}};
 
-	/////////*
+	////////////*
 	//* CASTLING
-	/////////*
+	////////////*
 	// int nP1Pieces = 3;
 	// int nP2Pieces = 3;
 	// int P1PiecesInit[16][3] = {
