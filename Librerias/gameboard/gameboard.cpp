@@ -463,7 +463,7 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 	bool inTheLeftBorder = (kingBearings[1] == 0) ? true : false;
 	bool inTheRightBorder = (kingBearings[1] == width - 1) ? true : false;
 	bool slotMenaced;
-	bool player = (slots[kingBearings[0]][kingBearings[1]].player == Player::P1) ? Player::P1 : Player::P2;
+	bool player = slots[kingBearings[0]][kingBearings[1]].player;
 	bool availableQueensideCastling = true;
 	bool availableKingsideCastling = true;
 
@@ -487,7 +487,7 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 		for (int j = (inTheLeftBorder) ? 1 : 0; j < jLimit; j++)
 		{
 			end[1] = kingBearings[1] + (-1 + j);
-			slotMenaced = isMenaced(end, slots[kingBearings[0]][kingBearings[1]].player);
+			slotMenaced = isMenaced(end, player);
 			if (slotMenaced == false)
 			{
 				if (slots[end[0]][end[1]].isFree)
@@ -507,41 +507,54 @@ bool Gameboard::availableKingMovement(int kingBearings[2])
 			}
 		}
 	}
-	// if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
-	// {
-	// 	if (slots[kingBearings[0]][0].movements == 0)
-	// 	{
-	// 		for (int j = kingBearings[1] - 1; 0 < j; j--)
-	// 			if (slots[kingBearings[0]][j].isFree == false)
-	// 			{
-	// 				availableQueensideCastling = false;
-	// 				break;
-	// 			}
-	// 	}
-	// 	if (slots[kingBearings[0]][width - 1].movements == 0)
-	// 	{
-	// 		for (int j = kingBearings[1] + 1; j < width - 1; j++)
-	// 			if (slots[kingBearings[0]][j].isFree == false)
-	// 			{
-	// 				availableKingsideCastling = false;
-	// 				break;
-	// 			}
-	// 	}
-	// }
-	// if (availableKingsideCastling)
-	// {
-	// 	availableMovement = true;
-	// 	end[0] = kingBearings[0];
-	// 	end[1] = 2;
-	// 	drawDot(end);
-	// }
-	// if (availableQueensideCastling)
-	// {
-	// 	availableMovement = true;
-	// 	end[0] = kingBearings[0];
-	// 	end[1] = width - 3;
-	// 	drawDot(end);
-	// }
+	if (slots[kingBearings[0]][kingBearings[1]].movements == 0)
+	{
+		end[0] = kingBearings[0];
+		if (slots[kingBearings[0]][0].movements == 0)
+		{
+			for (int j = kingBearings[1] - 1; 0 < j; j--)
+			{
+				end[1] = j;
+				slotMenaced = isMenaced(end, player);
+				std::cout << "end[" << end[0] << "][" << j << "]" << std::endl;
+				std::cout << "slotMenaced : " << slotMenaced << std::endl;
+				if ((slots[kingBearings[0]][j].isFree == false) || (slotMenaced))
+				{
+					availableQueensideCastling = false;
+					break;
+				}
+			}
+		}
+		if (slots[kingBearings[0]][width - 1].movements == 0)
+		{
+			for (int j = kingBearings[1] + 1; j < width - 1; j++)
+			{
+				end[1] = j;
+				slotMenaced = isMenaced(end, player);
+				std::cout << "end[" << end[0] << "][" << j << "]" << std::endl;
+				std::cout << "slotMenaced : " << slotMenaced << std::endl;
+				if (slots[kingBearings[0]][j].isFree == false)
+				{
+					availableKingsideCastling = false;
+					break;
+				}
+			}
+		}
+	}
+	if (availableKingsideCastling)
+	{
+		availableMovement = true;
+		end[0] = kingBearings[0];
+		end[1] = 2;
+		drawDot(end);
+	}
+	if (availableQueensideCastling)
+	{
+		availableMovement = true;
+		end[0] = kingBearings[0];
+		end[1] = width - 2;
+		drawDot(end);
+	}
 	return availableMovement;
 }
 
