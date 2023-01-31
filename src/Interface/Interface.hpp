@@ -16,6 +16,7 @@ using namespace std;
 
 class Interface
 {
+private:
   enum class Input_error {
     // start
     bad_input,
@@ -47,7 +48,7 @@ class Interface
     Gameboard gb(game_settings);
     Player turn{ Player::white };
 
-    Game_result game_result = no_results_yet;
+    Game_result game_result{ no_results_yet };
     do {
       gb.make_move(get_player_move(gb, turn));
       game_result = gb.check_end_conditions();

@@ -59,35 +59,62 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
 
 void Interface::display_gameboard(Gameboard &gb, Player turn_perspective)
 {
-  std::string blank_frame{ "   " };
+  const std::string blank_frame{ "   " };
   std::string blank_slot{ "       " };
-  Style slot_color = Style::white_bg;
+  const std::string half_blank_slot{ "   " };
+
+  const Style white_slot_color = Style::yellow_bg;
+  const Style black_slot_color = Style::black_bg;
+
+  Style slot_color = white_slot_color;
+  const Style slot_letter_color = Style::black;
   // Style axis_color = Style::yellow;
   const auto width = gb.width;
   const auto height = gb.height;
 
-  auto switch_slot_color = [&]() { slot_color = (slot_color == Style::white_bg) ? Style::black_bg : Style::white_bg; };
+  auto switch_slot_color = [&]() {
+    slot_color = (slot_color == white_slot_color) ? black_slot_color : white_slot_color;
+  };
 
   auto print_blank_lane = [&]() {
     cout << blank_frame;
     for (unsigned x_it = 0; x_it < width; x_it++, switch_slot_color()) { print(slot_color, blank_slot); }
     cout << '\n';
+    switch_slot_color();
   };
 
   auto print_lane = [&](Bearing b) {
     cout << ' ' << static_cast<char>(b.y + 'A') << ' ';
     switch_slot_color();
-    string slot = blank_slot;
     for (; b.x < width; b.x++, switch_slot_color()) {
+      string slot = blank_slot;
       slot[blank_slot.size() / 2] = static_cast<char>(gb.at(b).symbol);
-      print(slot_color, blank_slot);
+      print(slot_color, half_blank_slot);
+      print(slot_color, slot_letter_color, static_cast<char>(gb.at(b).symbol));
+      print(slot_color, half_blank_slot);
+
+      // print(slot_color, slot_letter_color, blank_slot);
+      // cout << static_cast<char>(gb.at(b).symbol);
     }
     cout << '\n';
   };
 
-  const unsigned direction = (turn_perspective == Player::white) ? -1U : +1U;
-  const unsigned limit = (turn_perspective == Player::white) ? -1U : height;
-  for (Bearing b = { 0U, (turn_perspective == Player::white) ? width - 1 : 0 }; b.y != limit; b.y += direction) {
+  unsigned direction{};
+  unsigned limit{};
+  unsigned y_init{};
+
+  if (turn_perspective == Player::white) {
+    direction = -1U;
+    limit = -1U;
+    y_init = width - 1;
+  } else {
+    direction = +1U;
+    limit = height;
+    y_init = 0;
+  }
+
+
+  for (Bearing b = { 0U, y_init }; b.y != limit; b.y += direction) {
     print_blank_lane();
     print_lane(b);
     print_blank_lane();
@@ -109,8 +136,9 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, bool is_human_pl
     return { { 0U, 0U }, { 0U, 0U } };
   }
 
-  Move move;
+  display_gameboard(gb, my_player);
 
+  Move move;
 
   using IE = Input_error;
   bool invalid_start{ true };
@@ -127,6 +155,8 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, bool is_human_pl
     }
     cout << ".\n";
   } while (invalid_start);
+
+  display_gameboard(gb, my_player);
 
   const Piece piece_to_undraw = gb.at(move.start);
   bool invalid_end{ true };
