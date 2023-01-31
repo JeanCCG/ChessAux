@@ -13,19 +13,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Interface.hpp"
+#include "Game_settings.hpp"
 
-Interface::Interface_state Interface::game_results_interface(const Game_result game_result)
-{
-   using Interface_state = Interface::Interface_state;
-  switch (game_result) {
-  case Game_result::draw: cout << "Tie 🤯 No one won the game!\n"; break;
-  case Game_result::white_wins: cout << " \nwhite won the game!\n"; break;
-  case Game_result::black_wins: cout << " \nblack won the game! \n"; break;
-  default: break;
-  }
-  input_anything();
-
-  const Interface_state next_state{ Interface_state::main };
-  return next_state;
-}
+player_configuration::player_configuration(Player t_color, Player_type t_player_type)
+  : color{ t_color }, player_type{ t_player_type }
+{}
+player_configuration::player_configuration(Player t_color) : color{ t_color } {}
+player_configuration::player_configuration(Player_type t_player_type) : player_type{ t_player_type } {}

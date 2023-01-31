@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Interface.hpp"
 
-using User_input = Interface::User_input;
-User_input Interface::get_user_key_input()
+Interface::User_input Interface::get_user_key_input()
 {
+  using User_input = Interface::User_input;
   initscr();// Initialize ncursed
   cbreak();// disable line buffering.
   // Which means characters typed by the user are immediately available to be read by the program.
@@ -29,7 +29,7 @@ User_input Interface::get_user_key_input()
   do {
     const unsigned KEY_SCAPE = 27;
     switch (getch()) {
-    case KEY_UP: option = User_input::down; break;
+    case KEY_UP: option = User_input::up; break;
     case KEY_LEFT: option = User_input::left; break;
     case KEY_DOWN: option = User_input::down; break;
     case KEY_RIGHT: option = User_input::right; break;

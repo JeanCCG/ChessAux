@@ -13,19 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Interface.hpp"
+#include "Move.hpp"
 
-Interface::Interface_state Interface::game_results_interface(const Game_result game_result)
-{
-   using Interface_state = Interface::Interface_state;
-  switch (game_result) {
-  case Game_result::draw: cout << "Tie 🤯 No one won the game!\n"; break;
-  case Game_result::white_wins: cout << " \nwhite won the game!\n"; break;
-  case Game_result::black_wins: cout << " \nblack won the game! \n"; break;
-  default: break;
-  }
-  input_anything();
-
-  const Interface_state next_state{ Interface_state::main };
-  return next_state;
-}
+Move::Move(const Bearing t_start, const Bearing t_end) : start{ t_start }, end{ t_end } {}

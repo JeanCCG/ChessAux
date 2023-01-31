@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "../enums/enums.h"
+#include "../enums/enums.hpp"
 #include <string>
 #include <vector>
 
@@ -24,9 +24,9 @@ struct player_configuration
 {
   Player color{};
   Player_type player_type{};
-  player_configuration(Player t_color, Player_type t_player_type) : color{ t_color }, player_type{ t_player_type } {}
-  explicit player_configuration(Player t_color) : color{ t_color } {}
-  explicit player_configuration(Player_type t_player_type) : player_type{ t_player_type } {}
+  player_configuration(Player t_color, Player_type t_player_type);
+  explicit player_configuration(Player t_color);
+  explicit player_configuration(Player_type t_player_type);
 };
 
 struct Game_settings

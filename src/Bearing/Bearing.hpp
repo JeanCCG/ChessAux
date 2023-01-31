@@ -18,53 +18,70 @@
 
 #include <iostream>
 
+// struct Bearing
+// {
+//   unsigned x{};
+//   unsigned y{};
+//   Bearing() = default;
+//   Bearing(unsigned t_x, unsigned t_y) : x{ t_x }, y{ t_y } {}
+//   Bearing(char t_c, unsigned t_y) : x{ static_cast<unsigned>(t_c - 'a') }, y{ t_y - 1 } {}
+//   bool operator==(const Bearing &rhs) { return (x == rhs.x) && (y == rhs.y); }
+//   Bearing &operator+=(const Bearing &rhs)
+//   {
+//     x += rhs.x;
+//     y += rhs.y;
+//     return *this;
+//   }
+//   Bearing &operator++()// prefix
+//   {
+//     ++x, ++y;
+//     return *this;
+//   }
+
+//   Bearing &operator++(int) { return operator++(); }// postfix, same as prefix
+//   Bearing &operator--()// prefix
+//   {
+//     --x, --y;
+//     return *this;
+//   }
+//   Bearing &operator--(int) { return operator--(); }// postfix, same as prefix
+//   Bearing operator+(const Bearing &rhs) const { return Bearing{ x + rhs.x, y + rhs.y }; }
+// };
+
+
+// std::istream &operator>>(std::istream &is, Bearing &bearing)
+// {
+//   char c;
+//   unsigned n;
+//   if (is >> c) {
+//     c = tolower(c);
+//     if ('a' <= c && c <= 'h' && is >> n && 1 <= n && n <= 8) {
+//       bearing = Bearing{ c, n };
+//       return is;
+//     }
+//   }
+//   is.setstate(std::ios_base::failbit);// Flawfinder: ignore // register the failure in the stream
+//   return is;
+// }
+
 struct Bearing
 {
   unsigned x{};
   unsigned y{};
   Bearing() = default;
-  // Bearing(int t_x, unsigned t_y) : x{ t_x }, y{ t_y } {}
-  // Bearing(unsigned t_x, int t_y) : x{ t_x }, y{ t_y } {}
-  Bearing(unsigned t_x, unsigned t_y) : x{ t_x }, y{ t_y } {}
-  Bearing(char t_c, unsigned t_y) : x{ static_cast<unsigned>(t_c - 'a') }, y{ t_y - 1 } {}
-  bool operator==(const Bearing &rhs) { return (x == rhs.x) && (y == rhs.y); }
-  Bearing &operator+=(const Bearing &rhs)
-  {
-    x += rhs.x;
-    y += rhs.y;
-    return *this;
-  }
-  Bearing &operator++()// prefix
-  {
-    ++x, ++y;
-    return *this;
-  }
+  Bearing(unsigned t_x, unsigned t_y) noexcept;
+  Bearing(char t_c, unsigned t_y) noexcept;
+  bool operator==(const Bearing &rhs) const;
+  Bearing &operator+=(const Bearing &rhs);
+  Bearing &operator++();// postfix
 
-  Bearing &operator++(int) { return operator++(); }// postfix, same as prefix
-  Bearing &operator--()// prefix
-  {
-    --x, --y;
-    return *this;
-  }
-  Bearing &operator--(int) { return operator--(); }// postfix, same as prefix
-  Bearing operator+(const Bearing &rhs) const { return Bearing{ x + rhs.x, y + rhs.y }; }
+  Bearing operator++(int);// postfix, same as prefix
+  Bearing &operator--();// prefix
+  Bearing operator--(int);// postfix, same as prefix
+  Bearing operator+(const Bearing &rhs) const;
 };
 
-
-std::istream &operator>>(std::istream &is, Bearing &bearing)
-{
-  char c;
-  unsigned n;
-  if (is >> c) {
-    c = tolower(c);
-    if ('a' <= c && c <= 'h' && is >> n && 1 <= n && n <= 8) {
-      bearing = Bearing{ c, n };
-      return is;
-    }
-  }
-  is.setstate(std::ios_base::failbit);// Flawfinder: ignore // register the failure in the stream
-  return is;
-}
+std::istream &operator>>(std::istream &is, Bearing &bearing);
 
 
 #endif// __BEARING_H__

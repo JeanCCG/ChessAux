@@ -22,7 +22,7 @@ struct Move
 {
   Bearing start{};
   Bearing end{};
-  Move(Bearing t_start, Bearing t_end) : start{ t_start }, end{ t_end } {}
+  Move(const Bearing t_start, const Bearing t_end);
   Move() = default;
 };
 

@@ -1,3 +1,6 @@
+#ifndef __GAME_H__
+#define __GAME_H__
+
 // Copyright (C) 2022 José Enrique Vilca Campana
 //
 // This program is free software: you can redistribute it and/or modify
@@ -45,3 +48,5 @@ public:
 Game::Game(/* args */) {}
 
 Game::~Game() {}
+
+#endif// __GAME_H__

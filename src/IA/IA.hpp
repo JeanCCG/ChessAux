@@ -1,21 +1,23 @@
 #ifndef __IA_H__
 #define __IA_H__
 
-#include "../gameboard/gameboard.hpp"
+// #include "../Gameboard/Gameboard.hpp"
+// #include <array>
 
-using namespace std;
+// using namespace std;
 
-struct Moves_and_points
-{
-  std::vector<Move> moves{};
-  int points;
-};
+// struct Moves_and_points
+// {
+//   std::vector<Move> moves{};
+//   int points;
+// };
 
-struct IA
-{
-  const unsigned max_available_ends = 7 * 4;
-  static vector<Bearing> ends(28);
-};
+// struct IA
+// {
+//   static const unsigned max_available_ends = 7 * 4;
+//   static std::array<Bearing, max_available_ends> ends;
+//   // static vector<Bearing> ends(28);
+// };
 
 
 // Moves_and_points IA(Player player, Gameboard gb, int depth)

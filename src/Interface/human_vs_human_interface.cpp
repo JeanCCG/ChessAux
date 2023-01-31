@@ -15,9 +15,9 @@
 
 #include "Interface.hpp"
 
-using Interface_state = Interface::Interface_state;
-Interface_state Interface::human_vs_human_interface()
+Interface::Interface_state Interface::human_vs_human_interface()
 {
+  using Interface_state = Interface::Interface_state;
   enum Option : int {
     play = 0,
     time,// on, off
@@ -43,14 +43,14 @@ Interface_state Interface::human_vs_human_interface()
     display_interface(options, static_cast<unsigned>(option));
     user_input = get_user_key_input();
     switch (user_input) {
-    case User_input::up:
+    case User_input::down:
       if (option == Option::modify_chess_board) {
         option = Option::play;
       } else {
         option = static_cast<Option>(static_cast<int>(option) + 1);
       }
       break;
-    case User_input::down:
+    case User_input::up:
       if (option == Option::play) {
         option = Option::modify_chess_board;
       } else {

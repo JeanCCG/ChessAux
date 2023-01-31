@@ -15,9 +15,9 @@
 
 #include "./Interface.hpp"
 
-using Interface_state = Interface::Interface_state;
-Interface_state Interface::main_interface()
+Interface::Interface_state Interface::main_interface()
 {
+  using Interface_state = Interface::Interface_state;
   enum Option : int {
     human_vs_human = 0,
     human_vs_computer,
@@ -34,14 +34,14 @@ Interface_state Interface::main_interface()
     display_interface(options, static_cast<unsigned>(option));
     switch (get_user_key_input()) {
     case User_input::down:
-    case User_input::left:
+    case User_input::right:
       if (option == Option::quit) {
         option = Option::human_vs_human;
       } else {
         option = static_cast<Option>(static_cast<int>(option) + 1);
       }
       break;
-    case User_input::right:
+    case User_input::left:
     case User_input::up:
       if (option == Option::human_vs_human) {
         option = Option::quit;
@@ -58,8 +58,8 @@ Interface_state Interface::main_interface()
   Interface_state next_state{};
 
   switch (option) {
-  case Option::human_vs_human: next_state = human_vs_human_game_settings_interface(); break;
-  case Option::human_vs_computer: next_state = human_vs_computer_game_settings_interface(); break;
+  case Option::human_vs_human: next_state = human_vs_human_interface(); break;
+  case Option::human_vs_computer: next_state = human_vs_computer_interface(); break;
   case Option::quit: return Interface_state::end_program;
   default: break;
   }

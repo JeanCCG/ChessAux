@@ -1,26 +1,29 @@
 #ifndef __GAMEBOARD_H__
 #define __GAMEBOARD_H__
 
+
+// #include "../Game_settings/Game_settings.cpp"
 #include "../Game_settings/Game_settings.hpp"
+// #include "../Move/Move.cpp"
 #include "../Move/Move.hpp"
+// #include "../Piece/Piece.cpp"
 #include "../Piece/Piece.hpp"
+
+// #include "../Bearing/Bearing.cpp"
+
 #include <vector>
 
 void clean_screen();
 
-template<class T, class Obj> bool any_of(const std::vector<T> v, const Obj obj)
-{
-  return any_of(v.begin(), v.end(), obj);
-}
-template<class T, class Obj> bool all_of(const std::vector<T> v, const Obj obj)
-{
-  return all_of(v.begin(), v.end(), obj);
-}
-template<class T, class Obj> void for_each(std::vector<T> v, const Obj obj) { for_each(v.begin(), v.end(), obj); }
 
 const auto do_nothing = []([[maybe_unused]] const Bearing b) {};
 const auto do_nothing_false = []([[maybe_unused]] const Bearing b) { return false; };
 const auto do_nothing_true = []([[maybe_unused]] const Bearing b) { return true; };
+
+namespace game {
+inline unsigned difference(const unsigned lhs, const unsigned rhs) { return (lhs > rhs) ? lhs - rhs : rhs - lhs; }
+inline void switch_player(Player &player) { player = (player == Player::white) ? Player::black : Player::white; }
+}// namespace game
 
 class Gameboard
 {
@@ -34,10 +37,11 @@ public:
   int white_score = 0;
   int black_score = 0;
 
+  // Move last_move{ { 0U, 0U }, { 0U, 0U } };
   Move last_move{ { 0U, 0U }, { 0U, 0U } };
 
   // Gameboard() {}
-  Gameboard(const Game_settings &game_settings);
+  explicit Gameboard(const Game_settings &game_settings);
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
@@ -46,20 +50,56 @@ public:
   bool piecePossibilities(Bearing place);// ONLY white need visual reference
 
   template<class Do_if_movable, class Do_if_edible>
-  bool available_movement_at(const Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
+  bool available_movement_at(const Bearing place,
+    Do_if_movable do_if_movable = do_nothing,
+    Do_if_edible do_if_edible = do_nothing);
+
+  bool available_movement_at(const Bearing place) { return available_movement_at(place, do_nothing, do_nothing); }
 
   bool draw_piece_possibilities(const Bearing place)
   {
     return available_movement_at(
       place, [&](const Bearing b) { drawDot(b); }, do_nothing);
   };
-  bool undraw_piece_possibilities(const Bearing place, const Piece piece);
+
+  bool is_absolutely_pinned(const Bearing place);
+  bool movable_piece(const Bearing place) { return !is_absolutely_pinned(place); }
+
+  void undraw_piece_possibilities(const Bearing place, const Piece piece);
   void move_or_capture(const Move t_move);
   void make_move(const Move t_move);
 
   bool isMenaced(const Player player, const Bearing place);
+
+
   Piece &at(Bearing bearing) { return slots[bearing.x][bearing.y]; }
-  Game_result check_end_conditions();
+  Game_result check_end_conditions()
+  {
+    const Player last_move_player = at(last_move.end).player;
+
+    Player the_other_player{};
+    Bearing the_other_king_bearing{};
+    Game_result last_move_checkmates_the_other{};
+    if (last_move_player == Player::white) {
+      the_other_player = Player::black;
+      the_other_king_bearing = black_king_bearing;
+      last_move_checkmates_the_other = Game_result::white_wins;
+    } else {
+      the_other_king_bearing = white_king_bearing;
+      the_other_player = Player::white;
+      last_move_checkmates_the_other = Game_result::black_wins;
+    }
+
+    if (not available_movement_at(the_other_king_bearing)) {
+      if (isMenaced(the_other_player, the_other_king_bearing)) {
+        return last_move_checkmates_the_other;
+      } else {
+        return Game_result::stale_mate;
+      }
+    }
+    // check insufficient material;
+    return Game_result::no_results_yet;
+  }
 
 private:
   enum Direction { top, bot, left, right, top_left, top_right, bot_left, bot_right };
@@ -81,17 +121,15 @@ private:
   bool legal_pawn(const Move t_move);
   bool legal_diagonal(const Move t_move);
   bool legal_straight(const Move t_move);
+  // bool legal_straight(const Move t_move)
+  //   __attribute__((analyzer_noreturn));// NOLINT; clang disregards input validation, start != end
   bool legal_king(const Move t_move);
-  bool legal_jump(const Move t_move);
+  static bool legal_jump(const Move t_move);
 
   void drawDot(const Bearing place) { at(place).symbol = Piece_symbols::dot; }
   void unDrawDot(const Bearing place) { at(place).symbol = Piece_symbols::empty; }
   bool is_an_enemy_piece(const Player player, const Bearing bearing) { return (at(bearing).player != player); }
   bool first_movement(const Bearing bearing) { return at(bearing).movements == 0; }
-
-
-  bool is_absolutely_pinned(const Bearing place);
-  bool movable_piece(const Bearing place) { return !is_absolutely_pinned(place); }
 
   template<class Do_if_movable, class Do_if_edible>
   bool evaluate_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
@@ -116,29 +154,45 @@ private:
 
   template<class Functor, class Condition>
   bool perform_jumps(const Bearing place, Functor perform, Condition condition);
+
+  template<class Functor, class Extra_condition>
+  bool straight_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
+  {
+    if (iterate_from_to_and_perform(place, Direction::right, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::top, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::left, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::bot, perform, extra_condition)) { return true; }
+    return false;
+  }
+
+  template<class Functor, class Extra_condition>
+  bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
+  {
+    if (iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition)) { return true; }
+    if (iterate_from_to_and_perform(place, Direction::bot_right, perform, extra_condition)) { return true; }
+    return false;
+  }
+
+
+  bool pawn_menace(const Player player, const Bearing place);
 };
 
-
-// template<class Do_if_movable, class Do_if_edible>
-// bool Gameboard::available_movement_perform(const Bearing place, Do_if_movable do_if_movable, Do_if_edible
-// do_if_edible)
-// {
-//   //
-// }
 
 template<class Functor, class Condition>
 bool Gameboard::perform_jumps(const Bearing place, Functor perform, Condition condition)
 {
   const auto [x, y] = place;
-  // consider that (false and true) immediately returns 'false' without considering the 'true' after 'and'.
-  if (Bearing b{ x - 2, y - 1 }; (x > 1) and (y > 0) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x - 2, y + 1 }; (x > 1) and (y < 7) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x - 1, y - 2 }; (x > 0) and (y > 1) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x + 1, y - 2 }; (x < 7) and (y > 1) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x + 2, y - 1 }; (x < 6) and (y > 0) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x + 2, y + 1 }; (x < 6) and (y < 7) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x - 1, y + 2 }; (x > 0) and (y < 6) and condition(b) and perform(b)) { return true; }
-  if (Bearing b{ x + 1, y + 2 }; (x < 7) and (y < 6) and condition(b) and perform(b)) { return true; }
+  // consider that the expresion (false and true) returns 'false' without evaluating the 'true' after 'and'.
+  if (const Bearing b{ x - 2, y - 1 }; (x > 1) and (y > 0) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x - 2, y + 1 }; (x > 1) and (y < 7) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x - 1, y - 2 }; (x > 0) and (y > 1) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x + 1, y - 2 }; (x < 7) and (y > 1) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x + 2, y - 1 }; (x < 6) and (y > 0) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x + 2, y + 1 }; (x < 6) and (y < 7) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x - 1, y + 2 }; (x > 0) and (y < 6) and condition(b) and perform(b)) { return true; }
+  if (const Bearing b{ x + 1, y + 2 }; (x < 7) and (y < 6) and condition(b) and perform(b)) { return true; }
   return false;
 }
 
@@ -171,7 +225,7 @@ bool Gameboard::iterate_from_to_and_perform(Bearing place,
     }
     break;
   case top_right:
-    for (Bearing b = { x + 1, y + 1 }; b.x < width and b.y < height and extra_condition(b); b++) {
+    for (Bearing b = { x + 1, y + 1 }; b.x < width and b.y < height and extra_condition(b); ++b) {
       if (perform(b)) { return true; }
     }
     break;

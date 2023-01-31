@@ -38,24 +38,6 @@ enum class Player : bool {
   black = false,
 };
 
-// bool operator==(const Player &lhs, const Player &rhs)
-// {
-//   // if (lhs ==)
-//   // {
-//   //   /* code */
-//   // }
-
-//   //
-// }
-Player operator!(const Player &obj) { return (obj == Player::white) ? Player::black : Player::white; }
-
-// enum Game_state : bool {
-//   white_turn,
-//   black_turn,
-//   // game_over,
-// };
-// bool operator!(Game_state param) { return param }
-
 enum Game_result {
   draw,
   no_results_yet,
@@ -73,9 +55,6 @@ enum class Player_type : bool { human, computer };
 
 // enum class Player_color : bool { white, black };
 
-namespace game {
-unsigned difference(const unsigned lhs, const unsigned rhs) { return (lhs > rhs) ? lhs - rhs : rhs - lhs; }
-void switch_player(Player &player) { player = (player == Player::white) ? Player::black : Player::white; }
-}// namespace game
+
 
 #endif// __ENUMS_H__

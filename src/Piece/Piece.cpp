@@ -1,9 +1,24 @@
+// Copyright (C) 2023 José Enrique Vilca Campana
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "Piece.hpp"
-#include "../enums/enums.h"
 
-// Piece::Piece() {}
+Piece::Piece(const Piece_symbols &t_symbol) : symbol{ t_symbol } { constructor(t_symbol); }
+Piece::Piece(const char &&t_symbol) : symbol{ static_cast<Piece_symbols>(t_symbol) } { constructor(symbol); }
 
-// Piece(char, bool, bool, int);
+bool Piece::empty() { return isFree; }
 
 void Piece::constructor(const Piece_symbols t_symbol)
 {
@@ -37,8 +52,6 @@ void Piece::constructor(const Piece_symbols t_symbol)
   }
 }
 
-
-// void setFree();
 void Piece::setFree()
 {
   symbol = Piece_symbols::empty;
