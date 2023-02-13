@@ -38,7 +38,7 @@ private:
   static void display_gameboard(Gameboard &gb, Player turn_perspective);
 
   static void print_title(const int option);
-  Move get_player_move(Gameboard gb, Player my_player, Player_type player_type) const;
+  static Move get_player_move(Gameboard gb, Player my_player, Player_type player_type);
 
   // game_interface
 
@@ -82,10 +82,10 @@ private:
     return game_results_interface(game_result);
   }
 
-  void interface_state_machine(Interface_state state = Interface_state::main);
+  void interface_state_machine(Interface_state state = Interface_state::main) const;
 
 public:
-  void init() { interface_state_machine(); }
+  void init() const { interface_state_machine(); }
 };
 
 

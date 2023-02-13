@@ -58,7 +58,7 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
   return Input_error::none;
 }
 
-Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type player_type) const
+Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
     IA_functor IA{ my_player };
@@ -138,7 +138,7 @@ void Interface::display_interface(vector<string> options, unsigned option)
   }
 }
 
-void Interface::interface_state_machine(Interface_state state)
+void Interface::interface_state_machine(Interface_state state) const
 {
   using Interface_state = Interface::Interface_state;
   do {
