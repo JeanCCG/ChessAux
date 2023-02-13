@@ -4,39 +4,71 @@
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
-		{
-			"name": "(gdb) Launch",
-			"type": "cppdbg",
-			"request": "launch",
-			"program": "${fileDirname}/${fileBasenameNoExtension}",
-			//   "program": "${command:cmake.launchTargetPath}",
-			"args": [],
-			// "args": ["-exec set print elements 0"],
-			"stopAtEntry": true,
-			"cwd": "${workspaceFolder}",
-			"environment": [
-				// {
-				// 	"name": "PATH",
-				// 	"value": "$PATH:${command:cmake.launchTargetDirectory}"
-				// }
-			],
-			"externalConsole": false,
-			// "externalConsole": true,
-			"MIMode": "gdb",
-			"setupCommands": [
-				{
-					"description": "Enable pretty-printing for gdb",
-					"text": "-enable-pretty-printing",
-					"ignoreFailures": true
-				}
-				// {
-				// 	"description": "Connect to valgrind",
-				// 	"text": "${command:valgrind-task-integration.valgrindGdbArg}",
-				// 	"ignoreFailures": true
-				// }
-			],
-			"preLaunchTask": "C/C++: g++ build active file",
-			"miDebuggerPath": "/usr/bin/gdb"
-		}
+    // {
+    //   "name": "DBG_test",
+    //   "type": "cppdbg",
+    //   "request": "launch",
+    //   "cwd": "${fileDirname}",
+    //   "miDebuggerPath": "gdb",
+    //   "program":"${workspaceRoot}/build/UCSP_Chess",
+    //   "stopAtEntry": true,
+    // },
+    {
+      "name": "C++ Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/UCSP_Chess",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        {"name":"LSAN_OPTIONS", "value":"verbosity=1:log_threads=1"}
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+          {
+              "description": "Enable pretty-printing for gdb",
+              "text": "-enable-pretty-printing",
+              "ignoreFailures": true
+          }
+      ]
+  }
+
+		// {
+		// 	"name": "(gdb) Launch",
+		// 	"type": "cppdbg",
+		// 	"request": "launch",
+		// 	"program": "${fileDirname}/${fileBasenameNoExtension}",
+		// 	//   "program": "${command:cmake.launchTargetPath}",
+		// 	"args": [],
+		// 	// "args": ["-exec set print elements 0"],
+		// 	"stopAtEntry": true,
+		// 	"cwd": "${workspaceFolder}",
+		// 	"environment": [
+		// 		// {
+		// 		// 	"name": "PATH",
+		// 		// 	"value": "$PATH:${command:cmake.launchTargetDirectory}"
+		// 		// }
+		// 	],
+		// 	"externalConsole": false,
+		// 	// "externalConsole": true,
+		// 	"MIMode": "gdb",
+		// 	"setupCommands": [
+		// 		{
+		// 			"description": "Enable pretty-printing for gdb",
+		// 			"text": "-enable-pretty-printing",
+		// 			"ignoreFailures": true
+		// 		}
+		// 		// {
+		// 		// 	"description": "Connect to valgrind",
+		// 		// 	"text": "${command:valgrind-task-integration.valgrindGdbArg}",
+		// 		// 	"ignoreFailures": true
+		// 		// }
+		// 	],
+		// 	"preLaunchTask": "C/C++: g++ build active file",
+		// 	"miDebuggerPath": "/usr/bin/gdb"
+		// }
 	]
 }
