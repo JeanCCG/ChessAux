@@ -4,7 +4,7 @@
       "label": "remove *.out binaries",
       "type": "shell",
       // "script": "t",
-      "command": "rm **/*.out",
+      "command": "if [ -e *.out ]; then rm **/*.out; fi",
       "runOptions": {
         "runOn": "folderOpen"
       },
