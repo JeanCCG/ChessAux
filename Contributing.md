@@ -21,6 +21,9 @@
 ![flow_of_interfaces_in_the_app](interface_flow.drawio.svg)
 human vs computer and human vs human interfaces generate a game_setting object that will be used to configure the game.
 
+## Minimax IA example
+![minimax_graphic_example](chess_minimax.drawio.png)
+****
 ## TODO's
 
 install the todo app in vscode.
