@@ -17,13 +17,20 @@
 
 Interface::Interface_state Interface::game_results_interface(const Game_result game_result)
 {
-   using Interface_state = Interface::Interface_state;
+  using Interface_state = Interface::Interface_state;
+
+  clean_screen();
+  print_title(5);
+
+  cout << "\n";
   switch (game_result) {
-  case Game_result::draw: cout << "Tie 🤯 No one won the game!\n"; break;
-  case Game_result::white_wins: cout << " \nwhite won the game!\n"; break;
-  case Game_result::black_wins: cout << " \nblack won the game! \n"; break;
+  case Game_result::draw: cout << "Tie 🤯 No one won the game!"; break;
+  case Game_result::white_wins: cout << " white won the game!"; break;
+  case Game_result::black_wins: cout << " black won the game! "; break;
   default: break;
   }
+  cout << "\n";
+
   input_anything();
 
   const Interface_state next_state{ Interface_state::main };

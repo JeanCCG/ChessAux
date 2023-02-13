@@ -2,21 +2,16 @@
 #define __GAMEBOARD_H__
 
 
-// #include "../Game_settings/Game_settings.cpp"
 #include "../Game_settings/Game_settings.hpp"
-// #include "../Move/Move.cpp"
 #include "../Move/Move.hpp"
-// #include "../Piece/Piece.cpp"
 #include "../Piece/Piece.hpp"
-
-// #include "../Bearing/Bearing.cpp"
 
 #include <vector>
 
 void clean_screen();
 
 
-const auto do_nothing = []([[maybe_unused]] const Bearing b) {};
+const auto do_nothing = []([[maybe_unused]] const Bearing b) { /* do nothing */ };
 const auto do_nothing_false = []([[maybe_unused]] const Bearing b) { return false; };
 const auto do_nothing_true = []([[maybe_unused]] const Bearing b) { return true; };
 
@@ -25,29 +20,29 @@ inline unsigned difference(const unsigned lhs, const unsigned rhs) { return (lhs
 inline void switch_player(Player &player) { player = (player == Player::white) ? Player::black : Player::white; }
 }// namespace game
 
+
+struct Score
+{
+  int score[2]{ 0, 0 };
+  int &white_score = score[0];
+  int &black_score = score[1];
+  int &at(Player player) { return score[static_cast<unsigned>(player)]; }
+};
+
 class Gameboard
 {
 public:
-  Piece slots[8][8];
   unsigned width{ 8 };
   unsigned height{ 8 };
 
-  Bearing white_king_bearing;
-  Bearing black_king_bearing;
-  int white_score = 0;
-  int black_score = 0;
+  Score score;
 
-  // Move last_move{ { 0U, 0U }, { 0U, 0U } };
-  Move last_move{ { 0U, 0U }, { 0U, 0U } };
-
-  // Gameboard() {}
   explicit Gameboard(const Game_settings &game_settings);
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
   void eat(const Move t_move) { capture(t_move); }
   bool validMovement(const Move t_move);
-  bool piecePossibilities(Bearing place);// ONLY white need visual reference
 
   template<class Do_if_movable, class Do_if_edible>
   bool available_movement_at(const Bearing place,
@@ -59,7 +54,7 @@ public:
   bool draw_piece_possibilities(const Bearing place)
   {
     return available_movement_at(
-      place, [&](const Bearing b) { drawDot(b); }, do_nothing);
+      place, [this](const Bearing b) { drawDot(b); }, do_nothing);
   };
 
   bool is_absolutely_pinned(const Bearing place);
@@ -71,52 +66,18 @@ public:
 
   bool isMenaced(const Player player, const Bearing place);
 
-
   Piece &at(Bearing bearing) { return slots[bearing.x][bearing.y]; }
-  Game_result check_end_conditions()
-  {
-    const Player last_move_player = at(last_move.end).player;
-
-    Player the_other_player{};
-    Bearing the_other_king_bearing{};
-    Game_result last_move_checkmates_the_other{};
-    if (last_move_player == Player::white) {
-      the_other_player = Player::black;
-      the_other_king_bearing = black_king_bearing;
-      last_move_checkmates_the_other = Game_result::white_wins;
-    } else {
-      the_other_king_bearing = white_king_bearing;
-      the_other_player = Player::white;
-      last_move_checkmates_the_other = Game_result::black_wins;
-    }
-
-    if (not available_movement_at(the_other_king_bearing)) {
-      if (isMenaced(the_other_player, the_other_king_bearing)) {
-        return last_move_checkmates_the_other;
-      } else {
-        return Game_result::stale_mate;
-      }
-    }
-    // check insufficient material;
-    return Game_result::no_results_yet;
-  }
+  Game_result check_end_conditions();
 
 private:
+  Bearing white_king_bearing;
+  Bearing black_king_bearing;
+  Piece slots[8][8];
+  int &white_score = score.score[0];
+  int &black_score = score.score[1];
+  Move last_move{ { 0U, 0U }, { 0U, 0U } };
+
   enum Direction { top, bot, left, right, top_left, top_right, bot_left, bot_right };
-
-
-  struct Bearing_it
-  {
-    Bearing value;
-    Bearing step;
-    unsigned limit{ 0 };
-    Bearing_it(const Bearing init_value, const Bearing t_step, const int t_limit = 0)
-      : value{ init_value }, step{ t_step }, limit{ static_cast<unsigned>(t_limit) }
-    {}
-
-    void next() { value += step; }
-  };
-
 
   bool legal_pawn(const Move t_move);
   bool legal_diagonal(const Move t_move);
@@ -133,9 +94,14 @@ private:
 
   template<class Do_if_movable, class Do_if_edible>
   bool evaluate_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
+  // template<class Do_if_movable, class Do_if_edible>
+  // bool evaluate_white_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible
+  // do_if_edible); template<class Do_if_movable, class Do_if_edible> bool evaluate_black_pawn_possibilities(const
+  // Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
 
   bool draw_pawn(const Bearing place);
-  void undraw_pawn(const Bearing place);
+  void undraw_white_pawn(const Bearing place);
+  void undraw_black_pawn(const Bearing place);
   bool draw_jumps(const Bearing place);
   void undraw_jumps(const Bearing place);
 
@@ -150,38 +116,49 @@ private:
   bool iterate_from_to_and_perform(Bearing place,
     Direction Direction,
     Functor perform,
-    Extra_condition extra_condition = do_nothing_true);
+    Extra_condition extra_condition = do_nothing_true) const;
 
   template<class Functor, class Condition>
-  bool perform_jumps(const Bearing place, Functor perform, Condition condition);
+  bool perform_jumps(const Bearing place, Functor perform, Condition condition) const;
 
   template<class Functor, class Extra_condition>
-  bool straight_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
-  {
-    if (iterate_from_to_and_perform(place, Direction::right, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::top, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::left, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::bot, perform, extra_condition)) { return true; }
-    return false;
-  }
+  bool straight_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
   template<class Functor, class Extra_condition>
-  bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
-  {
-    if (iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition)) { return true; }
-    if (iterate_from_to_and_perform(place, Direction::bot_right, perform, extra_condition)) { return true; }
-    return false;
-  }
-
+  bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
   bool pawn_menace(const Player player, const Bearing place);
 };
 
+/*****************************************************************************
+ * Template implementation
+ ****************************************************************************/
+
+template<class Functor, class Extra_condition>
+bool Gameboard::straight_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
+{
+  using Direction = Gameboard::Direction;
+  if (iterate_from_to_and_perform(place, Direction::right, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::top, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::left, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::bot, perform, extra_condition)) { return true; }
+  return false;
+}
+
+template<class Functor, class Extra_condition>
+bool Gameboard::diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition)
+{
+  using Direction = Gameboard::Direction;
+  if (iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition)) { return true; }
+  if (iterate_from_to_and_perform(place, Direction::bot_right, perform, extra_condition)) { return true; }
+  return false;
+}
+
 
 template<class Functor, class Condition>
-bool Gameboard::perform_jumps(const Bearing place, Functor perform, Condition condition)
+bool Gameboard::perform_jumps(const Bearing place, Functor perform, Condition condition) const
 {
   const auto [x, y] = place;
   // consider that the expresion (false and true) returns 'false' without evaluating the 'true' after 'and'.
@@ -200,7 +177,7 @@ template<class Functor, class Extra_condition>
 bool Gameboard::iterate_from_to_and_perform(Bearing place,
   Direction Direction,
   Functor perform,
-  Extra_condition extra_condition)
+  Extra_condition extra_condition) const
 {
   const auto [x, y] = place;
   switch (Direction) {
@@ -305,6 +282,9 @@ bool Gameboard::available_movement_at(const Bearing place, Do_if_movable do_if_m
     break;
 
   case Piece_symbols::white_pawn:
+    // available_movement = evaluate_white_pawn_possibilities(place, do_if_movable, do_if_edible);
+    // available_movement = evaluate_black_pawn_possibilities(place, do_if_movable, do_if_edible);
+    // break;
   case Piece_symbols::black_pawn:
     available_movement = evaluate_pawn_possibilities(place, do_if_movable, do_if_edible);
     break;
@@ -328,18 +308,18 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
   const bool in_the_bot_border = (king_bearing.y == 0);
   const bool in_the_top_border = (king_bearing.y == width - 1);
 
-  const unsigned x_limit = (in_the_right_border) ? 2 : 3;
-  const unsigned y_limit = (in_the_top_border) ? 2 : 3;
+  const unsigned x_limit = in_the_right_border ? 2 : 3;
+  const unsigned y_limit = in_the_top_border ? 2 : 3;
 
 
   bool available_movement{ false };
 
   // TODO: make this code clearer
-  for (unsigned x_it = (in_the_left_border) ? 1U : 0U; x_it < x_limit; x_it++) {
+  for (unsigned x_it = in_the_left_border ? 1U : 0U; x_it < x_limit; x_it++) {
     Bearing end;
     end.x = king_bearing.x + x_it + -1;
 
-    for (unsigned y_it = (in_the_bot_border) ? 1U : 0U; y_it < y_limit; y_it++) {
+    for (unsigned y_it = in_the_bot_border ? 1U : 0U; y_it < y_limit; y_it++) {
       end.y = king_bearing.y + y_it - 1;
 
       if (isMenaced(my_player, end)) { continue; }
@@ -357,10 +337,8 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
   bool available_queen_side_castling{ true };
   bool available_king_side_castling{ true };
   if (first_movement(king_bearing)) {
-    const Bearing king_rook_bearing{ 0U, king_bearing.y };
-    const Bearing queen_rook_bearing{ 7U, king_bearing.y };
 
-    if (first_movement(queen_rook_bearing)) {
+    if (const Bearing queen_rook_bearing{ 7U, king_bearing.y }; first_movement(queen_rook_bearing)) {
       for (Bearing b = { king_bearing.x, king_bearing.y - 1 }; b.y != -1U; b.y--) {
         if (not at(b).isFree or isMenaced(my_player, b)) {
           available_queen_side_castling = false;
@@ -369,6 +347,7 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
       }
     }
 
+    const Bearing king_rook_bearing{ 0U, king_bearing.y };
     if (first_movement(king_rook_bearing)) {
       for (Bearing b = { king_bearing.x, king_bearing.y + 1 }; b.y < width - 1; b.y++) {
         if (not at(b).isFree) {
@@ -399,7 +378,7 @@ bool Gameboard::evaluate_jump_possibilities(const Bearing place, Do_if_movable d
 
   const Player my_player = at(place).player;
   auto condition = do_nothing_true;
-  auto perform = [&](const Bearing b) {
+  auto perform = [&](const Bearing b) {// NOSONAR
     if (at(b).empty()) {
       do_if_movable(b);
       available_movement = true;
@@ -425,11 +404,11 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   unsigned direction{};
   unsigned en_passant_y{};
   if (my_player == Player::white) {
-    enemy_pawn = white_pawn;
+    enemy_pawn = black_pawn;
     direction = +1;
     en_passant_y = height;
   } else {
-    enemy_pawn = black_pawn;
+    enemy_pawn = white_pawn;
     direction = -1U;
     en_passant_y = 3;
   }
@@ -450,21 +429,79 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
 
     const bool first_double_movement = first_movement(place) and at({ place.x, place.y + 2 * direction }).isFree;
     if (first_double_movement) { do_if_movable({ place.x, place.y + 2 * direction }); }
+  }
 
-    const bool left_capture = is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
-    if (left_capture) {
-      do_if_edible({ place.x - 1, place.y + direction });
-      available_movement = true;
-    }
+  const bool is_not_at_left_border = place.x >= 1;
+  const bool left_capture =
+    is_not_at_left_border and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
+  if (left_capture) {
+    do_if_edible({ place.x - 1, place.y + direction });
+    available_movement = true;
+  }
 
-    const bool right_capture = is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
-    if (right_capture) {
-      do_if_edible({ place.x + 1, place.y + direction });
-      available_movement = true;
-    }
+  const bool is_not_at_right_border = place.x < width - 1;
+  const bool right_capture =
+    is_not_at_right_border and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
+  if (right_capture) {
+    do_if_edible({ place.x + 1, place.y + direction });
+    available_movement = true;
   }
 
   return available_movement;
 }
+
+// template<class Do_if_movable, class Do_if_edible>
+// bool Gameboard::evaluate_white_pawn_possibilities(const Bearing place,
+//   Do_if_movable do_if_movable,
+//   Do_if_edible do_if_edible)
+// {
+//   bool available_movement{ false };
+//   const Player my_player{ Player::white };
+//   const Piece_symbols enemy_pawn{ black_pawn };
+//   const unsigned direction{ 1 };
+//   const unsigned en_passant_y{ height };
+
+//   const bool was_the_last_move_a_pawn{ at(last_move.end).symbol == enemy_pawn };
+//   const bool en_passant_capture_available =
+//     was_the_last_move_a_pawn and (place.y == en_passant_y) and game::difference(place.x, last_move.end.x) == 1;
+
+//   if (en_passant_capture_available) {
+//     available_movement = true;
+//     const unsigned y_behind_the_enemy_pawn = last_move.end.y + direction;
+//     do_if_movable({ last_move.end.x, y_behind_the_enemy_pawn });
+//   }
+
+//   if (const bool normal_movement = at({ place.x, place.y + direction }).isFree; normal_movement) {
+//     available_movement = true;
+//     do_if_movable({ place.x, place.y + direction });
+
+//     const bool first_double_movement =
+//       first_movement(place) and at({ place.x, place.y + direction + direction }).isFree;
+//     if (first_double_movement) { do_if_movable({ place.x, place.y + 2 * direction }); }
+
+//     const bool is_not_at_left_border = place.x >= 1;
+//     const bool left_capture =
+//       is_not_at_left_border and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
+//     if (left_capture) {
+//       do_if_edible({ place.x - 1, place.y + direction });
+//       available_movement = true;
+//     }
+
+//     const bool is_not_at_right_border = place.x < width - 1;
+//     const bool right_capture =
+//       is_not_at_right_border and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
+//     if (right_capture) {
+//       do_if_edible({ place.x + 1, place.y + direction });
+//       available_movement = true;
+//     }
+//   }
+
+//   return available_movement;
+// }
+
+// template<class Do_if_movable, class Do_if_edible>
+// bool Gameboard::evaluate_black_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible
+// do_if_edible)
+// {}
 
 #endif// __GAMEBOARD_H__

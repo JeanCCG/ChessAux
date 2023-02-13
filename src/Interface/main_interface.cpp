@@ -14,15 +14,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "./Interface.hpp"
+#include <string>
+#include <vector>
 
-Interface::Interface_state Interface::main_interface()
+using namespace std;
+
+Interface::Interface_state Interface::main_interface() const
 {
-  using Interface_state = Interface::Interface_state;
-  enum Option : int {
+  enum class Option : int {
     human_vs_human = 0,
     human_vs_computer,
     quit,
-  } option{ human_vs_human };
+  };
+  Option option{ Option::human_vs_human };
+
   const vector<string> options{
     "Human vs Human",
     "Human vs Computer",
@@ -30,6 +35,7 @@ Interface::Interface_state Interface::main_interface()
   };
 
   User_input user_input{};
+  using Interface_state = Interface::Interface_state;
   do {
     display_interface(options, static_cast<unsigned>(option));
     switch (get_user_key_input()) {

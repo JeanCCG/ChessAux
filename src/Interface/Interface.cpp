@@ -14,27 +14,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Interface.hpp"
+#include "../IA/IA.hpp"
 
 Interface::Input_error Interface::start_input_validation(Move &move, Gameboard gb, const Player turn_color)
 {
-  using Input_error = Interface::Input_error;
+  using IE = Interface::Input_error;
   if (!(cin >> move.start)) {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    return Input_error::bad_input;
+    return IE::bad_input;
   }
 
-  if (const bool isFree = gb.at(move.start).isFree; isFree) { return Input_error::no_piece_selected; }
+  if (gb.at(move.start).empty()) { return IE::no_piece_selected; }
 
   const Player piece_color = gb.at(move.start).player;
-  if (turn_color != piece_color) { return Input_error::cannot_move_enemy_piece; }
+  if (turn_color != piece_color) { return IE::cannot_move_enemy_piece; }
 
-  if (gb.is_absolutely_pinned(move.start)) { return Input_error::absolutely_pinned_piece; }
+  if (gb.is_absolutely_pinned(move.start)) { return IE::absolutely_pinned_piece; }
 
-  const bool availableMovement = gb.draw_piece_possibilities(move.start);
-  if (!availableMovement) { return Input_error::no_available_moves; }
+  if (not gb.available_movement_at(move.start)) { return IE::no_available_moves; }
 
-  return Input_error::none;
+  return IE::none;
 }
 
 Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
@@ -49,133 +49,71 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
   if (move.start == move.end) { return Input_error::start_is_equal_to_end; }
 
   const bool is_not_free = not gb.at(move.end).isFree;
-  if (is_not_free and (gb.at(move.start).player == gb.at(move.end).player)) { return Input_error::cannibalism; }
+  if (is_not_free and (gb.at(move.start).player == gb.at(move.end).player)) {// NOSONAR
+    return Input_error::cannibalism;
+  }
 
-  const bool invalidMovement = not gb.validMovement(move);
-  if (invalidMovement) { return Input_error::illegal_movement; }
+  if (not gb.validMovement(move)) { return Input_error::illegal_movement; }
 
   return Input_error::none;
 }
 
-void Interface::display_gameboard(Gameboard &gb, Player turn_perspective)
+Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type player_type) const
 {
-  const std::string blank_frame{ "   " };
-  std::string blank_slot{ "       " };
-  const std::string half_blank_slot{ "   " };
-
-  const Style white_slot_color = Style::yellow_bg;
-  const Style black_slot_color = Style::black_bg;
-
-  Style slot_color = white_slot_color;
-  const Style slot_letter_color = Style::black;
-  // Style axis_color = Style::yellow;
-  const auto width = gb.width;
-  const auto height = gb.height;
-
-  auto switch_slot_color = [&]() {
-    slot_color = (slot_color == white_slot_color) ? black_slot_color : white_slot_color;
-  };
-
-  auto print_blank_lane = [&]() {
-    cout << blank_frame;
-    for (unsigned x_it = 0; x_it < width; x_it++, switch_slot_color()) { print(slot_color, blank_slot); }
-    cout << '\n';
-    switch_slot_color();
-  };
-
-  auto print_lane = [&](Bearing b) {
-    cout << ' ' << static_cast<char>(b.y + 'A') << ' ';
-    switch_slot_color();
-    for (; b.x < width; b.x++, switch_slot_color()) {
-      string slot = blank_slot;
-      slot[blank_slot.size() / 2] = static_cast<char>(gb.at(b).symbol);
-      print(slot_color, half_blank_slot);
-      print(slot_color, slot_letter_color, static_cast<char>(gb.at(b).symbol));
-      print(slot_color, half_blank_slot);
-
-      // print(slot_color, slot_letter_color, blank_slot);
-      // cout << static_cast<char>(gb.at(b).symbol);
-    }
-    cout << '\n';
-  };
-
-  unsigned direction{};
-  unsigned limit{};
-  unsigned y_init{};
-
-  if (turn_perspective == Player::white) {
-    direction = -1U;
-    limit = -1U;
-    y_init = width - 1;
-  } else {
-    direction = +1U;
-    limit = height;
-    y_init = 0;
+  if (player_type == Player_type::computer) {
+    IA_functor IA{ my_player };
+    return IA(gb, my_player, 5);
   }
 
-
-  for (Bearing b = { 0U, y_init }; b.y != limit; b.y += direction) {
-    print_blank_lane();
-    print_lane(b);
-    print_blank_lane();
-  }
-
-  // print x axis bottom frame
-  cout << blank_frame;
-  for (unsigned i = 1; i < width + 1; i++) {
-    string slot_number = blank_slot;
-    slot_number[blank_slot.size() / 2] = static_cast<char>('0' + i);
-    cout << slot_number;
-  }
-  cout << '\n';
-}
-
-Move Interface::get_player_move(Gameboard gb, Player my_player, bool is_human_player)
-{
-  if (not is_human_player) { /* return IA(); */
-    return { { 0U, 0U }, { 0U, 0U } };
-  }
-
-  display_gameboard(gb, my_player);
-
+  const string my_player_str = (my_player == Player::white) ? "white" : "black";
   Move move;
 
   using IE = Input_error;
   bool invalid_start{ true };
+  string error_message{};
   do {
+    clean_screen();
+    display_gameboard(gb, my_player);
+    print(Style::red, error_message, ".\n");
+    cout << my_player_str << "\n";
+
     cout << "Input the start position letter and number:\n";
     switch (start_input_validation(move, gb, my_player)) {
-    case IE::bad_input: cout << "bad input"; break;
-    case IE::no_piece_selected: cout << "No piece was selected"; break;
-    case IE::no_available_moves: cout << "No available moves for that piece"; break;
-    case IE::absolutely_pinned_piece: cout << "That piece is pinned"; break;
+    case IE::none: invalid_start = false; break;
+    case IE::bad_input: error_message = "bad input"; break;
+    case IE::no_piece_selected: error_message = "No piece was selected"; break;
+    case IE::no_available_moves: error_message = "No available moves for that piece"; break;
+    case IE::absolutely_pinned_piece: error_message = "That piece is pinned"; break;
+    case IE::cannot_move_enemy_piece: error_message = "That piece is not yours"; break;
 
-    case IE::none:
-    default: invalid_start = false; break;
+    default: error_message = "unexpected error"; break;
     }
-    cout << ".\n";
   } while (invalid_start);
+  gb.draw_piece_possibilities(move.start);
 
-  display_gameboard(gb, my_player);
-
+  error_message.clear();
   const Piece piece_to_undraw = gb.at(move.start);
   bool invalid_end{ true };
   do {
+    clean_screen();
+    display_gameboard(gb, my_player);
+    print(Style::red, error_message, ".\n");
+    cout << my_player_str << "\n";
+
     cout << "Input the end position letter and number:\n";
     switch (end_input_validation(move, gb)) {
-    case IE::bad_input: cout << "bad input"; break;
-    case IE::cannibalism: cout << "You can't capture your own pieces"; break;
-    case IE::illegal_movement: cout << "That movement is not allowed"; break;
-    case IE::start_is_equal_to_end: cout << "You must move"; break;
+    case IE::none: invalid_end = false; break;
+    case IE::bad_input: error_message = "bad input"; break;
+    case IE::cannibalism: error_message = "You can't capture your own pieces"; break;
+    case IE::illegal_movement: error_message = "That movement is not allowed"; break;
+    case IE::start_is_equal_to_end: error_message = "You must move"; break;
 
-    case IE::none:
-    default: invalid_end = false; break;
+    default: error_message = "unexpected error"; break;
     }
-    cout << "\n";
-
   } while (invalid_end);
-
   gb.undraw_piece_possibilities(move.start, piece_to_undraw);
+
+
   return move;
 }
 
@@ -208,11 +146,12 @@ void Interface::interface_state_machine(Interface_state state)
     case Interface_state::main: state = main_interface(); break;
     case Interface_state::human_vs_computer: state = human_vs_computer_interface(); break;
     case Interface_state::human_vs_human: state = human_vs_human_interface(); break;
-    // case Interface_state::game_results: state = game_results_interface(); break;
-    default:
     case Interface_state::end_program: state = Interface_state::end_program; break;
+    default: break;
     }
   } while (state != Interface_state::end_program);
+
+  clean_screen();
 }
 
 void Interface::clean_screen() { system("clear"); }// Flawfinder: ignore ; reason: it is what it is //NOLINT

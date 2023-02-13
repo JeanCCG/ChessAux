@@ -34,11 +34,11 @@ enum Piece_symbols : char {
 };
 
 enum class Player : bool {
-  white = true,
-  black = false,
+  white = false,
+  black = true,
 };
 
-enum Game_result {
+enum class Game_result {
   draw,
   no_results_yet,
   white_wins,
@@ -54,7 +54,6 @@ enum class Game_mode {
 enum class Player_type : bool { human, computer };
 
 // enum class Player_color : bool { white, black };
-
 
 
 #endif// __ENUMS_H__

@@ -14,17 +14,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Interface.hpp"
+#include <string>
+#include <vector>
 
-Interface::Interface_state Interface::human_vs_computer_interface()
+using namespace std;
+
+Interface::Interface_state Interface::human_vs_computer_interface() const
 {
-  using Interface_state = Interface::Interface_state;
-  enum Option : int {
+  enum class Option : int {
     play = 0,
     time,// on, off
     swap_colors,
     difficulty,
     modify_chess_board,
-  } option{ play };
+  };
+  Option option{ Option::play };
 
   const vector<string> options{
     "Play",
@@ -35,6 +39,9 @@ Interface::Interface_state Interface::human_vs_computer_interface()
   };
 
   Game_settings game_settings{};
+  game_settings.is_time_enabled = false;
+  game_settings.white_config.player_type = Player_type::human;
+  game_settings.black_config.player_type = Player_type::computer;
 
   User_input user_input{};
 
@@ -65,10 +72,7 @@ Interface::Interface_state Interface::human_vs_computer_interface()
 
   Interface_state next_state{};
   switch (option) {
-  case Option::play:
-    game(game_settings);
-    next_state = Interface_state::game_results;
-    break;
+  case Option::play: next_state = game(game_settings); break;
   case Option::time: /* enable - disable (if enable, add option) */ break;
   case Option::swap_colors: cout << "\tGood bye 1\n"; return Interface_state::end_program;
   case Option::difficulty: cout << "\tGood bye 2\n"; return Interface_state::end_program;
