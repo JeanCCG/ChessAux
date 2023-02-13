@@ -9,12 +9,13 @@ project(
   HOMEPAGE_URL https://github.com/JeanCCG/ChessAux)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_DOC "Build Documentation" ON)
+# option(BUILD_DOC "Build Documentation" ON)
 
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-set(CMAKE_CXX_COMPILER "/usr/bin/g++-10")
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++-10")
+set(CMAKE_CXX_COMPILER "/usr/bin/g++-11") # for using enum
 
 # set(PROJECT_SOURCE_DIR "src")
 
@@ -28,9 +29,14 @@ set(CMAKE_CXX_COMPILER "/usr/bin/g++-10")
 
 # include(CPack)
 
+# cmake_export_compile_commands()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # =============================================================================
 # Build Types Configuration
 # =============================================================================
+
 if(CMAKE_CONFIGURATION_TYPES)
   if(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
     list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
@@ -67,6 +73,7 @@ set(SOURCES
     "src/Piece/Piece.cpp"
     # Interface
     "src/Interface/Interface.cpp"
+    "src/Interface/display_gameboard.cpp"
     "src/Interface/print_title.cpp"
     "src/Interface/get_user_key_input.cpp"
     "src/Interface/main_interface.cpp"

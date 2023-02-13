@@ -139,5 +139,11 @@
   ],
   "cSpell.ignoreWords": [
     "tkbqrbkt"
-  ]
+  ],
+
+  "cmake.configureOnOpen": true,
+  "cmake.configureSettings": {"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"},
+  // "makefile.compileCommandsPath": "build/compile_commands.json",
+  // "sonarlint.cxx.compilationDatabasePath": "./build/compile_commands.json"
+  // "sonarlint.cxx.compilationDatabasePath": "/home/marcus/+projects/ChessAux/build/compile_commands.json"
 }
