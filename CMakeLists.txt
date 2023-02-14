@@ -71,6 +71,7 @@ set(SOURCES
     "src/Move/Move.cpp"
     "src/Bearing/Bearing.cpp"
     "src/Piece/Piece.cpp"
+    "src/enums/enums.cpp"
     # Interface
     "src/Interface/Interface.cpp"
     "src/Interface/display_gameboard.cpp"

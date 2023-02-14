@@ -241,7 +241,7 @@ bool Gameboard::legal_king(const Move t_move)
     if (not first_movement(start)) { return false; }
     const Bearing king_rook_start{ 7U, start.y };
     const Bearing king_rook_end{ start.x + 1, start.y };
-    const Piece_symbols my_rook = (player == Player::white) ? white_rook : black_rook;
+    const Piece_symbols my_rook = (player == Player::white) ? Piece_symbols::white_rook : Piece_symbols::black_rook;
     const Bearing queen_rook_start{ 0U, start.y };
     const Bearing queen_rook_end{ start.x - 1, start.y };
 
@@ -523,10 +523,24 @@ Game_result Gameboard::check_end_conditions()
     if (isMenaced(the_other_player, the_other_king_bearing)) {
       *last_move_score += 1000;
       return last_move_checkmates_the_other;
-    } else {
-      return Game_result::stale_mate;
+    }
+    if (not available_movement_for_player(the_other_player)) { return Game_result::stale_mate; }
+  }
+  // TODO: insufficient material
+
+  return Game_result::no_results_yet;
+}
+
+
+bool Gameboard::available_movement_for_player(const Player player)
+{
+  for (unsigned x_it = 0; x_it < width; x_it++) {
+    Bearing end;
+    end.x = x_it;
+    for (end.y = 0; end.y < height; end.y++) {
+      if (at(end).player != player) { continue; }
+      if (available_movement_at(end)) { return true; }
     }
   }
-  // check insufficient material;
-  return Game_result::no_results_yet;
+  return false;
 }

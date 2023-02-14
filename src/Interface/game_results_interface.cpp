@@ -22,12 +22,13 @@ Interface::Interface_state Interface::game_results_interface(const Game_result g
   clean_screen();
   print_title(5);
 
-  cout << "\n";
+  cout << "\n\n\t\t";
   switch (game_result) {
   case Game_result::draw: cout << "Tie 🤯 No one won the game!"; break;
+  case Game_result::stale_mate: cout << " stale mate 🤯, no one won"; break;
   case Game_result::white_wins: cout << " white won the game!"; break;
   case Game_result::black_wins: cout << " black won the game! "; break;
-  default: break;
+  default: cout << "unexpected end"; break;
   }
   cout << "\n";
 

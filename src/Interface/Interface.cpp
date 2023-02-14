@@ -89,6 +89,7 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
     default: error_message = "unexpected error"; break;
     }
   } while (invalid_start);
+
   gb.draw_piece_possibilities(move.start);
 
   error_message.clear();
@@ -120,7 +121,8 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
 
 void Interface::input_anything()
 {
-  cout << "\t\tInput [anything] to continue:\n\t\t\t\t";
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  cout << "\n\t\tInput [anything] to continue:\n\t\t\t\t";
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 

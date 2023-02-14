@@ -20,7 +20,7 @@ public:
 
   void setFree();
   void setPiece(Piece);
-  bool empty();
+  bool empty() const;
 };
 
 

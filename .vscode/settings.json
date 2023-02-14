@@ -134,6 +134,7 @@
   },
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   "cSpell.words": [
+    "castlings",
     "gameboard",
     "ncursed"
   ],

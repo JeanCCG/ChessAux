@@ -8,9 +8,6 @@
 
 #include <vector>
 
-void clean_screen();
-
-
 const auto do_nothing = []([[maybe_unused]] const Bearing b) { /* do nothing */ };
 const auto do_nothing_false = []([[maybe_unused]] const Bearing b) { return false; };
 const auto do_nothing_true = []([[maybe_unused]] const Bearing b) { return true; };
@@ -50,6 +47,8 @@ public:
     Do_if_edible do_if_edible = do_nothing);
 
   bool available_movement_at(const Bearing place) { return available_movement_at(place, do_nothing, do_nothing); }
+
+  bool available_movement_for_player(const Player player);
 
   bool draw_piece_possibilities(const Bearing place)
   {
@@ -109,6 +108,8 @@ private:
   bool evaluate_jump_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
   template<class Do_if_movable, class Do_if_edible>
   bool evaluate_king_possibilities(const Bearing king_bearing, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
+  template<class Do_if_movable>
+  bool evaluate_castlings(const Bearing king_bearing, Do_if_movable do_if_movable, const Player my_player);
 
   void undraw_king(const Bearing king_bearing);
 
@@ -274,7 +275,10 @@ bool Gameboard::available_movement_at(const Bearing place, Do_if_movable do_if_m
   case Piece_symbols::black_bishop: draw_diagonals(); break;
 
   case Piece_symbols::white_queen:
-  case Piece_symbols::black_queen: draw_lanes(), draw_diagonals(); break;
+  case Piece_symbols::black_queen:
+    draw_lanes();
+    draw_diagonals();
+    break;
 
   case Piece_symbols::white_knight:
   case Piece_symbols::black_knight:
@@ -334,12 +338,22 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
     }
   }
 
+  if (evaluate_castlings(king_bearing, do_if_movable, my_player)) { available_movement = true; }
+
+  return available_movement;
+}
+
+template<class Do_if_movable>
+bool Gameboard::evaluate_castlings(const Bearing king_bearing, Do_if_movable do_if_movable, const Player my_player)
+{
+  bool available_movement{ false };
+
   bool available_queen_side_castling{ true };
   bool available_king_side_castling{ true };
   if (first_movement(king_bearing)) {
 
     if (const Bearing queen_rook_bearing{ 7U, king_bearing.y }; first_movement(queen_rook_bearing)) {
-      for (Bearing b = { king_bearing.x, king_bearing.y - 1 }; b.y != -1U; b.y--) {
+      for (Bearing b = { king_bearing.x - 1, king_bearing.y }; b.x != 0; b.x--) {
         if (not at(b).isFree or isMenaced(my_player, b)) {
           available_queen_side_castling = false;
           break;
@@ -348,9 +362,10 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
     }
 
     const Bearing king_rook_bearing{ 0U, king_bearing.y };
+    // here is the bug
     if (first_movement(king_rook_bearing)) {
-      for (Bearing b = { king_bearing.x, king_bearing.y + 1 }; b.y < width - 1; b.y++) {
-        if (not at(b).isFree) {
+      for (Bearing b = { king_bearing.x + 1, king_bearing.y }; b.x < width - 1; b.x++) {
+        if (not at(b).isFree or isMenaced(my_player, b)) {
           available_king_side_castling = false;
           break;
         }
@@ -404,11 +419,11 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   unsigned direction{};
   unsigned en_passant_y{};
   if (my_player == Player::white) {
-    enemy_pawn = black_pawn;
+    enemy_pawn = Piece_symbols::black_pawn;
     direction = +1;
     en_passant_y = height;
   } else {
-    enemy_pawn = white_pawn;
+    enemy_pawn = Piece_symbols::white_pawn;
     direction = -1U;
     en_passant_y = 3;
   }

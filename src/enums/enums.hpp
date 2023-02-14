@@ -1,7 +1,7 @@
 #ifndef __ENUMS_H__
 #define __ENUMS_H__
 
-enum Piece_points {
+enum class Piece_points {// NOSONAR
   int_eaten = -1,
   int_free = 0,
   kingPoints = 1000,
@@ -12,7 +12,9 @@ enum Piece_points {
   pawnPoints = 1
 };
 
-enum Piece_symbols : char {
+int to_int(const Piece_points points);
+
+enum class Piece_symbols : char {
   empty = ' ',
   dot = '*',
 
@@ -33,6 +35,8 @@ enum Piece_symbols : char {
   black_pawn = 'P'
 };
 
+char to_char(const Piece_symbols symbol);
+
 enum class Player : bool {
   white = false,
   black = true,
@@ -52,8 +56,6 @@ enum class Game_mode {
   human_vs_computer,
 };
 enum class Player_type : bool { human, computer };
-
-// enum class Player_color : bool { white, black };
 
 
 #endif// __ENUMS_H__

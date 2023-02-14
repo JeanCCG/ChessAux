@@ -31,23 +31,23 @@ struct player_configuration
 
 struct Game_settings
 {
-  const char _ = Piece_symbols::empty;
+  const char _ = to_char(Piece_symbols::empty);
 
   // white is always in minuscules
-  const char r = Piece_symbols::white_king;
-  const char q = Piece_symbols::white_queen;
-  const char t = Piece_symbols::white_rook;
-  const char c = Piece_symbols::white_knight;
-  const char a = Piece_symbols::white_bishop;
-  const char p = Piece_symbols::white_pawn;
+  const char r = to_char(Piece_symbols::white_king);
+  const char q = to_char(Piece_symbols::white_queen);
+  const char t = to_char(Piece_symbols::white_rook);
+  const char c = to_char(Piece_symbols::white_knight);
+  const char a = to_char(Piece_symbols::white_bishop);
+  const char p = to_char(Piece_symbols::white_pawn);
 
   // black IS ALWAYS IN MAJUSCULES
-  const char R = Piece_symbols::black_king;
-  const char Q = Piece_symbols::black_queen;
-  const char T = Piece_symbols::black_rook;
-  const char C = Piece_symbols::black_knight;
-  const char A = Piece_symbols::black_bishop;
-  const char P = Piece_symbols::black_pawn;
+  const char R = to_char(Piece_symbols::black_king);
+  const char Q = to_char(Piece_symbols::black_queen);
+  const char T = to_char(Piece_symbols::black_rook);
+  const char C = to_char(Piece_symbols::black_knight);
+  const char A = to_char(Piece_symbols::black_bishop);
+  const char P = to_char(Piece_symbols::black_pawn);
 
   std::vector<std::string> board{
     //
