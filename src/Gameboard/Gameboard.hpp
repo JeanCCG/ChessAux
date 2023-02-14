@@ -421,7 +421,7 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   if (my_player == Player::white) {
     enemy_pawn = Piece_symbols::black_pawn;
     direction = +1;
-    en_passant_y = height;
+    en_passant_y = height - 1 - 3;
   } else {
     enemy_pawn = Piece_symbols::white_pawn;
     direction = -1U;
@@ -432,6 +432,7 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   const bool en_passant_capture_available =
     was_the_last_move_a_pawn and (place.y == en_passant_y) and game::difference(place.x, last_move.end.x) == 1;
 
+  // FIXME: en passant not working
   if (en_passant_capture_available) {
     available_movement = true;
     const unsigned y_behind_the_enemy_pawn = last_move.end.y + direction;
