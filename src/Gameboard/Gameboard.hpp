@@ -432,7 +432,6 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   const bool en_passant_capture_available =
     was_the_last_move_a_pawn and (place.y == en_passant_y) and game::difference(place.x, last_move.end.x) == 1;
 
-  // FIXME: en passant not working
   if (en_passant_capture_available) {
     available_movement = true;
     const unsigned y_behind_the_enemy_pawn = last_move.end.y + direction;
@@ -447,17 +446,15 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
     if (first_double_movement) { do_if_movable({ place.x, place.y + 2 * direction }); }
   }
 
-  const bool is_not_at_left_border = place.x >= 1;
-  const bool left_capture =
-    is_not_at_left_border and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
+  const bool checkable_left = place.x > 0;
+  const bool left_capture = checkable_left and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
   if (left_capture) {
     do_if_edible({ place.x - 1, place.y + direction });
     available_movement = true;
   }
 
-  const bool is_not_at_right_border = place.x < width - 1;
-  const bool right_capture =
-    is_not_at_right_border and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
+  const bool checkable_right = place.x < width - 1;
+  const bool right_capture = checkable_right and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
   if (right_capture) {
     do_if_edible({ place.x + 1, place.y + direction });
     available_movement = true;

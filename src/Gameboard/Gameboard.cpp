@@ -210,13 +210,19 @@ bool Gameboard::legal_pawn(const Move t_move)
     }
   }
 
-  if (game::difference(start.x, end.x) == 1) {
+  using game::difference;
+
+  if (difference(start.x, end.x) == 1 and difference(start.y, end.y) == 1) {
     // diagonal capture
     if (not at(end).empty() and is_an_enemy_piece(my_player, end)) { return true; }
+
     // en passant
-    const bool last_move_was_a_pawn_and_double_forward_step =
-      (at(last_move.end).symbol == enemy_pawn) and (game::difference(last_move.start.y, last_move.end.y) == 2);
-    if (at(end).empty() and last_move_was_a_pawn_and_double_forward_step) { return true; }
+    const bool last_was_pawn_and_double_step =
+      (at(last_move.end).symbol == enemy_pawn) and (difference(last_move.start.y, last_move.end.y) == 2);
+
+    if (at(end).empty() and difference(last_move.end.x, start.x) == 1 and last_was_pawn_and_double_step) {
+      return true;
+    }
   }
 
   return false;
