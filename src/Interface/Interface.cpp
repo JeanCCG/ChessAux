@@ -61,8 +61,9 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
 Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
+    const int depth = 2;
     IA_functor IA{ my_player };
-    return IA(gb, my_player, 5);
+    return IA(gb, my_player, depth);
   }
 
   const string my_player_str = (my_player == Player::white) ? "white" : "black";
@@ -157,3 +158,21 @@ void Interface::interface_state_machine(Interface_state state) const
 }
 
 void Interface::clean_screen() { system("clear"); }// Flawfinder: ignore ; reason: it is what it is //NOLINT
+
+Interface::Interface_state Interface::game(const Game_settings &game_settings) const
+{
+  Gameboard gb(game_settings);
+  Player turn{ Player::white };
+  const Player_type black_player_type = game_settings.black_config.player_type;
+  const Player_type white_player_type = game_settings.white_config.player_type;
+
+  Game_result game_result{ Game_result::no_results_yet };
+  do {
+    const Player_type turn_player_type = turn == Player::white ? white_player_type : black_player_type;
+    gb.make_move(get_player_move(gb, turn, turn_player_type));
+    game_result = gb.check_end_conditions();
+    game::switch_player(turn);
+  } while (game_result == Game_result::no_results_yet);
+
+  return game_results_interface(game_result);
+}

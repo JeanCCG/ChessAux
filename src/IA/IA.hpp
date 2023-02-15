@@ -84,6 +84,7 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
         if (cmp(score, best_score_until_now)) {
           best_score_until_now = score;
           best_path_until_now = path;
+          best_path_until_now.push_back({ start, end });
         }
       };
 
@@ -102,7 +103,7 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
       edible_ends.clear();
     }
   }
-
+  t_path = best_path_until_now;
   return best_score_until_now;
 }
 

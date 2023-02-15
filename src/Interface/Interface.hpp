@@ -40,8 +40,6 @@ private:
   static void print_title(const int option);
   static Move get_player_move(Gameboard gb, Player my_player, Player_type player_type);
 
-  // game_interface
-
   static void input_anything();
 
   static void clean_screen();
@@ -64,24 +62,7 @@ private:
   Interface_state human_vs_human_interface() const;
   Interface_state static game_results_interface(const Game_result game_result);
 
-  Interface_state game(const Game_settings &game_settings) const
-  {
-    Gameboard gb(game_settings);
-    Player turn{ Player::white };
-    const Player_type black_player_type = game_settings.black_config.player_type;
-    const Player_type white_player_type = game_settings.white_config.player_type;
-
-    Game_result game_result{ Game_result::no_results_yet };
-    do {
-      const Player_type turn_player_type = turn == Player::white ? white_player_type : black_player_type;
-      gb.make_move(get_player_move(gb, turn, turn_player_type));
-      game_result = gb.check_end_conditions();
-      game::switch_player(turn);
-    } while (game_result == Game_result::no_results_yet);
-
-    return game_results_interface(game_result);
-  }
-
+  Interface_state game(const Game_settings &game_settings) const;
   void interface_state_machine(Interface_state state = Interface_state::main) const;
 
 public:

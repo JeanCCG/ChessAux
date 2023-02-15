@@ -350,37 +350,46 @@ bool Gameboard::evaluate_castlings(const Bearing king_bearing, Do_if_movable do_
 
   bool available_queen_side_castling{ true };
   bool available_king_side_castling{ true };
-  if (first_movement(king_bearing)) {
 
-    if (const Bearing queen_rook_bearing{ 7U, king_bearing.y }; first_movement(queen_rook_bearing)) {
+
+  if (first_movement(king_bearing)) {
+    Piece_symbols rook =
+      at(king_bearing).player == Player::white ? Piece_symbols::white_rook : Piece_symbols::black_rook;
+
+    const Bearing queen_rook_bearing{ 0U, king_bearing.y };
+    if (at(queen_rook_bearing).symbol == rook and first_movement(queen_rook_bearing)) {
       for (Bearing b = { king_bearing.x - 1, king_bearing.y }; b.x != 0; b.x--) {
         if (not at(b).isFree or isMenaced(my_player, b)) {
           available_queen_side_castling = false;
           break;
         }
       }
+    } else {
+      available_queen_side_castling = false;
     }
 
-    const Bearing king_rook_bearing{ 0U, king_bearing.y };
+    const Bearing king_rook_bearing{ 7U, king_bearing.y };
     // here is the bug
-    if (first_movement(king_rook_bearing)) {
+    if (at(king_rook_bearing).symbol == rook and first_movement(king_rook_bearing)) {
       for (Bearing b = { king_bearing.x + 1, king_bearing.y }; b.x < width - 1; b.x++) {
         if (not at(b).isFree or isMenaced(my_player, b)) {
           available_king_side_castling = false;
           break;
         }
       }
+    } else {
+      available_king_side_castling = false;
     }
   }
 
   if (available_king_side_castling) {
     available_movement = true;
-    do_if_movable({ king_bearing.x, 2 });
+    do_if_movable({ king_bearing.x - 2U, king_bearing.y });
   }
 
   if (available_queen_side_castling) {
     available_movement = true;
-    do_if_movable({ king_bearing.x, width - 2 });
+    do_if_movable({ king_bearing.x + 2U, king_bearing.y });
   }
 
   return available_movement;
@@ -462,59 +471,5 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
 
   return available_movement;
 }
-
-// template<class Do_if_movable, class Do_if_edible>
-// bool Gameboard::evaluate_white_pawn_possibilities(const Bearing place,
-//   Do_if_movable do_if_movable,
-//   Do_if_edible do_if_edible)
-// {
-//   bool available_movement{ false };
-//   const Player my_player{ Player::white };
-//   const Piece_symbols enemy_pawn{ black_pawn };
-//   const unsigned direction{ 1 };
-//   const unsigned en_passant_y{ height };
-
-//   const bool was_the_last_move_a_pawn{ at(last_move.end).symbol == enemy_pawn };
-//   const bool en_passant_capture_available =
-//     was_the_last_move_a_pawn and (place.y == en_passant_y) and game::difference(place.x, last_move.end.x) == 1;
-
-//   if (en_passant_capture_available) {
-//     available_movement = true;
-//     const unsigned y_behind_the_enemy_pawn = last_move.end.y + direction;
-//     do_if_movable({ last_move.end.x, y_behind_the_enemy_pawn });
-//   }
-
-//   if (const bool normal_movement = at({ place.x, place.y + direction }).isFree; normal_movement) {
-//     available_movement = true;
-//     do_if_movable({ place.x, place.y + direction });
-
-//     const bool first_double_movement =
-//       first_movement(place) and at({ place.x, place.y + direction + direction }).isFree;
-//     if (first_double_movement) { do_if_movable({ place.x, place.y + 2 * direction }); }
-
-//     const bool is_not_at_left_border = place.x >= 1;
-//     const bool left_capture =
-//       is_not_at_left_border and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
-//     if (left_capture) {
-//       do_if_edible({ place.x - 1, place.y + direction });
-//       available_movement = true;
-//     }
-
-//     const bool is_not_at_right_border = place.x < width - 1;
-//     const bool right_capture =
-//       is_not_at_right_border and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
-//     if (right_capture) {
-//       do_if_edible({ place.x + 1, place.y + direction });
-//       available_movement = true;
-//     }
-//   }
-
-//   return available_movement;
-// }
-
-// template<class Do_if_movable, class Do_if_edible>
-// bool Gameboard::evaluate_black_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible
-// do_if_edible)
-// {}
 
 #endif// __GAMEBOARD_H__
