@@ -37,7 +37,7 @@ cmake -S . -B ./build && cmake -DCMAKE_BUILD_TYPE=Debug ./build && cd ./build &&
 cmake -S . -B ./build && cmake --build ./build && cd ./build && make -j $(nproc) && ./UCSP_Chess
 ```
 
-some aliases that might improve your life quality. Add these in your `.bashrc` or `.zshrc`
+some aliases that might improve your dev workflow. Add these to your `.bashrc` or `.zshrc`
 ```bash
 alias gbuild='cd ./build || cd ../build || cd ../../build'
 alias cmors='rm -rf build && cmake -S . -B ./build && cmake --build ./build && gbuild && make -j $(nproc)'
@@ -58,3 +58,7 @@ cmors_release && ./UCSP_Chess # to build the release built type
     Insufficient material
     Draw offer accepted -->
 
+
+## Resources used:
+- [white_icons](https://www.flaticon.com/free-icon/pawn_864639?related_id=864639&origin=pack)
+- [black_icons](https://www.flaticon.com/free-icon/rook_4191807?related_id=4191807&origin=pack)
