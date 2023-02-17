@@ -128,7 +128,8 @@ private:
   template<class Functor, class Extra_condition>
   bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
-  bool pawn_menace(const Player player, const Bearing place);
+  bool pawn_menace(const Player player, const Piece_symbols enemy_pawn, const Bearing place);
+  static bool king_menace(const Bearing enemy_king_bearings, const Bearing place);
 };
 
 /*****************************************************************************
