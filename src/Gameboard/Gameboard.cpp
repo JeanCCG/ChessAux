@@ -166,6 +166,8 @@ bool Gameboard::isMenaced(const Player player, const Bearing place)
   if (straight_menace(place, perform_1, extra_condition)) { return true; }
 
   if (pawn_menace(player, place)) { return true; }
+  // if (king_menace(player, place)) { return true; }
+
 
   const std::vector<Piece_symbols> bishop_queen_king{ enemy_bishop, enemy_queen, enemy_king };
   auto perform_2 = [this, &player, &bishop_queen_king](const Bearing b) {
@@ -495,13 +497,17 @@ bool Gameboard::pawn_menace(const Player player, const Bearing place)
 {
   const auto [x, y] = place;
   const Piece_symbols enemy_pawn = (player == Player::white) ? Piece_symbols::black_pawn : Piece_symbols::white_pawn;
-  // pawns
-  if ((player == Player::white) and (x >= 1)) {
-    if (const Bearing bot_left{ x - 1, y - 1 }; (y > 0) and (at(bot_left).symbol == enemy_pawn)) { return true; }
-    if (const Bearing top_left{ x - 1, y + 1 }; (y < width) and (at(top_left).symbol == enemy_pawn)) { return true; }
-  } else if (x < height - 1) {
-    if (const Bearing bot_right{ x + 1, y - 1 }; (y > 0) and (at(bot_right).symbol == enemy_pawn)) { return true; }
-    if (const Bearing top_right{ x + 1, y + 1 }; (y < width) and (at(top_right).symbol == enemy_pawn)) { return true; }
+
+  if ((player == Player::white) and (y < height - 1)) {
+    if (const Bearing top_left{ x - 1, y + 1 }; (x > 0) and (at(top_left).symbol == enemy_pawn)) { return true; }
+    if (const Bearing top_right{ x + 1, y + 1 }; (x < width - 1) and (at(top_right).symbol == enemy_pawn)) {
+      return true;
+    }
+  } else if (y > 0) {
+    if (const Bearing bot_left{ x - 1, y - 1 }; (x > 0) and (at(bot_left).symbol == enemy_pawn)) { return true; }
+    if (const Bearing bot_right{ x + 1, y - 1 }; (x > width - 1) and (at(bot_right).symbol == enemy_pawn)) {
+      return true;
+    }
   }
   return false;
 }
