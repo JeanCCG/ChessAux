@@ -8,7 +8,8 @@
             "defines": [],
             "compilerPath": "/usr/bin/g++-11",
             "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.cmake-tools"
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cppStandard": "c++20"
         }
     ],
     "version": 4

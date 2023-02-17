@@ -44,8 +44,10 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
 
   const int my_initial_score = difference_relative_to_player(player, initial_gb.score);
 
-  vector<Bearing> movable_ends(max_movable_ends);
-  vector<Bearing> edible_ends(max_edible_ends);
+  // vector<Bearing> movable_ends(max_movable_ends);
+  // vector<Bearing> edible_ends(max_edible_ends);
+  vector<Bearing> movable_ends{};
+  vector<Bearing> edible_ends{};
 
 
   const Player next_player = not player;
@@ -60,11 +62,9 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
     for (unsigned y = 0; y < initial_gb.height; y++) {
       const Bearing start{ x, y };
 
-      if (const bool invalid_piece = initial_gb.at(start).empty() or initial_gb.at(start).player != player
-                                     or initial_gb.is_absolutely_pinned(start);
-          invalid_piece) {
-        continue;
-      }
+      const bool invalid_piece =
+        initial_gb.at(start).empty() or initial_gb.at(start).player != player or initial_gb.is_absolutely_pinned(start);
+      if (invalid_piece) { continue; }
 
       auto do_if_movable = [&movable_ends](const Bearing b) { movable_ends.push_back(b); };
       auto do_if_edible = [&edible_ends](const Bearing b) { edible_ends.push_back(b); };
@@ -73,7 +73,8 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
 
       auto perform = [&](Gameboard &gb, const Bearing end) {
         int score = difference_relative_to_player(player, gb.score) - my_initial_score;
-        vector<Move> path(depth + 1);
+        // vector<Move> path(depth + 1);
+        vector<Move> path;
 
         if (depth == 0 or Game_result::no_results_yet != gb.check_end_conditions()) {
           path.push_back({ start, end });

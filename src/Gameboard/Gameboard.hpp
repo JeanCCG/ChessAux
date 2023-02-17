@@ -380,6 +380,9 @@ bool Gameboard::evaluate_castlings(const Bearing king_bearing, Do_if_movable do_
     } else {
       available_king_side_castling = false;
     }
+  } else {
+    available_king_side_castling = false;
+    available_queen_side_castling = false;
   }
 
   if (available_king_side_castling) {

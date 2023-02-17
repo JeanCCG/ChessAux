@@ -147,4 +147,5 @@
   // "makefile.compileCommandsPath": "build/compile_commands.json",
   // "sonarlint.cxx.compilationDatabasePath": "./build/compile_commands.json"
   // "sonarlint.cxx.compilationDatabasePath": "/home/marcus/+projects/ChessAux/build/compile_commands.json"
+  "cppStandard": "c++20",
 }

@@ -169,7 +169,9 @@ Interface::Interface_state Interface::game(const Game_settings &game_settings) c
   Game_result game_result{ Game_result::no_results_yet };
   do {
     const Player_type turn_player_type = turn == Player::white ? white_player_type : black_player_type;
-    gb.make_move(get_player_move(gb, turn, turn_player_type));
+    const Move move = get_player_move(gb, turn, turn_player_type);
+    // gb.make_move(get_player_move(gb, turn, turn_player_type));
+    gb.make_move(move);
     game_result = gb.check_end_conditions();
     game::switch_player(turn);
   } while (game_result == Game_result::no_results_yet);
