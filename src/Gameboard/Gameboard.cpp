@@ -54,7 +54,6 @@ bool Gameboard::is_absolutely_pinned(const Bearing place)
     enemy_bishop = Piece_symbols::white_bishop;
   }
 
-  // auto extra_condition = [this](const Bearing b) { return not at(b).empty(); };
   auto perform_factory = [this, &player](const vector<Piece_symbols> &symbols) {
     return [this, &player, &symbols](const Bearing b) {
       if (at(b).empty()) { return false; }
@@ -67,7 +66,6 @@ bool Gameboard::is_absolutely_pinned(const Bearing place)
   };
 
   const vector<Piece_symbols> rook_queen{ enemy_rook, enemy_queen };
-  // auto check_straight_menace = perform_factory(rook_queen);
 
   if (place.x == my_king_bearing.x) {
     if (place.y > my_king_bearing.y) {
@@ -90,33 +88,15 @@ bool Gameboard::is_absolutely_pinned(const Bearing place)
 
   const vector<Piece_symbols> bishop_queen{ enemy_bishop, enemy_queen };
   if (x_d == y_d) {// top_right or bot_left
-    if (place.x > my_king_bearing.x) {// top_right
+    if (place.x > my_king_bearing.x) {
       return iterate_from_to_and_perform(place, Direction::top_right, perform_factory(bishop_queen));
     }
-    // bot_left
     return iterate_from_to_and_perform(place, Direction::bot_left, perform_factory(bishop_queen));
   }
   if (x_d + y_d == 0) {// top_left or bot_right
-    if (y_d > x_d) {// bot_right
-      return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen));
-    }// 2Q
+    if (y_d > x_d) { return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen)); }
     return iterate_from_to_and_perform(place, Direction::top_left, perform_factory(bishop_queen));
   }
-  // if (difference(place.x, place.y) == difference(my_king_bearing.x, my_king_bearing.y)) {
-
-  //   if (place.x < my_king_bearing.x) {// left
-  //     if (place.y < my_king_bearing.y) {// bot
-  //       return iterate_from_to_and_perform(place, Direction::bot_left, perform_factory(bishop_queen));
-  //     }
-  //     return iterate_from_to_and_perform(place, Direction::top_left, perform_factory(bishop_queen));
-  //   }
-
-  //   // right
-  //   if (place.y < my_king_bearing.y) {// bot
-  //     return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen));
-  //   }
-
-  // }
 
   return false;
 }
