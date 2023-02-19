@@ -79,6 +79,7 @@ struct Bearing
   Bearing &operator--();// prefix
   Bearing operator--(int);// postfix, same as prefix
   Bearing operator+(const Bearing &rhs) const;
+  Bearing operator-(const Bearing &rhs) const;
 };
 
 std::istream &operator>>(std::istream &is, Bearing &bearing);

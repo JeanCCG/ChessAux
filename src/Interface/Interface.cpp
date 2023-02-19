@@ -69,6 +69,11 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
   const string my_player_str = (my_player == Player::white) ? "white" : "black";
   Move move;
 
+  // if my_king_is_menaced
+  // it must not be menaced at the end of my turn.
+  // problem: in the IA, it might sacrifice the king to gain more points in the end of it.
+  //
+
   using IE = Input_error;
   bool invalid_start{ true };
   string error_message{};

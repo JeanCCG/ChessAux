@@ -28,18 +28,21 @@ Bearing &Bearing::operator+=(const Bearing &rhs)
 
 Bearing &Bearing::operator++()// prefix
 {
-  ++x, ++y;
+  ++x;
+  ++y;
   return *this;
 }
 
-Bearing Bearing::operator++(int) { return operator++(); }// postfix, same as prefix
+Bearing Bearing::operator++(int) { return operator++(); }// postfix, same as prefix//NOSONAR
 Bearing &Bearing::operator--()// prefix
 {
-  --x, --y;
+  --x;
+  --y;
   return *this;
 }
-Bearing Bearing::operator--(int) { return operator--(); }// postfix, same as prefix
+Bearing Bearing::operator--(int) { return operator--(); }// postfix, same as prefix //NOSONAR
 Bearing Bearing::operator+(const Bearing &rhs) const { return Bearing{ x + rhs.x, y + rhs.y }; }
+Bearing Bearing::operator-(const Bearing &rhs) const { return Bearing{ x - rhs.x, y - rhs.y }; }
 
 
 std::istream &operator>>(std::istream &is, Bearing &bearing)
@@ -47,7 +50,7 @@ std::istream &operator>>(std::istream &is, Bearing &bearing)
   char c = 0;
   unsigned n = 0;
   if (is >> c) {
-    c = tolower(c);// NOLINT
+    c = tolower(c);// NOLINT //NOSONAR
     if ('a' <= c && c <= 'h' && is >> n && 1 <= n && n <= 8) {
       bearing = Bearing{ c, n };
       return is;

@@ -35,19 +35,91 @@ void Gameboard::move_or_capture(const Move t_move)
 
 bool Gameboard::is_absolutely_pinned(const Bearing place)
 {
-  const Player my_player = at(place).player;
-  const Piece piece = at(place);
-  const Bearing my_king_bearing = (my_player == Player::white) ? white_king_bearing : black_king_bearing;
+  const Player player = at(place).player;
 
-  bool is_absolutely_pinned{ false };
+  Bearing my_king_bearing{};
+  Piece_symbols enemy_rook{};
+  Piece_symbols enemy_queen{};
+  Piece_symbols enemy_bishop{};
 
-  at(place).setFree();
-  if (isMenaced(my_player, my_king_bearing)) { is_absolutely_pinned = true; }
-  at(place) = piece;// put back the piece
+  if (player == Player::white) {
+    my_king_bearing = white_king_bearing;
+    enemy_rook = Piece_symbols::black_rook;
+    enemy_queen = Piece_symbols::black_queen;
+    enemy_bishop = Piece_symbols::black_bishop;
+  } else {
+    my_king_bearing = black_king_bearing;
+    enemy_rook = Piece_symbols::white_rook;
+    enemy_queen = Piece_symbols::white_queen;
+    enemy_bishop = Piece_symbols::white_bishop;
+  }
 
-  return is_absolutely_pinned;
+  // auto extra_condition = [this](const Bearing b) { return not at(b).empty(); };
+  auto perform_factory = [this, &player](const vector<Piece_symbols> &symbols) {
+    return [this, &player, &symbols](const Bearing b) {
+      if (at(b).empty()) { return false; }
+      if (is_an_enemy_piece(player, b)
+          and any_of(symbols.begin(), symbols.end(), [&](Piece_symbols p_s) { return at(b).symbol == p_s; })) {
+        return true;
+      }
+      return false;
+    };
+  };
+
+  const vector<Piece_symbols> rook_queen{ enemy_rook, enemy_queen };
+  // auto check_straight_menace = perform_factory(rook_queen);
+
+  if (place.x == my_king_bearing.x) {
+    if (place.y > my_king_bearing.y) {
+      return iterate_from_to_and_perform(place, Direction::top, perform_factory(rook_queen));
+    }
+    return iterate_from_to_and_perform(place, Direction::bot, perform_factory(rook_queen));
+  }
+
+  if (place.y == my_king_bearing.y) {
+    if (place.x < my_king_bearing.x) {
+      return iterate_from_to_and_perform(place, Direction::right, perform_factory(rook_queen));
+    }
+    return iterate_from_to_and_perform(place, Direction::left, perform_factory(rook_queen));
+  }
+
+  // check diagonals
+  using game::difference;
+  const unsigned x_d = place.x - my_king_bearing.x;
+  const unsigned y_d = place.y - my_king_bearing.y;
+
+  const vector<Piece_symbols> bishop_queen{ enemy_bishop, enemy_queen };
+  if (x_d == y_d) {// top_right or bot_left
+    if (place.x > my_king_bearing.x) {// top_right
+      return iterate_from_to_and_perform(place, Direction::top_right, perform_factory(bishop_queen));
+    }
+    // bot_left
+    return iterate_from_to_and_perform(place, Direction::bot_left, perform_factory(bishop_queen));
+  }
+  if (x_d + y_d == 0) {// top_left or bot_right
+    if (y_d > x_d) {// bot_right
+      return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen));
+    }// 2Q
+    return iterate_from_to_and_perform(place, Direction::top_left, perform_factory(bishop_queen));
+  }
+  // if (difference(place.x, place.y) == difference(my_king_bearing.x, my_king_bearing.y)) {
+
+  //   if (place.x < my_king_bearing.x) {// left
+  //     if (place.y < my_king_bearing.y) {// bot
+  //       return iterate_from_to_and_perform(place, Direction::bot_left, perform_factory(bishop_queen));
+  //     }
+  //     return iterate_from_to_and_perform(place, Direction::top_left, perform_factory(bishop_queen));
+  //   }
+
+  //   // right
+  //   if (place.y < my_king_bearing.y) {// bot
+  //     return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen));
+  //   }
+
+  // }
+
+  return false;
 }
-
 
 void Gameboard::move(const Move t_move)
 {
@@ -67,7 +139,6 @@ void Gameboard::capture(const Move t_move)
   move(t_move);
   last_move = t_move;
 }
-
 
 bool Gameboard::legal_diagonal(const Move t_move)
 {
@@ -91,7 +162,6 @@ bool Gameboard::legal_diagonal(const Move t_move)
   return true;
 }
 
-//
 bool Gameboard::legal_straight(Move t_move)
 {
   const auto [start, end] = t_move;
@@ -133,7 +203,6 @@ bool Gameboard::isMenaced(const Player player, const Bearing place)
   Piece_symbols enemy_knight{};
   Piece_symbols enemy_pawn{};
   Piece_symbols my_king{};
-  Piece_symbols enemy_king{};
   Bearing enemy_king_bearings{};
 
   if (player == Player::white) {
@@ -142,7 +211,6 @@ bool Gameboard::isMenaced(const Player player, const Bearing place)
     enemy_queen = Piece_symbols::black_queen;
     enemy_rook = Piece_symbols::black_rook;
     enemy_knight = Piece_symbols::black_knight;
-    enemy_king = Piece_symbols::black_king;
     enemy_pawn = Piece_symbols::black_pawn;
     enemy_king_bearings = black_king_bearing;
   } else {
@@ -151,40 +219,39 @@ bool Gameboard::isMenaced(const Player player, const Bearing place)
     enemy_queen = Piece_symbols::white_queen;
     enemy_rook = Piece_symbols::white_rook;
     enemy_knight = Piece_symbols::white_knight;
-    enemy_king = Piece_symbols::white_king;
     enemy_pawn = Piece_symbols::white_pawn;
     enemy_king_bearings = white_king_bearing;
   }
 
+
+  auto while_not_mine_expect_my_king = [this, &my_king, &player](const Bearing b) {
+    return at(b).empty() or at(b).player != player or at(b).symbol == my_king;
+  };
+
   const std::vector<Piece_symbols> rook_queen{ enemy_rook, enemy_queen };
 
-  auto perform_1 = [this, &player, &rook_queen](const Bearing b) {
-    if (at(b).empty()) { return false; }
-    if (is_an_enemy_piece(player, b)
-        and any_of(rook_queen.begin(), rook_queen.end(), [&](Piece_symbols p_s) { return at(b).symbol == p_s; })) {
-      return true;
-    }
-    return false;
+  auto perform_factory = [this, &player, &my_king](const vector<Piece_symbols> &symbols) {
+    return [this, &player, &symbols, &my_king](const Bearing b) {
+      // true: return true;
+      const bool m_continue{ false };
+      if (at(b).empty() || at(b).symbol == my_king) { return m_continue; }
+
+      if (is_an_enemy_piece(player, b)
+          and any_of(symbols.begin(), symbols.end(), [&](Piece_symbols p_s) { return at(b).symbol == p_s; })) {
+        return true;
+      }
+      return m_continue;
+    };
   };
-  auto extra_condition = [this, &player, &my_king](
-                           const Bearing b) { return at(b).player == player and at(b).symbol != my_king; };
-  if (straight_menace(place, perform_1, extra_condition)) { return true; }
+
+  if (straight_menace(place, perform_factory(rook_queen), while_not_mine_expect_my_king)) { return true; }
 
   if (pawn_menace(player, enemy_pawn, place)) { return true; }
   if (king_menace(enemy_king_bearings, place)) { return true; }
 
 
-  const std::vector<Piece_symbols> bishop_queen{ enemy_bishop, enemy_queen, enemy_king };
-  auto perform_2 = [this, &player, &bishop_queen](const Bearing b) {
-    if (at(b).empty()) { return false; }
-    if (is_an_enemy_piece(player, b)
-        and any_of(bishop_queen.begin(), bishop_queen.end(), [&](Piece_symbols p_s) { return at(b).symbol == p_s; })) {
-      return true;
-    }
-    return false;
-  };
-
-  if (diagonal_menace(place, perform_2, extra_condition)) { return true; }
+  const std::vector<Piece_symbols> bishop_queen{ enemy_bishop, enemy_queen };
+  if (diagonal_menace(place, perform_factory(bishop_queen), while_not_mine_expect_my_king)) { return true; }
 
   auto jump_condition = [this, &enemy_knight](const Bearing b) { return at(b).symbol == enemy_knight; };
   return perform_jumps(place, do_nothing_true, jump_condition);
@@ -352,7 +419,6 @@ void Gameboard::make_move(const Move t_move)
   }
 }
 
-
 void Gameboard::undraw_king(const Bearing king_bearing)
 {
   const bool inTheUpperBorder = king_bearing.x == 0;
@@ -496,7 +562,6 @@ void Gameboard::undraw_piece_possibilities(const Bearing place, const Piece piec
   }
 }
 
-
 bool Gameboard::pawn_menace(const Player player, const Piece_symbols enemy_pawn, const Bearing place)
 {
   const auto [x, y] = place;
@@ -515,13 +580,10 @@ bool Gameboard::pawn_menace(const Player player, const Piece_symbols enemy_pawn,
   return false;
 }
 
-bool Gameboard::king_menace(const Bearing enemy_king_bearings, const Bearing place)
+bool Gameboard::king_menace(const Bearing enemy_king_b, const Bearing place)
 {
-  const auto [x, y] = place;
-  using game::difference;
-  return difference(enemy_king_bearings.x, x) <= 1 and difference(enemy_king_bearings.y, y) <= 1;
+  return game::difference(place.x, enemy_king_b.x) <= 1 and game::difference(place.y, enemy_king_b.y) <= 1;
 }
-
 
 Game_result Gameboard::check_end_conditions()
 {
@@ -555,7 +617,6 @@ Game_result Gameboard::check_end_conditions()
   return Game_result::no_results_yet;
 }
 
-
 bool Gameboard::available_movement_for_player(const Player player)
 {
   for (unsigned x_it = 0; x_it < width; x_it++) {
@@ -567,4 +628,10 @@ bool Gameboard::available_movement_for_player(const Player player)
     }
   }
   return false;
+}
+
+bool Gameboard::draw_piece_possibilities(const Bearing place)
+{
+  return available_movement_at(
+    place, [this](const Bearing b) { drawDot(b); }, do_nothing);
 }

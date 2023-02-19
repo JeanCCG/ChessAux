@@ -50,11 +50,7 @@ public:
 
   bool available_movement_for_player(const Player player);
 
-  bool draw_piece_possibilities(const Bearing place)
-  {
-    return available_movement_at(
-      place, [this](const Bearing b) { drawDot(b); }, do_nothing);
-  };
+  bool draw_piece_possibilities(const Bearing place);
 
   bool is_absolutely_pinned(const Bearing place);
   bool movable_piece(const Bearing place) { return !is_absolutely_pinned(place); }
@@ -76,7 +72,7 @@ private:
   int &black_score = score.score[1];
   Move last_move{ { 0U, 0U }, { 0U, 0U } };
 
-  enum Direction { top, bot, left, right, top_left, top_right, bot_left, bot_right };
+  enum Direction { right, top, left, bot, top_right, top_left, bot_left, bot_right };
 
   bool legal_pawn(const Move t_move);
   bool legal_diagonal(const Move t_move);
@@ -119,6 +115,8 @@ private:
     Functor perform,
     Extra_condition extra_condition = do_nothing_true) const;
 
+  template<class Functor> bool iterate_from_to_and_perform(Bearing place, Direction Direction, Functor perform) const;
+
   template<class Functor, class Condition>
   bool perform_jumps(const Bearing place, Functor perform, Condition condition) const;
 
@@ -129,7 +127,7 @@ private:
   bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
   bool pawn_menace(const Player player, const Piece_symbols enemy_pawn, const Bearing place);
-  static bool king_menace(const Bearing enemy_king_bearings, const Bearing place);
+  static bool king_menace(const Bearing enemy_king_b, const Bearing place);
 };
 
 /*****************************************************************************
@@ -175,6 +173,12 @@ bool Gameboard::perform_jumps(const Bearing place, Functor perform, Condition co
   return false;
 }
 
+template<class Functor>
+bool Gameboard::iterate_from_to_and_perform(Bearing place, Direction Direction, Functor perform) const
+{
+  return iterate_from_to_and_perform(place, Direction, perform, do_nothing_true);
+}
+
 template<class Functor, class Extra_condition>
 bool Gameboard::iterate_from_to_and_perform(Bearing place,
   Direction Direction,
@@ -194,10 +198,10 @@ bool Gameboard::iterate_from_to_and_perform(Bearing place,
     }
     break;
   case left:
-    break;
     for (Bearing b = { x - 1, y }; b.x != -1U and extra_condition(b); b.x--) {
       if (perform(b)) { return true; }
     }
+    break;
   case bot:
     for (Bearing b = { x, y - 1 }; b.y != -1U and extra_condition(b); b.y--) {
       if (perform(b)) { return true; }
@@ -251,16 +255,17 @@ bool Gameboard::available_movement_at(const Bearing place, Do_if_movable do_if_m
   };
 
   const auto draw_diagonals = [&]() {
+    iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::bot_right, perform, extra_condition);
+  };
+
+  const auto draw_lanes = [&]() {
     iterate_from_to_and_perform(place, Direction::right, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::top, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::left, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::bot, perform, extra_condition);
-  };
-  const auto draw_lanes = [&]() {
-    iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::right, perform, extra_condition);
   };
 
   switch (piece.symbol) {
