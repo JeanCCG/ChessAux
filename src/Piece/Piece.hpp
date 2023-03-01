@@ -7,7 +7,7 @@
 class Piece
 {
 public:
-  Piece_symbols symbol;
+  Piece_symbols symbol{Piece_symbols::empty};
   bool isFree{ false };
   Player player{};
   int points{};

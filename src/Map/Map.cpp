@@ -13,9 +13,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "enums.hpp"
+#include "Map.hpp"
 
-//
-int to_int(const Piece_points points) { return static_cast<int>(points); }
-char to_char(const Piece_symbols symbol) { return static_cast<char>(symbol); }
-Player operator!(const Player rhs) { return static_cast<Player>(not static_cast<bool>(rhs)); }
+Page<3> &Map::at(const Bearing b) const
+{
+  const unsigned index = b.x * 8 + b.y;
+  return keys[index];
+}
+
+Page<3> &Map::operator[](const Bearing b) const { return at(b); }
+
+Map::Map(const unsigned size) : keys{ new Page<3>[size] }
+{
+  for (auto const *it = keys; it < keys + size; it++) { it = nullptr; }
+}

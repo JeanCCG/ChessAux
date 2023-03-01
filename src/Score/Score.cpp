@@ -13,9 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "enums.hpp"
+#include "Score.hpp"
 
-//
-int to_int(const Piece_points points) { return static_cast<int>(points); }
-char to_char(const Piece_symbols symbol) { return static_cast<char>(symbol); }
-Player operator!(const Player rhs) { return static_cast<Player>(not static_cast<bool>(rhs)); }
+int &Score::at(const Player player) { return score[static_cast<unsigned>(player)]; }

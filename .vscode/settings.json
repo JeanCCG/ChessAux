@@ -71,7 +71,8 @@
     "typeindex": "cpp",
     "forward_list": "cpp",
     "csignal": "cpp",
-    "codecvt": "cpp"
+    "codecvt": "cpp",
+    "numbers": "cpp"
   },
   "editor.tokenColorCustomizations": {
     "textMateRules": [

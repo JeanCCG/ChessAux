@@ -3,14 +3,22 @@
 
 
 #include "../Game_settings/Game_settings.hpp"
+#include "../Map/Map.hpp"
 #include "../Move/Move.hpp"
-#include "../Piece/Piece.hpp"
+#include "../Piece_set/Piece_set.hpp"
+#include "../Score/Score.hpp"
 
+#include <algorithm>
+#include <unordered_map>
 #include <vector>
 
 const auto do_nothing = []([[maybe_unused]] const Bearing b) { /* do nothing */ };
-const auto do_nothing_false = []([[maybe_unused]] const Bearing b) { return false; };
-const auto do_nothing_true = []([[maybe_unused]] const Bearing b) { return true; };
+const auto do_nothing_false = []([[maybe_unused]] const Bearing b) {
+  return false;
+};
+const auto do_nothing_true = []([[maybe_unused]] const Bearing b) {
+  return true;
+};
 
 namespace game {
 inline unsigned difference(const unsigned lhs, const unsigned rhs) { return (lhs > rhs) ? lhs - rhs : rhs - lhs; }
@@ -18,23 +26,15 @@ inline void switch_player(Player &player) { player = (player == Player::white) ?
 }// namespace game
 
 
-struct Score
-{
-  int score[2]{ 0, 0 };
-  int &white_score = score[0];
-  int &black_score = score[1];
-  int &at(Player player) { return score[static_cast<unsigned>(player)]; }
-};
-
 class Gameboard
 {
 public:
   unsigned width{ 8 };
   unsigned height{ 8 };
-
   Score score;
 
   explicit Gameboard(const Game_settings &game_settings);
+  // ~Gameboard() { clear_stack_vars(); }
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
@@ -61,8 +61,40 @@ public:
 
   bool isMenaced(const Player player, const Bearing place);
 
+  bool king_is_menaced(const Player player, const Bearing place);
+
   Piece &at(Bearing bearing) { return slots[bearing.x][bearing.y]; }
   Game_result check_end_conditions();
+
+  bool last_move_checked() const { return m_last_move_checked; }
+  void set_last_move_checked(const bool value) { m_last_move_checked = value; }
+
+  bool start_able_to_intercept(const Bearing start)// check key
+  {
+    // there is at least one menace
+    Piece_symbols s{ at(m_menaces.front()).symbol };
+    const bool knight_case =
+      m_menaces.size() == 1 and (s == Piece_symbols::black_knight or s == Piece_symbols::white_knight);
+    if (knight_case) { return knight_interceptors.contains(start); }
+
+    return not interceptor_map[start].empty();
+  }
+
+  bool end_able_to_intercept(const Bearing end)// check values
+  {
+    // there is at least one menace
+    Piece_symbols s{ at(m_menaces.front()).symbol };
+    const bool knight_case =
+      m_menaces.size() == 1 and (s == Piece_symbols::black_knight or s == Piece_symbols::white_knight);
+
+    if (knight_case) { return m_menaces.front() == end; }
+    return interceptor_map[end].contains(end);
+  }
+
+  // bool is_an_interceptor(const Bearing b) const
+  // {
+  //   if (m_menaces.size() >= 2) { return not interceptor_map[b].empty(); }
+  // }
 
 private:
   Bearing white_king_bearing;
@@ -72,27 +104,184 @@ private:
   int &black_score = score.score[1];
   Move last_move{ { 0U, 0U }, { 0U, 0U } };
 
+  bool m_last_move_checked{ false };
+
+  Map interceptor_map{ nullptr };
+  Page<16> knight_interceptors{ nullptr };
+
+  std::vector<Bearing> m_menaces;
+
   enum Direction { right, top, left, bot, top_right, top_left, bot_left, bot_right };
+  std::vector<Bearing> menaces() const { return m_menaces; }
+
+  void clear_stack_vars()
+  {
+    knight_interceptors.clear();
+    interceptor_map.clear();
+  }
+
+  auto get_number_of_menaces() const { return m_menaces.size(); }
+  Piece_symbols get_menace_symbol() { return at(m_menaces.front()).symbol; }
+
+
+  // Page<16>& get_available_knights(){}
+
+  bool available_knight_interceptor(const Player interceptor_p, const Bearing place)
+  {
+    Piece_set interceptor{ interceptor_p };
+    const std::vector<Piece_symbols> rook_queen{ interceptor.rook, interceptor.queen };
+    const std::vector<Piece_symbols> bishop_queen{ interceptor.bishop, interceptor.queen };
+
+    auto perform_factory = [this, &interceptor_p](const std::vector<Piece_symbols> &symbols) {
+      return [this, &interceptor_p, &symbols](const Bearing b) {
+        const bool m_continue{ false };
+        const bool m_break{ true };
+        if (at(b).empty()) { return m_continue; }
+
+        if (is_an_enemy_piece(interceptor_p, b) and any_of(symbols.begin(), symbols.end(), [&](Piece_symbols p_s) {
+              return at(b).symbol == p_s;
+            })) {
+          knight_interceptors.append(b);
+          return m_break;
+        }
+
+        return m_continue;
+      };
+    };
+
+    straight_menace(place, perform_factory(rook_queen));
+    diagonal_menace(place, perform_factory(bishop_queen));
+
+    auto jump_condition = [this, &interceptor](const Bearing b) {
+      if (at(b).symbol == interceptor.knight) { knight_interceptors.append(b); }
+      return true;
+    };
+    perform_jumps(place, do_nothing_false, jump_condition);
+    // pawn
+
+    auto do_if_menace = [this](const Bearing b) {
+      knight_interceptors.append(b);
+      return false;
+    };
+
+    pawn_menace(not interceptor_p, interceptor.pawn, place, do_if_menace);
+
+    return not knight_interceptors.empty();
+  }
+
+  bool is_interceptable(const Player interceptor_p, const Bearing place)
+  {
+    bool available_interceptor{ false };
+    Piece_set interceptor{ interceptor_p };
+
+    interceptor_map.clear();
+
+    const std::vector<Piece_symbols> rook_queen{ interceptor.rook, interceptor.queen };
+    const std::vector<Piece_symbols> bishop_queen{ interceptor.bishop, interceptor.queen };
+
+    auto perform_factory = [this, &interceptor_p, &place, &available_interceptor](
+                             const std::vector<Piece_symbols> &symbols) {
+      return [this, &interceptor_p, &place, &symbols, &available_interceptor](const Bearing b) {
+        const bool m_continue{ false };
+        const bool m_break{ true };
+        if (at(b).empty()) { return m_continue; }
+
+        if (is_an_enemy_piece(interceptor_p, b) and any_of(symbols.begin(), symbols.end(), [&](Piece_symbols p_s) {
+              return at(b).symbol == p_s;
+            })) {
+          available_interceptor = true;
+          interceptor_map[place].append(place);
+
+          return m_break;
+        }
+
+        return m_continue;
+      };
+    };
+
+    straight_menace(place, perform_factory(rook_queen));
+    pawn_menace(interceptor_p, interceptor.pawn, place);
+    diagonal_menace(place, perform_factory(bishop_queen));
+    auto jump_condition = [this, &interceptor, &available_interceptor](const Bearing b) {
+      const bool m_continue{ false };
+      if (at(b).symbol == interceptor.knight) { available_interceptor = true; }
+      return m_continue;
+    };
+    perform_jumps(place, do_nothing_false, jump_condition);
+
+    return available_interceptor;
+  }
+
+
+  bool available_menace_interceptor(const Bearing place)
+  {
+    using std::unordered_map;
+
+    bool available_interceptor{ false };
+
+    Player enemy_player = at(place).player;
+    const Bearing menace{ m_menaces.front() };
+
+    if (at(menace).symbol == Piece_symbols::white_knight or at(menace).symbol == Piece_symbols::black_knight) {
+      return available_knight_interceptor(enemy_player, menace);
+    }
+
+    Direction direction;
+
+    if (place.x == menace.x) {
+      if (place.y > menace.y) {
+        direction = Direction::bot;
+      } else {
+        direction = Direction::top;
+      }
+    } else if (place.y == menace.y) {
+      if (place.x < menace.x) {
+        direction = Direction::right;
+      } else {
+        direction = Direction::left;
+      }
+    } else if (place.x < menace.x) {
+      if (place.y < menace.y) {
+        direction = Direction::top_right;
+      } else {
+        direction = Direction::bot_right;
+      }
+    } else {
+      if (place.y < menace.y) {
+        direction = Direction::top_left;
+      } else {
+        direction = Direction::bot_left;
+      }
+    }
+
+    auto perform = [this, &enemy_player, &available_interceptor](const Bearing b) {
+      const bool m_continue{ false };
+      const bool m_break{ true };
+
+      if (is_interceptable(enemy_player, b)) { available_interceptor = true; }
+
+      if (not at(b).empty() and at(b).player == enemy_player) { return m_break; }
+      return m_continue;
+    };
+
+    iterate_from_to_and_perform(place, direction, perform);
+
+    return available_interceptor;
+  }
 
   bool legal_pawn(const Move t_move);
   bool legal_diagonal(const Move t_move);
   bool legal_straight(const Move t_move);
-  // bool legal_straight(const Move t_move)
-  //   __attribute__((analyzer_noreturn));// NOLINT; clang disregards input validation, start != end
   bool legal_king(const Move t_move);
   static bool legal_jump(const Move t_move);
 
   void drawDot(const Bearing place) { at(place).symbol = Piece_symbols::dot; }
   void unDrawDot(const Bearing place) { at(place).symbol = Piece_symbols::empty; }
-  bool is_an_enemy_piece(const Player player, const Bearing bearing) { return (at(bearing).player != player); }
+  bool is_an_enemy_piece(const Player my_player, const Bearing bearing) { return (at(bearing).player != my_player); }
   bool first_movement(const Bearing bearing) { return at(bearing).movements == 0; }
 
   template<class Do_if_movable, class Do_if_edible>
   bool evaluate_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
-  // template<class Do_if_movable, class Do_if_edible>
-  // bool evaluate_white_pawn_possibilities(const Bearing place, Do_if_movable do_if_movable, Do_if_edible
-  // do_if_edible); template<class Do_if_movable, class Do_if_edible> bool evaluate_black_pawn_possibilities(const
-  // Bearing place, Do_if_movable do_if_movable, Do_if_edible do_if_edible);
 
   bool draw_pawn(const Bearing place);
   void undraw_white_pawn(const Bearing place);
@@ -123,10 +312,24 @@ private:
   template<class Functor, class Extra_condition>
   bool straight_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
+  template<class Functor> void straight_menace(const Bearing place, Functor perform)
+  {
+    straight_menace(place, perform, do_nothing_true);
+  }
+
   template<class Functor, class Extra_condition>
   bool diagonal_menace(const Bearing place, Functor perform, Extra_condition extra_condition);
 
+  template<class Functor> bool diagonal_menace(const Bearing place, Functor perform)
+  {
+    return diagonal_menace(place, perform, do_nothing_true);
+  }
+
   bool pawn_menace(const Player player, const Piece_symbols enemy_pawn, const Bearing place);
+
+  template<class Do_if_menace>
+  bool pawn_menace(const Player player, const Piece_symbols enemy_pawn, const Bearing place, Do_if_menace do_if_menace);
+
   static bool king_menace(const Bearing enemy_king_b, const Bearing place);
 };
 
@@ -292,9 +495,6 @@ bool Gameboard::available_movement_at(const Bearing place, Do_if_movable do_if_m
     break;
 
   case Piece_symbols::white_pawn:
-    // available_movement = evaluate_white_pawn_possibilities(place, do_if_movable, do_if_edible);
-    // available_movement = evaluate_black_pawn_possibilities(place, do_if_movable, do_if_edible);
-    // break;
   case Piece_symbols::black_pawn:
     available_movement = evaluate_pawn_possibilities(place, do_if_movable, do_if_edible);
     break;
@@ -411,7 +611,7 @@ bool Gameboard::evaluate_jump_possibilities(const Bearing place, Do_if_movable d
 
   const Player my_player = at(place).player;
   auto condition = do_nothing_true;
-  auto perform = [&](const Bearing b) {// NOSONAR
+  auto perform = [this, &my_player, &do_if_movable, &do_if_edible, &available_movement](const Bearing b) {
     if (at(b).empty()) {
       do_if_movable(b);
       available_movement = true;
@@ -479,6 +679,40 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   }
 
   return available_movement;
+}
+
+
+template<class Do_if_menace>
+bool Gameboard::pawn_menace(const Player player,
+  const Piece_symbols enemy_pawn,
+  const Bearing place,
+  Do_if_menace do_if_menace)
+{
+  const auto [x, y] = place;
+
+  // FIXME
+  // TODO
+  // bug, no variable player
+  if ((player == Player::white) and (y < height - 1)) {
+    if (const Bearing top_left{ x - 1, y + 1 };
+        (x > 0) and (at(top_left).symbol == enemy_pawn) and do_if_menace(top_left)) {
+      return true;
+    }
+    if (const Bearing top_right{ x + 1, y + 1 };
+        (x < width - 1) and (at(top_right).symbol == enemy_pawn) and do_if_menace(top_right)) {
+      return true;
+    }
+  } else if (y > 0) {
+    if (const Bearing bot_left{ x - 1, y - 1 };
+        (x > 0) and (at(bot_left).symbol == enemy_pawn) and do_if_menace(bot_left)) {
+      return true;
+    }
+    if (const Bearing bot_right{ x + 1, y - 1 };
+        (x > width - 1) and (at(bot_right).symbol == enemy_pawn) and do_if_menace(bot_right)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif// __GAMEBOARD_H__

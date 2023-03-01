@@ -16,7 +16,7 @@
 #include "Interface.hpp"
 #include "../IA/IA.hpp"
 
-Interface::Input_error Interface::start_input_validation(Move &move, Gameboard gb, const Player turn_color)
+Interface::Input_error Interface::start_input_validation(Move &move, Gameboard &gb, const Player turn_color)
 {
   using IE = Interface::Input_error;
   if (!(cin >> move.start)) {
@@ -32,33 +32,39 @@ Interface::Input_error Interface::start_input_validation(Move &move, Gameboard g
 
   if (gb.is_absolutely_pinned(move.start)) { return IE::absolutely_pinned_piece; }
 
+  if (gb.last_move_checked() and not gb.start_able_to_intercept(move.start)) { return IE::unable_to_intercept_menace; }
+
   if (not gb.available_movement_at(move.start)) { return IE::no_available_moves; }
+
 
   return IE::none;
 }
 
-Interface::Input_error Interface::end_input_validation(Move &move, Gameboard gb)
+Interface::Input_error Interface::end_input_validation(Move &move, Gameboard &gb)
 {
-  using Input_error = Interface::Input_error;
+  using IE = Interface::Input_error;
 
   if (!(cin >> move.end)) {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    return Input_error::bad_input;
+    return IE::bad_input;
   }
-  if (move.start == move.end) { return Input_error::start_is_equal_to_end; }
+  if (move.start == move.end) { return IE::start_is_equal_to_end; }
 
   const bool is_not_free = not gb.at(move.end).isFree;
   if (is_not_free and (gb.at(move.start).player == gb.at(move.end).player)) {// NOSONAR
-    return Input_error::cannibalism;
+    return IE::cannibalism;
   }
 
-  if (not gb.validMovement(move)) { return Input_error::illegal_movement; }
+  if (gb.last_move_checked() and not gb.end_able_to_intercept(move.end)) { return IE::menace_not_intercepted; }
 
-  return Input_error::none;
+
+  if (not gb.validMovement(move)) { return IE::illegal_movement; }
+
+  return IE::none;
 }
 
-Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type player_type)
+Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
     const int depth = 2;
@@ -68,11 +74,6 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
 
   const string my_player_str = (my_player == Player::white) ? "white" : "black";
   Move move;
-
-  // if my_king_is_menaced
-  // it must not be menaced at the end of my turn.
-  // problem: in the IA, it might sacrifice the king to gain more points in the end of it.
-  //
 
   using IE = Input_error;
   bool invalid_start{ true };
@@ -91,6 +92,7 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
     case IE::no_available_moves: error_message = "No available moves for that piece"; break;
     case IE::absolutely_pinned_piece: error_message = "That piece is pinned"; break;
     case IE::cannot_move_enemy_piece: error_message = "That piece is not yours"; break;
+    case IE::unable_to_intercept_menace: error_message = "Unable to intercept the menace"; break;
 
     default: error_message = "unexpected error"; break;
     }
@@ -114,6 +116,7 @@ Move Interface::get_player_move(Gameboard gb, Player my_player, Player_type play
     case IE::cannibalism: error_message = "You can't capture your own pieces"; break;
     case IE::illegal_movement: error_message = "That movement is not allowed"; break;
     case IE::start_is_equal_to_end: error_message = "You must move"; break;
+    case IE::menace_not_intercepted: error_message = "You must intercept the menace"; break;
 
     default: error_message = "unexpected error"; break;
     }

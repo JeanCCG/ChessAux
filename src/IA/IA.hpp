@@ -7,8 +7,12 @@
 
 using namespace std;
 
-auto less_than = [](const int lhs, const int rhs) { return lhs < rhs; };
-auto greater_than = [](const int lhs, const int rhs) { return lhs > rhs; };
+auto less_than = [](const int lhs, const int rhs) {
+  return lhs < rhs;
+};
+auto greater_than = [](const int lhs, const int rhs) {
+  return lhs > rhs;
+};
 
 struct IA_functor
 {
@@ -31,8 +35,6 @@ struct IA_functor
     int depth,
     Minimax minimax = Minimax::max);
 };
-
-Player operator!(const Player rhs) { return static_cast<Player>(not static_cast<bool>(rhs)); }
 
 
 int difference_relative_to_player(Player player, Score score) { return score.at(player) - score.at(not player); }
@@ -66,8 +68,12 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
         initial_gb.at(start).empty() or initial_gb.at(start).player != player or initial_gb.is_absolutely_pinned(start);
       if (invalid_piece) { continue; }
 
-      auto do_if_movable = [&movable_ends](const Bearing b) { movable_ends.push_back(b); };
-      auto do_if_edible = [&edible_ends](const Bearing b) { edible_ends.push_back(b); };
+      auto do_if_movable = [&movable_ends](const Bearing b) {
+        movable_ends.push_back(b);
+      };
+      auto do_if_edible = [&edible_ends](const Bearing b) {
+        edible_ends.push_back(b);
+      };
 
       if (not initial_gb.available_movement_at(start, do_if_movable, do_if_edible)) { continue; }
 

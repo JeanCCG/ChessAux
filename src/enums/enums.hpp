@@ -57,5 +57,7 @@ enum class Game_mode {
 };
 enum class Player_type : bool { human, computer };
 
+Player operator!(const Player rhs);
+
 
 #endif// __ENUMS_H__

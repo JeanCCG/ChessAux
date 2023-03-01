@@ -24,21 +24,23 @@ private:
     absolutely_pinned_piece,
     no_available_moves,
     this_piece_cannot_uncheck_your_king,
+    unable_to_intercept_menace,
     // end
     illegal_movement,
     cannibalism,
     none,
     start_is_equal_to_end,
     your_king_still_checked,
+    menace_not_intercepted,
   };
 
-  static Input_error start_input_validation(Move &move, Gameboard gb, const Player turn_color);
-  static Input_error end_input_validation(Move &move, Gameboard gb);
+  static Input_error start_input_validation(Move &move, Gameboard &gb, const Player turn_color);
+  static Input_error end_input_validation(Move &move, Gameboard &gb);
 
   static void display_gameboard(Gameboard &gb, Player turn_perspective);
 
   static void print_title(const int option);
-  static Move get_player_move(Gameboard gb, Player my_player, Player_type player_type);
+  static Move get_player_move(Gameboard &gb, Player my_player, Player_type player_type);
 
   static void input_anything();
 
