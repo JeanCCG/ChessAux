@@ -27,12 +27,16 @@ public:
   bool empty() const { return root == nullptr; }
 
   explicit Page(Bearing *t_page) : root{ t_page } {}
-  explicit Page(const Page &t_page) : root{ t_page.root } {}
-  explicit Page(const Page &&t_page) noexcept : root{ t_page.root } {}
+  explicit Page(const Page &t_page) : root{ new Bearing[Size] }
+  {
+    Bearing *it = root;
+    for (Bearing const *copy_it = t_page.root; copy_it != t_page.root + Size; copy_it++, it++) { *it = *copy_it; }
+  }
+  // explicit Page(const Page &&t_page) noexcept : root{ t_page.root } {}
 
   Page() : root{ new Bearing[Size] } { init_array(root, root + Size); }
 
-  void init_array(Bearing *start, Bearing *end)
+  void init_array(Bearing *start, Bearing const *end) const
   {
     for (; start != end; start++) { *start = Bearing{ -1U, -1U }; }
   }
@@ -82,20 +86,20 @@ class Map
 {
 public:
   explicit Map(Page<3> *t_keys) : keys{ t_keys } {}
-  explicit Map(const Map &map) : keys{ map.keys } {}
+  explicit Map(const Map &t_map) : keys{ new Page<3>[64] }
+  {
+    Page<3> *it = keys;
+    for (Page<3> const *copy_it = t_map.keys; copy_it != t_map.keys + 64; copy_it++, it++) { *it = *copy_it; }
+  }
   explicit Map(const Map &&map) noexcept : keys{ map.keys } {}
 
   explicit Map(const unsigned size);
+  void reserve(const unsigned size);
   // explicit Map(const unsigned size);
   ~Map() { clear(); }
   void clear()
   {
     if (keys == nullptr) { return; }
-    // for (Page<3> *it = keys; it != keys + 64; it++) {
-    //   if (it->empty()) { continue; }
-    //   it->clear();
-    // }
-
     delete[] keys;
     keys = nullptr;
   }

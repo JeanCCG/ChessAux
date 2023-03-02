@@ -174,8 +174,6 @@ private:
     bool available_interceptor{ false };
     Piece_set interceptor{ interceptor_p };
 
-    interceptor_map.clear();
-
     const std::vector<Piece_symbols> rook_queen{ interceptor.rook, interceptor.queen };
     const std::vector<Piece_symbols> bishop_queen{ interceptor.bishop, interceptor.queen };
 
@@ -200,7 +198,6 @@ private:
     };
 
     straight_menace(place, perform_factory(rook_queen));
-    pawn_menace(interceptor_p, interceptor.pawn, place);
     diagonal_menace(place, perform_factory(bishop_queen));
     auto jump_condition = [this, &interceptor, &available_interceptor](const Bearing b) {
       const bool m_continue{ false };
@@ -209,14 +206,58 @@ private:
     };
     perform_jumps(place, do_nothing_false, jump_condition);
 
+    if (pawn_intercepts(interceptor_p, place)) { available_interceptor = true; }
+
+    return available_interceptor;
+  }
+
+  bool pawn_intercepts(const Player interceptor_p, const Bearing place)
+  {
+    bool available_interceptor{ false };
+    Piece_symbols interceptor_pawn{};
+    unsigned direction{};
+    if (interceptor_p == Player::white) {
+      interceptor_pawn = Piece_symbols::white_pawn;
+      direction = -1U;
+    } else {
+      interceptor_pawn = Piece_symbols::black_pawn;
+      direction = +1;
+    }
+
+    if (at(place).empty()) {// move
+      const Bearing one_behind{ place.x, place.y + direction };
+      const Bearing two_behind{ place.x, place.y + direction + direction };
+      const bool pawn_first_movement = first_movement(place) and at(two_behind).symbol == interceptor_pawn;
+      if (const bool is_pawn = at(one_behind).symbol == interceptor_pawn; is_pawn) {
+        available_interceptor = true;
+        interceptor_map[one_behind].append(place);
+      } else if (pawn_first_movement) {
+        available_interceptor = true;
+        interceptor_map[two_behind].append(place);
+      }
+    } else {// we assume that it's an enemy if not empty.
+      const bool checkable_left = place.x > 0;
+      const Bearing left_place = { place.x - 1, place.y + direction };
+      const bool left_capture = checkable_left and is_an_enemy_piece(interceptor_p, left_place);
+      if (left_capture) {
+        interceptor_map[left_place].append(place);
+        available_interceptor = true;
+      }
+
+      const bool checkable_right = place.x < width - 1;
+      const Bearing right_place = { place.x + 1, place.y + direction };
+      const bool right_capture = checkable_right and is_an_enemy_piece(interceptor_p, right_place);
+      if (right_capture) {
+        interceptor_map[right_place].append(place);
+        available_interceptor = true;
+      }
+    }
     return available_interceptor;
   }
 
 
   bool available_menace_interceptor(const Bearing place)
   {
-    using std::unordered_map;
-
     bool available_interceptor{ false };
 
     Player enemy_player = at(place).player;
@@ -253,6 +294,8 @@ private:
         direction = Direction::bot_left;
       }
     }
+
+    interceptor_map.reserve(64);
 
     auto perform = [this, &enemy_player, &available_interceptor](const Bearing b) {
       const bool m_continue{ false };

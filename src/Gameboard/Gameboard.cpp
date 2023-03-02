@@ -436,16 +436,16 @@ void Gameboard::undraw_piece_possibilities(const Bearing place, const Piece piec
   };
 
   const auto undraw_diagonals = [&]() {
+    iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition);
+    iterate_from_to_and_perform(place, Direction::bot_right, perform, extra_condition);
+  };
+  const auto undraw_lanes = [&]() {
     iterate_from_to_and_perform(place, Direction::right, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::top, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::left, perform, extra_condition);
     iterate_from_to_and_perform(place, Direction::bot, perform, extra_condition);
-  };
-  const auto undraw_lanes = [&]() {
-    iterate_from_to_and_perform(place, Direction::top_right, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::top_left, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::bot_left, perform, extra_condition);
-    iterate_from_to_and_perform(place, Direction::right, perform, extra_condition);
   };
 
   switch (piece.symbol) {
