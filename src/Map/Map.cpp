@@ -28,8 +28,4 @@ Map::Map(const unsigned size) : keys{ new Page<3>[size] }
   for (auto const *it = keys; it < keys + size; it++) { it = nullptr; }
 }
 
-void Map::reserve(const unsigned size)
-{
-  keys = new Page<3>[size];
-  for (Page<3> *it = keys; it != keys + size; it++) { *it = Page<3>{ nullptr }; }
-}
+void Map::reserve(const unsigned size) { keys = new Page<3>[size]; }

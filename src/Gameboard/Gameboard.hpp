@@ -69,8 +69,9 @@ public:
   bool last_move_checked() const { return m_last_move_checked; }
   void set_last_move_checked(const bool value) { m_last_move_checked = value; }
 
-  bool start_able_to_intercept(const Bearing start)// check key
+  bool start_able_to_intercept(const Move move)// check key
   {
+    const auto [start,end] = move;
     // there is at least one menace
     Piece_symbols s{ at(m_menaces.front()).symbol };
     const bool knight_case =
@@ -80,15 +81,16 @@ public:
     return not interceptor_map[start].empty();
   }
 
-  bool end_able_to_intercept(const Bearing end)// check values
+  bool end_able_to_intercept(const Move move)// check values
   {
+    const auto [start, end] = move;
     // there is at least one menace
     Piece_symbols s{ at(m_menaces.front()).symbol };
     const bool knight_case =
       m_menaces.size() == 1 and (s == Piece_symbols::black_knight or s == Piece_symbols::white_knight);
 
     if (knight_case) { return m_menaces.front() == end; }
-    return interceptor_map[end].contains(end);
+    return interceptor_map[start].contains(end);
   }
 
   // bool is_an_interceptor(const Bearing b) const

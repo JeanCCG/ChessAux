@@ -72,6 +72,7 @@ struct Bearing
   Bearing(unsigned t_x, unsigned t_y) noexcept;
   Bearing(char t_c, unsigned t_y) noexcept;
   bool operator==(const Bearing &rhs) const;
+  bool operator!=(const Bearing &rhs) const;
   Bearing &operator+=(const Bearing &rhs);
   Bearing &operator++();// postfix
 

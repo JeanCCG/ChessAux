@@ -19,6 +19,7 @@
 Bearing::Bearing(unsigned t_x, unsigned t_y) noexcept : x{ t_x }, y{ t_y } {}
 Bearing::Bearing(char t_c, unsigned t_y) noexcept : x{ static_cast<unsigned>(t_c - 'a') }, y{ t_y - 1 } {}
 bool Bearing::operator==(const Bearing &rhs) const { return (x == rhs.x) && (y == rhs.y); }
+bool Bearing::operator!=(const Bearing &rhs) const { return not(*this == rhs); }
 Bearing &Bearing::operator+=(const Bearing &rhs)
 {
   x += rhs.x;

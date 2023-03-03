@@ -491,8 +491,6 @@ Game_result Gameboard::check_end_conditions()
 
   // last: l_
   // other: o_
-  // last move player = l_player
-  // the other player = o_player
   const Player l_player = at(last_move.end).player;
 
   Player o_player{};

@@ -32,7 +32,7 @@ Interface::Input_error Interface::start_input_validation(Move &move, Gameboard &
 
   if (gb.is_absolutely_pinned(move.start)) { return IE::absolutely_pinned_piece; }
 
-  if (gb.last_move_checked() and not gb.start_able_to_intercept(move.start)) { return IE::unable_to_intercept_menace; }
+  if (gb.last_move_checked() and not gb.start_able_to_intercept(move)) { return IE::unable_to_intercept_menace; }
 
   if (not gb.available_movement_at(move.start)) { return IE::no_available_moves; }
 
@@ -56,7 +56,7 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard &gb
     return IE::cannibalism;
   }
 
-  if (gb.last_move_checked() and not gb.end_able_to_intercept(move.end)) { return IE::menace_not_intercepted; }
+  if (gb.last_move_checked() and not gb.end_able_to_intercept(move)) { return IE::menace_not_intercepted; }
 
 
   if (not gb.validMovement(move)) { return IE::illegal_movement; }
