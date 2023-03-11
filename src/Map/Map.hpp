@@ -20,29 +20,37 @@ template<unsigned Size = 3> class Page
 {
 private:
   Bearing *root{ nullptr };
+  void init_array(Bearing *start, Bearing const *end) const
+  {
+    for (; start != end; start++) { *start = Bearing{ -1U, -1U }; }
+  }
 
 public:
   ~Page() { clear(); }
+  void set_null() { root = nullptr; }
   void clear();
   bool empty() const { return root == nullptr; }
 
+  Page() = default;
   explicit Page(Bearing *t_page) : root{ t_page } {}
   explicit Page(const Page &t_page) : root{ new Bearing[Size] }
   {
     Bearing *it = root;
     for (Bearing const *copy_it = t_page.root; copy_it != t_page.root + Size; copy_it++, it++) { *it = *copy_it; }
   }
-  // explicit Page(const Page &&t_page) noexcept : root{ t_page.root } {}
 
-  Page() : root{ new Bearing[Size] } { init_array(root, root + Size); }
-
-  void init_array(Bearing *start, Bearing const *end) const
+  void reserve()
   {
-    for (; start != end; start++) { *start = Bearing{ -1U, -1U }; }
+    root = new Bearing[Size];
+    init_array(root, root + Size);
   }
 
   void append(const Bearing value);
   bool contains(const Bearing b) const;
+  template<class Functor> void for_each(Functor functor)
+  {
+    for (Bearing *it = root; it != root + Size and *it != Bearing{ -1U, -1U }; it++) { functor(*it); }
+  }
 };
 
 template<unsigned Size> void Page<Size>::clear()

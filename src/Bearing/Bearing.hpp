@@ -84,6 +84,7 @@ struct Bearing
 };
 
 std::istream &operator>>(std::istream &is, Bearing &bearing);
+std::ostream &operator<<(std::ostream &os, const Bearing &bearing);
 
 
 #endif// __BEARING_H__

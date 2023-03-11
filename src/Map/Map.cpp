@@ -25,7 +25,8 @@ Page<3> &Map::operator[](const Bearing b) const { return at(b); }
 
 Map::Map(const unsigned size) : keys{ new Page<3>[size] }
 {
-  for (auto const *it = keys; it < keys + size; it++) { it = nullptr; }
+  // for (Page<3> *it = keys; it < keys + size; it++) { it->set_null(); }
 }
 
+// cppcheck-suppress publicAllocationError; reason: i'll handle it.
 void Map::reserve(const unsigned size) { keys = new Page<3>[size]; }

@@ -60,3 +60,8 @@ std::istream &operator>>(std::istream &is, Bearing &bearing)
   is.setstate(std::ios_base::failbit);// Flawfinder: ignore // register the failure in the stream
   return is;
 }
+
+std::ostream &operator<<(std::ostream &os, const Bearing &bearing)
+{
+  return os << static_cast<char>(bearing.x + 'a') << bearing.y + 1;
+}
