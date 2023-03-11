@@ -427,7 +427,8 @@ void Gameboard::undraw_jumps(const Bearing place)
 
 void Gameboard::undraw_piece_possibilities(const Bearing place, const Piece piece)
 {
-  if (last_move_checked()) {
+  const bool not_a_king = piece.symbol != Piece_symbols::white_king and piece.symbol != Piece_symbols::black_king;
+  if (last_move_checked() and not_a_king) {
     const Piece_symbols s{ at(m_menaces.front()).symbol };
     const bool knight_case =
       m_menaces.size() == 1 and (s == Piece_symbols::black_knight or s == Piece_symbols::white_knight);
@@ -518,8 +519,8 @@ Game_result Gameboard::check_end_conditions()
     bool checkmate{ false };
     m_last_move_checked = true;
 
-    if ((m_menaces.size() >= 2 and not available_movement_at(o_king_bearing))
-        or not available_menace_interceptor(o_king_bearing)) {// flee
+    if ((m_menaces.size() >= 2 or not available_menace_interceptor(o_king_bearing))
+        and not available_movement_at(o_king_bearing)) {// flee
       checkmate = true;
     }
 

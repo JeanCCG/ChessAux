@@ -300,7 +300,7 @@ bool Gameboard::available_movement_at(const Bearing place, Do_if_movable do_if_m
   const Player player = at(place).player;
   const Piece_symbols piece{ at(place).symbol };
 
-  if (last_move_checked() and (piece != Piece_symbols::white_king or piece != Piece_symbols::black_king)
+  if (last_move_checked() and (piece != Piece_symbols::white_king and piece != Piece_symbols::black_king)
       and player != at(m_menaces.front()).player) {
 
     const Piece_symbols menace_symbol = at(m_menaces.front()).symbol;
