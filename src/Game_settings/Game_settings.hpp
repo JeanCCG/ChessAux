@@ -112,10 +112,10 @@ const std::vector<std::string> black_knight_checkmate{
 const std::vector<std::string> diagonal_menace_interceptor{
   { _, _, _, _, _, _, _, _ },
   { _, r, _, _, _, _, _, _ },
-  { _, p, A, _, _, _, _, _ },
+  { _, p, _, _, _, _, _, _ },
   { _, p, _, _, _, _, _, _ },
   { _, t, q, _, _, _, _, _ },
-  { _, c, _, _, _, _, _, _ },
+  { _, c, _, _, _, A, _, _ },
   { _, p, _, _, _, _, _, _ },
   { _, _, _, _, _, _, _, R },
 };
@@ -128,6 +128,39 @@ const std::vector<std::string> straight_menace_interceptor{
   { _, c, _, _, _, _, _, _ },
   { _, c, _, _, _, _, _, _ },
   { _, p, T, _, _, _, _, _ },
+  { _, _, _, _, _, _, _, R },
+};
+
+const std::vector<std::string> white_king_directly_menaced_menaced{
+  { _, _, _, _, _, _, _, _ },
+  { _, r, _, _, _, _, _, _ },
+  { _, p, A, _, _, _, _, _ },
+  { _, p, _, _, _, _, _, _ },
+  { _, t, q, _, _, _, _, _ },
+  { _, c, _, _, _, A, _, _ },
+  { _, p, _, _, _, _, _, _ },
+  { _, _, _, _, _, _, _, R },
+};
+
+const std::vector<std::string> white_king_directly_menaced{
+  { _, _, _, _, _, _, _, _ },
+  { _, r, _, _, _, _, _, _ },
+  { _, p, A, _, _, _, _, _ },
+  { _, p, _, _, _, _, _, _ },
+  { _, t, q, _, _, _, _, _ },
+  { _, c, _, _, _, _, _, _ },
+  { _, p, _, _, _, _, _, _ },
+  { _, _, _, _, _, _, _, R },
+};
+
+const std::vector<std::string> white_bishop_pinned{
+  { _, _, _, _, _, _, _, _ },
+  { _, r, _, _, _, _, _, _ },
+  { _, _, _, _, _, _, _, _ },
+  { _, _, _, a, _, _, _, _ },
+  { _, _, _, _, _, _, _, _ },
+  { _, _, _, _, _, Q, _, _ },
+  { _, _, _, _, _, _, _, _ },
   { _, _, _, _, _, _, _, R },
 };
 
@@ -157,7 +190,7 @@ struct Game_settings
   const char A = testing::A;
   const char P = testing::P;
 
-  std::vector<std::string> board = testing::diagonal_menace_interceptor;
+  std::vector<std::string> board = testing::white_bishop_pinned;
 
   player_configuration white_config{ Player::white };
   player_configuration black_config{ Player::black };

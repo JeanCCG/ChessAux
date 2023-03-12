@@ -34,8 +34,9 @@ private:
     menace_not_intercepted,
   };
 
-  static Input_error start_input_validation(Move &move, Gameboard &gb, const Player turn_color);
-  static Input_error end_input_validation(Move &move, Gameboard &gb);
+  static Input_error
+    start_input_validation(Move &move, Gameboard &gb, const Player turn_color, bool &is_partially_pinned, Axis &axis);
+  static Input_error end_input_validation(Move &move, Gameboard &gb, const bool is_partially_pinned, const Axis axis);
 
   static void display_gameboard(Gameboard &gb, Player turn_perspective);
 

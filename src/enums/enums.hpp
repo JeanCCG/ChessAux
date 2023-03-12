@@ -59,5 +59,11 @@ enum class Player_type : bool { human, computer };
 
 Player operator!(const Player rhs);
 
+/*******************************************************************************
+ * from gameboard to Interface
+ *******************************************************************************/
+
+enum class Axis { x, y, Q1_Q3_xy, Q2_Q4_xy };
+
 
 #endif// __ENUMS_H__

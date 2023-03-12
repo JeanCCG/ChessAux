@@ -64,8 +64,10 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
     for (unsigned y = 0; y < initial_gb.height; y++) {
       const Bearing start{ x, y };
 
-      const bool invalid_piece =
-        initial_gb.at(start).empty() or initial_gb.at(start).player != player or initial_gb.is_absolutely_pinned(start);
+      bool partially_pinned{};
+      Axis operative_axis{};
+      const bool invalid_piece = initial_gb.at(start).empty() or initial_gb.at(start).player != player
+                                 or initial_gb.is_absolutely_pinned(start, partially_pinned, operative_axis);
       if (invalid_piece) { continue; }
 
       auto do_if_movable = [&movable_ends](const Bearing b) {

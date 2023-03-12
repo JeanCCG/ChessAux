@@ -16,34 +16,41 @@
 #include "Interface.hpp"
 #include "../IA/IA.hpp"
 
-Interface::Input_error Interface::start_input_validation(Move &move, Gameboard &gb, const Player turn_color)
+Interface::Input_error Interface::start_input_validation(Move &move,
+  Gameboard &gb,
+  const Player turn_color,
+  bool &is_partially_pinned,
+  Axis &axis)
 {
   using IE = Interface::Input_error;
-  if (!(cin >> move.start)) {
+  Bearing &start = move.start;
+
+  if (!(cin >> start)) {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return IE::bad_input;
   }
 
-  if (gb.at(move.start).empty()) { return IE::no_piece_selected; }
+  if (gb.at(start).empty()) { return IE::no_piece_selected; }
 
-  const Player piece_color = gb.at(move.start).player;
+  const Player piece_color = gb.at(start).player;
   if (turn_color != piece_color) { return IE::cannot_move_enemy_piece; }
 
-  if (gb.is_absolutely_pinned(move.start)) { return IE::absolutely_pinned_piece; }
+  if (gb.is_absolutely_pinned(start, is_partially_pinned, axis)) { return IE::absolutely_pinned_piece; }
 
   const bool not_a_king =
-    gb.at(move.start).symbol != Piece_symbols::white_king and gb.at(move.start).symbol != Piece_symbols::black_king;
+    gb.at(start).symbol != Piece_symbols::white_king and gb.at(start).symbol != Piece_symbols::black_king;
   if (gb.last_move_checked() and not_a_king and not gb.start_able_to_intercept(move)) {
     return IE::unable_to_intercept_menace;
   }
 
-  if (not gb.available_movement_at(move.start)) { return IE::no_available_moves; }
+  if (not gb.available_movement_at(start)) { return IE::no_available_moves; }
 
   return IE::none;
 }
 
-Interface::Input_error Interface::end_input_validation(Move &move, Gameboard &gb)
+Interface::Input_error
+  Interface::end_input_validation(Move &move, Gameboard &gb, const bool is_partially_pinned, const Axis axis)
 {
   using IE = Interface::Input_error;
 
@@ -65,8 +72,7 @@ Interface::Input_error Interface::end_input_validation(Move &move, Gameboard &gb
     return IE::menace_not_intercepted;
   }
 
-
-  if (not gb.validMovement(move)) { return IE::illegal_movement; }
+  if (not gb.validMovement(move, is_partially_pinned, axis)) { return IE::illegal_movement; }
 
   return IE::none;
 }
@@ -81,6 +87,8 @@ Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type pla
 
   const string my_player_str = (my_player == Player::white) ? "white" : "black";
   Move move;
+  bool is_partially_pinned{ false };
+  Axis axis{};
 
   using IE = Input_error;
   bool invalid_start{ true };
@@ -92,7 +100,7 @@ Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type pla
     cout << my_player_str << "\n";
 
     cout << "Input the start position letter and number:\n";
-    switch (start_input_validation(move, gb, my_player)) {
+    switch (start_input_validation(move, gb, my_player, is_partially_pinned, axis)) {
     case IE::none: invalid_start = false; break;
     case IE::bad_input: error_message = "bad input"; break;
     case IE::no_piece_selected: error_message = "No piece was selected"; break;
@@ -105,7 +113,7 @@ Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type pla
     }
   } while (invalid_start);
 
-  gb.draw_piece_possibilities(move.start);
+  gb.draw_piece_possibilities(move.start, is_partially_pinned, axis);
 
   error_message.clear();
   const Piece piece_to_undraw = gb.at(move.start);
@@ -117,7 +125,7 @@ Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type pla
     cout << my_player_str << "\t" << move.start << "\n";
 
     cout << "Input the end position letter and number:\n";
-    switch (end_input_validation(move, gb)) {
+    switch (end_input_validation(move, gb, is_partially_pinned, axis)) {
     case IE::none: invalid_end = false; break;
     case IE::bad_input: error_message = "bad input"; break;
     case IE::cannibalism: error_message = "You can't capture your own pieces"; break;

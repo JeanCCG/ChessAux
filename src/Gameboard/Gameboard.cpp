@@ -30,10 +30,12 @@ void Gameboard::move_or_capture(const Move t_move)
   }
 }
 
-bool Gameboard::is_absolutely_pinned(const Bearing place)
+bool Gameboard::is_absolutely_pinned(const Bearing place, bool &is_partially_pinned, Axis &axis)
 {
   const Player my_player = at(place).player;
+  const Piece_symbols place_s = at(place).symbol;
   const Piece_set enemy{ not my_player };
+  const Piece_set mine{ my_player };
 
   Bearing my_king_bearing{};
   if (my_player == Player::white) {
@@ -42,48 +44,84 @@ bool Gameboard::is_absolutely_pinned(const Bearing place)
     my_king_bearing = black_king_bearing;
   }
 
-  auto perform_factory = [this, &my_player](const vector<Piece_symbols> &symbols) {
-    return [this, &my_player, &symbols](const Bearing b) {
+  auto perform_factory = [this, &place_s, &my_player, &is_partially_pinned](
+                           const vector<Piece_symbols> &enemy_symbols, const vector<Piece_symbols> &exceptions) {
+    return [this, &place_s, &my_player, &enemy_symbols, &exceptions, &is_partially_pinned](const Bearing b) {
       if (at(b).empty()) { return false; }
-      if (is_an_enemy_piece(my_player, b) and any_of(symbols.begin(), symbols.end(), [&](Piece_symbols p_s) {
-            return at(b).symbol == p_s;
-          })) {
-        return true;
+
+      auto equal_to_b = [this, &b](const Piece_symbols s) {
+        return at(b).symbol == s;
+      };
+
+      if (is_an_enemy_piece(my_player, b) and any_of(enemy_symbols.begin(), enemy_symbols.end(), equal_to_b)) {
+        auto equal_to_place = [&place_s](const Piece_symbols s) {
+          return place_s == s;
+        };
+
+        if (any_of(exceptions.begin(), exceptions.end(), equal_to_place)) {
+          is_partially_pinned = true;
+          return false;
+        } else {
+          is_partially_pinned = false;
+          return true;
+        }
       }
       return false;
     };
   };
 
-  const vector<Piece_symbols> rook_queen{ enemy.rook, enemy.queen };
+  const vector<Piece_symbols> enemy_rook_queen{ enemy.rook, enemy.queen };
+  const vector<Piece_symbols> mine_rook_queen{ mine.rook, mine.queen };
 
+  Direction direction{};
   if (place.x == my_king_bearing.x) {
     if (place.y > my_king_bearing.y) {
-      return iterate_from_to_and_perform(place, Direction::top, perform_factory(rook_queen));
+      direction = Direction::top;
+    } else {
+      direction = Direction::bot;
     }
-    return iterate_from_to_and_perform(place, Direction::bot, perform_factory(rook_queen));
+    axis = Axis::y;
+    return iterate_from_to_and_perform(place, direction, perform_factory(enemy_rook_queen, mine_rook_queen));
   }
 
   if (place.y == my_king_bearing.y) {
     if (place.x < my_king_bearing.x) {
-      return iterate_from_to_and_perform(place, Direction::right, perform_factory(rook_queen));
+      direction = Direction::right;
+    } else {
+      direction = Direction::left;
     }
-    return iterate_from_to_and_perform(place, Direction::left, perform_factory(rook_queen));
+
+    axis = Axis::x;
+    return iterate_from_to_and_perform(place, direction, perform_factory(enemy_rook_queen, mine_rook_queen));
   }
 
   // check diagonals
   const unsigned x_d = place.x - my_king_bearing.x;
   const unsigned y_d = place.y - my_king_bearing.y;
 
-  const vector<Piece_symbols> bishop_queen{ enemy.bishop, enemy.queen };
+  const vector<Piece_symbols> enemy_bishop_queen{ enemy.bishop, enemy.queen };
+  const vector<Piece_symbols> mine_bishop_queen{ mine.bishop, mine.queen };
+
   if (x_d == y_d) {// top_right or bot_left
     if (place.x > my_king_bearing.x) {
-      return iterate_from_to_and_perform(place, Direction::top_right, perform_factory(bishop_queen));
+      direction = Direction::top_right;
+    } else {
+      direction = Direction::top_left;
     }
-    return iterate_from_to_and_perform(place, Direction::bot_left, perform_factory(bishop_queen));
+
+    axis = Axis::Q1_Q3_xy;
+    return iterate_from_to_and_perform(place, direction, perform_factory(enemy_bishop_queen, mine_bishop_queen));
   }
+
   if (x_d + y_d == 0) {// top_left or bot_right
-    if (y_d > x_d) { return iterate_from_to_and_perform(place, Direction::bot_right, perform_factory(bishop_queen)); }
-    return iterate_from_to_and_perform(place, Direction::top_left, perform_factory(bishop_queen));
+    if (y_d > x_d) {
+      direction = Direction::bot_right;
+    } else {
+      direction = Direction::top_left;
+    }
+
+    axis = Axis::Q2_Q4_xy;
+    return iterate_from_to_and_perform(place, direction, perform_factory(enemy_bishop_queen, mine_bishop_queen));
   }
 
   return false;
@@ -250,11 +288,34 @@ bool Gameboard::legal_king(const Move t_move)
   return false;
 };
 
-bool Gameboard::validMovement(const Move t_move)
+bool Gameboard::validMovement(const Move t_move, const bool is_partially_pinned, const Axis axis)
 {
   bool valid{ false };
 
   const auto [start, end] = t_move;
+  if (is_partially_pinned) {
+    switch (axis) {
+    case Axis::x:
+      if (start.y != end.y) { return false; }
+      break;
+    case Axis::y:
+      if (start.x != end.x) { return false; }
+      break;
+
+    case Axis::Q1_Q3_xy: {
+      const unsigned x_d = start.x - end.x;
+      const unsigned y_d = start.y - end.y;
+      if (x_d != y_d) { return false; }
+    } break;
+    case Axis::Q2_Q4_xy: {
+      const unsigned x_d = start.x - end.x;
+      const unsigned y_d = start.y - end.y;
+      if (x_d + y_d != 0) { return false; }
+    } break;
+
+    default: break;
+    }
+  }
 
   switch (const auto piece{ at(start).symbol }; piece) {
   case Piece_symbols::black_king:
@@ -548,14 +609,16 @@ bool Gameboard::available_movement_for_player(const Player player)
   return false;
 }
 
-bool Gameboard::draw_piece_possibilities(const Bearing place)
+bool Gameboard::draw_piece_possibilities(const Bearing place, const bool is_partially_pinned, const Axis axis)
 {
   return available_movement_at(
     place,
     [this](const Bearing b) {
       drawDot(b);
     },
-    do_nothing);
+    do_nothing,
+    is_partially_pinned,
+    axis);
 }
 
 bool Gameboard::king_is_menaced(const Player player, const Bearing place)
