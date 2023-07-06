@@ -1,3 +1,6 @@
+#ifndef __PIECE_SET_H__
+#define __PIECE_SET_H__
+
 // Copyright (C) 2023 José Enrique Vilca Campana
 //
 // This program is free software: you can redistribute it and/or modify
@@ -41,3 +44,5 @@ struct Piece_set
     }
   }
 };
+
+#endif // __PIECE_SET_H__

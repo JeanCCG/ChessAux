@@ -1,3 +1,6 @@
+#ifndef __SCORE_H__
+#define __SCORE_H__
+
 // Copyright (C) 2023 José Enrique Vilca Campana
 //
 // This program is free software: you can redistribute it and/or modify
@@ -21,3 +24,5 @@ struct Score
   int &black_score = score[1];
   int &at(const Player player);
 };
+
+#endif // __SCORE_H__

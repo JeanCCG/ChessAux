@@ -1,3 +1,6 @@
+#ifndef __MAP_H__
+#define __MAP_H__
+
 // Copyright (C) 2023 José Enrique Vilca Campana
 //
 // This program is free software: you can redistribute it and/or modify
@@ -122,3 +125,5 @@ public:
 private:
   Page<3> *keys{ nullptr };
 };
+
+#endif // __MAP_H__
