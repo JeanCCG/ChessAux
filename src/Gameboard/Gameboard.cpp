@@ -259,9 +259,16 @@ bool Gameboard::legal_king(const Move t_move)
   const bool normal_movement = x_distance <= 1 and y_distance <= 1;
   const bool castling_movement = x_distance == 2 and y_distance == 0;
 
+  Bearing *my_king_bearing{};
+  if (player == Player::white) {
+    my_king_bearing = &white_king_bearing;
+  } else {
+    my_king_bearing = &black_king_bearing;
+  }
+
   if (isMenaced(player, end)) { return false; }
   if (normal_movement) {
-    white_king_bearing = end;
+    *my_king_bearing = end;
     return true;
   }
   if (castling_movement) {// and not checked
@@ -275,13 +282,13 @@ bool Gameboard::legal_king(const Move t_move)
     if (first_movement(king_rook_start) and (at(king_rook_start).symbol == my_rook) and (end.x < start.x)
         and at(king_rook_end).isFree) {
       if (isMenaced(player, king_rook_end)) { return false; }
-      white_king_bearing = end;
+      *my_king_bearing = end;
       return true;
     }
     if (first_movement(queen_rook_start) and (at(queen_rook_start).symbol == my_rook) and (start.y < end.y)
         and at(queen_rook_end).isFree) {
       if (isMenaced(player, queen_rook_end)) { return false; }
-      white_king_bearing = end;
+      *my_king_bearing = end;
       return true;
     }
   }
@@ -580,16 +587,37 @@ Game_result Gameboard::check_end_conditions()
     bool checkmate{ false };
     m_last_move_checked = true;
 
-    if ((m_menaces.size() >= 2 or not available_menace_interceptor(o_king_bearing))
-        and not available_movement_at(o_king_bearing)) {// flee
+    // here is the bug, the king is able to eat, however it is not considered in the menace interceptor
+    //
+    const bool can_not_block_or_kill = not available_menace_interceptor(o_king_bearing);
+    if (m_menaces.size() >= 2 and not available_movement_at(o_king_bearing)) {// flee
       checkmate = true;
     }
+    if ((m_menaces.size() < 2 and can_not_block_or_kill) and not available_movement_at(o_king_bearing)) {// flee
+      // if king is able to intercept: is not checkmate else is checkmate
+      const unsigned x_distance = game::difference(o_king_bearing.x, menaces().front().x);
+      const unsigned y_distance = game::difference(o_king_bearing.y, menaces().front().y);
+
+      const bool king_is_not_able_to_intercept = not(x_distance <= 1 and y_distance <= 1);
+      if (king_is_not_able_to_intercept) {
+        checkmate = true;
+      } else {
+        return Game_result::no_results_yet;
+      }
+    }
+
+    // if ((m_menaces.size() >= 2 or not available_menace_interceptor(o_king_bearing))
+    //     and not available_movement_at(o_king_bearing)) {// flee
+    //   checkmate = true;
+    // }
 
     if (checkmate) {
       *l_score += 1000;
       return l_checkmates_o;
     }
   }
+
+  // it shouldn't have been stale_mate, the king is still able to intercept the menace
   // before, (4,2) -> (3,3), (4,4) and (2,2) already had dots.
   if (not available_movement_for_player(o_player)) { return Game_result::stale_mate; }
   // TODO: insufficient material
@@ -884,6 +912,7 @@ bool Gameboard::pawn_intercepts(const Player interceptor_p, const Bearing place)
   return available_interceptor;
 }
 
+
 bool Gameboard::available_menace_interceptor(const Bearing place)
 {
   bool available_interceptor{ false };
@@ -894,34 +923,8 @@ bool Gameboard::available_menace_interceptor(const Bearing place)
   if (at(menace).symbol == Piece_symbols::white_knight or at(menace).symbol == Piece_symbols::black_knight) {
     return available_knight_interceptor(interceptor_p, menace);
   }
-
-  Direction direction{};
-
-  if (place.x == menace.x) {
-    if (place.y > menace.y) {
-      direction = Direction::bot;
-    } else {
-      direction = Direction::top;
-    }
-  } else if (place.y == menace.y) {
-    if (place.x < menace.x) {
-      direction = Direction::right;
-    } else {
-      direction = Direction::left;
-    }
-  } else if (place.x < menace.x) {
-    if (place.y < menace.y) {
-      direction = Direction::top_right;
-    } else {
-      direction = Direction::bot_right;
-    }
-  } else {
-    if (place.y < menace.y) {
-      direction = Direction::top_left;
-    } else {
-      direction = Direction::bot_left;
-    }
-  }
+  Direction direction = get_direction(Move{ place, menace });
+  // Direction direction = get_direction(Move{ .start = place, .end = menace });
 
   interceptor_map.reserve(64);
 

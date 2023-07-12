@@ -16,3 +16,5 @@
 #include "Move.hpp"
 
 Move::Move(const Bearing t_start, const Bearing t_end) : start{ t_start }, end{ t_end } {}
+
+std::ostream &operator<<(std::ostream &os, const Move &move) { return os << move.start << " " << move.end; }

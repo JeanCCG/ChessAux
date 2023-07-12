@@ -26,6 +26,8 @@ struct Move
   Move() = default;
 };
 
+std::ostream &operator<<(std::ostream &os, const Move &move);
+
 
 // enum class type {
 //     move,

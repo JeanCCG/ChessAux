@@ -218,6 +218,7 @@ struct Game_settings
   player_configuration white_config{ Player::white };
   player_configuration black_config{ Player::black };
 
+  bool is_logging_enabled{ true };
   bool is_time_enabled{ false };
   unsigned white_time{};
   unsigned black_time{};

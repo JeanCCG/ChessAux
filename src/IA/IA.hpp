@@ -67,9 +67,10 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
       bool partially_pinned{};
       Axis operative_axis{};
       const bool invalid_piece = initial_gb.at(start).empty() or initial_gb.at(start).player != player
-                                 or initial_gb.is_absolutely_pinned(start, partially_pinned, operative_axis);
+or initial_gb.is_absolutely_pinned(start, partially_pinned, operative_axis);
       if (invalid_piece) { continue; }
 
+      // What to do when analyzing the available movements.
       auto do_if_movable = [&movable_ends](const Bearing b) {
         movable_ends.push_back(b);
       };
@@ -78,6 +79,7 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
       };
 
       if (not initial_gb.available_movement_at(start, do_if_movable, do_if_edible)) { continue; }
+
 
       auto perform = [&](Gameboard &gb, const Bearing end) {
         int score = difference_relative_to_player(player, gb.score) - my_initial_score;

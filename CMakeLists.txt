@@ -61,6 +61,16 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 # =============================================================================
+# Libraries
+# =============================================================================
+
+# # Link against Conan-installed dependencies
+
+# target_link_libraries(YourProject PRIVATE ${CONAN_LIBS})
+
+# add_subdirectory("/home/marcus/cpp-tools/benchmark")
+
+# =============================================================================
 # Variables
 # =============================================================================
 
@@ -84,7 +94,7 @@ set(SOURCES
     "src/Interface/human_vs_computer_interface.cpp"
     "src/Interface/human_vs_human_interface.cpp")
 
-# bad practice, but easy to implement command
+# bad practice, but easy to implement command.
 
 # file( GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 

@@ -1,8 +1,11 @@
+#logs
+*.log
 .idea
+# build folder
 build
 # main
 *helper*.*
-*aux.*
+*aux*.*
 *.out
 
 cmake

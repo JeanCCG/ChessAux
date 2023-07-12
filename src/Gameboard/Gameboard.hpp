@@ -32,6 +32,7 @@ public:
   unsigned width{ 8 };
   unsigned height{ 8 };
   Score score;
+  enum Direction { right, top, left, bot, top_right, top_left, bot_left, bot_right };
 
   explicit Gameboard(const Game_settings &game_settings);
   // ~Gameboard() { clear_stack_vars(); }
@@ -107,7 +108,40 @@ private:
 
   std::vector<Bearing> m_menaces;
 
-  enum Direction { right, top, left, bot, top_right, top_left, bot_left, bot_right };
+  Direction get_direction(const Move from_to)
+  {
+    auto [from, to] = from_to;
+    if (from.x == to.x) {
+      if (from.y > to.y) {
+        return Direction::bot;
+      } else {
+        return Direction::top;
+      }
+    }
+    if (from.y == to.y) {
+      if (from.x < to.x) {
+        return Direction::right;
+      } else {
+        return Direction::left;
+      }
+    }
+
+    // check diagonals
+    if (from.x < to.x) {
+      if (from.y < to.y) {
+        return Direction::top_right;
+      } else {
+        return Direction::bot_right;
+      }
+    }
+
+    if (from.y < to.y) {
+      return Direction::top_left;
+    } else {
+      return Direction::bot_left;
+    }
+  }
+
   std::vector<Bearing> menaces() const { return m_menaces; }
 
   void clear_stack_vars()

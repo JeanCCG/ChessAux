@@ -19,7 +19,7 @@
 
 using namespace std;
 
-Interface::Interface_state Interface::main_interface() const
+Interface::Interface_state Interface::main_interface()
 {
   enum class Option : int {
     human_vs_human = 0,

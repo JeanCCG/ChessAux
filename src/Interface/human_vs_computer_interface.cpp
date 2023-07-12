@@ -19,7 +19,7 @@
 
 using namespace std;
 
-Interface::Interface_state Interface::human_vs_computer_interface() const
+Interface::Interface_state Interface::human_vs_computer_interface()
 {
   enum class Option : int {
     play = 0,
@@ -43,12 +43,11 @@ Interface::Interface_state Interface::human_vs_computer_interface() const
   game_settings.white_config.player_type = Player_type::human;
   game_settings.black_config.player_type = Player_type::computer;
 
-  User_input user_input{};
-
-  do {
+  User_input input{ User_input::none };
+  while (input != User_input::select) {
     display_interface(options, static_cast<unsigned>(option));
-    user_input = get_user_key_input();
-    switch (user_input) {
+    input = get_user_key_input();
+    switch (input) {
     case User_input::down:
       if (option == Option::modify_chess_board) {
         option = Option::play;
@@ -63,20 +62,25 @@ Interface::Interface_state Interface::human_vs_computer_interface() const
         option = static_cast<Option>(static_cast<int>(option) - 1);
       }
       break;
-    case User_input::select: user_input = User_input::select; break;
+    case User_input::select: input = User_input::select; break;
     case User_input::exit: return Interface_state::main;
     default: break;
     }
-
-  } while (user_input != User_input::select);
+  }
 
   Interface_state next_state{};
   switch (option) {
   case Option::play: next_state = game(game_settings); break;
-  case Option::time: /* enable - disable (if enable, add option) */ break;
+  case Option::time: game_settings.is_time_enabled != game_settings.is_time_enabled; break;
   case Option::swap_colors: cout << "\tGood bye 1\n"; return Interface_state::end_program;
   case Option::difficulty: cout << "\tGood bye 2\n"; return Interface_state::end_program;
-  case Option::modify_chess_board: cout << "\tGood bye 3\n"; return Interface_state::end_program;
+  case Option::modify_chess_board:
+    modify_chess_board_interface(game_settings);
+    // modify_chess_board_interface()?
+    cout << "\tGood bye 3\n";
+    next_state = Interface_state::human_vs_computer;
+    // input the matrix.
+    break;
   default: break;
   }
   return next_state;

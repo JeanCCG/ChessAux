@@ -6,6 +6,7 @@
 #include "../Move/Move.hpp"
 #include "../enums/enums.hpp"
 #include "print.hpp"
+
 #include <iostream>
 #include <limits>
 #include <ncurses.h>
@@ -60,16 +61,22 @@ private:
     end_program,
   };
 
-  Interface_state main_interface() const;
-  Interface_state human_vs_computer_interface() const;
+  Interface_state main_interface();
+  Interface_state human_vs_computer_interface();
   Interface_state human_vs_human_interface() const;
   Interface_state static game_results_interface(const Game_result game_result);
+  // Game_settings modify_chess_board_interface(Game_settings game_settings);
 
-  Interface_state game(const Game_settings &game_settings) const;
-  void interface_state_machine(Interface_state state = Interface_state::main) const;
+  void modify_chess_board_interface(Game_settings &game_settings);
+
+  void interface_state_machine(Interface_state state);
 
 public:
-  void init() const { interface_state_machine(); }
+  // public for testing
+  Interface_state game(const Game_settings &game_settings) const;
+  // public for testing
+
+  void init() { interface_state_machine(Interface_state::main); }
 };
 
 

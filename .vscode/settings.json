@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.tpp": "cpp",
     "initializer_list": "cpp",
     "cctype": "cpp",
     "clocale": "cpp",
@@ -72,7 +73,8 @@
     "forward_list": "cpp",
     "csignal": "cpp",
     "codecvt": "cpp",
-    "numbers": "cpp"
+    "numbers": "cpp",
+    "semaphore": "cpp"
   },
   "editor.tokenColorCustomizations": {
     "textMateRules": [
@@ -96,7 +98,9 @@
       }
     ]
   },
-  "gtest-adapter.debugConfig": ["(gdb) Launch"],
+  "gtest-adapter.debugConfig": [
+    "(gdb) Launch"
+  ],
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     "readability-magic-numbers",
     "readability-identifier-length",
@@ -137,14 +141,16 @@
   "cSpell.words": [
     "castlings",
     "gameboard",
+    "interceptable",
     "ncursed"
   ],
   "cSpell.ignoreWords": [
     "tkbqrbkt"
   ],
-
   "cmake.configureOnOpen": true,
-  "cmake.configureSettings": {"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"},
+  "cmake.configureSettings": {
+    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+  },
   // "makefile.compileCommandsPath": "build/compile_commands.json",
   // "sonarlint.cxx.compilationDatabasePath": "./build/compile_commands.json"
   // "sonarlint.cxx.compilationDatabasePath": "/home/marcus/+projects/ChessAux/build/compile_commands.json"

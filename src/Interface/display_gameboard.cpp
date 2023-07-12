@@ -45,6 +45,7 @@ void Interface::display_gameboard(Gameboard &gb, const Player turn_perspective)
   };
 
   auto print_lane = [&](Bearing b) {
+    // cout << ' ' << static_cast<char>(b.y + '0') << ' ';
     cout << ' ' << static_cast<char>(b.y + '1') << ' ';
     switch_slot_color();
     for (; b.x < width; b.x++, switch_slot_color()) {
@@ -82,6 +83,7 @@ void Interface::display_gameboard(Gameboard &gb, const Player turn_perspective)
   cout << blank_frame;
   for (unsigned i = 0; i < width; i++) {
     string slot_number = blank_slot;
+    // slot_number[blank_slot.size() / 2] = static_cast<char>('0' + i);
     slot_number[blank_slot.size() / 2] = static_cast<char>('A' + i);
     cout << slot_number;
   }
