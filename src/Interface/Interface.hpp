@@ -13,6 +13,12 @@
 #include <string>
 #include <vector>
 
+// Uncomment the line below to enable logging, comment to disable it
+#define ENABLE_LOGGING
+#ifdef ENABLE_LOGGING
+void HandleInterruptSignal(int signal);
+#endif
+
 
 class Interface
 {

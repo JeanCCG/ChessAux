@@ -21,8 +21,7 @@
 https://isocpp.org/wiki/faq/misc-technical-issues#macros-with-if
  */
 
-// Uncomment the line below to enable logging, comment to disable it
-#define ENABLE_LOGGING
+
 
 Interface::Input_error Interface::start_input_validation(Move &move,
   Gameboard &gb,
@@ -215,9 +214,8 @@ std::string log_path()
 
   tm *local_time = localtime(&currentTime);// Convert the time_t object to a struct tm object
   ostringstream file_name;
-  file_name << put_time(local_time, "log__%Y-%m-%d_%H-%M-%S.log");
+  file_name << put_time(local_time, "log__%Y-%m-%d__%H-%M-%S.log");
   string logs_dir = "../logs/";
-  // string logs_dir = "./logs/";
   string log_path = logs_dir + file_name.str();
   return log_path;
 }
