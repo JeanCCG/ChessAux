@@ -21,6 +21,30 @@ Gameboard::Gameboard(const Game_settings &game_settings)
   }
 }
 
+// Gameboard::Gameboard(const Gameboard &gb)
+// {
+//   this->width = gb.width;
+//   this->height = gb.height;
+//   this->score.white_score = gb.score.white_score;
+//   this->score.black_score = gb.score.black_score;
+//   // this->score = gb.score;
+//   this->white_king_bearing = gb.white_king_bearing;
+//   this->black_king_bearing = gb.black_king_bearing;
+//   this->last_move = gb.last_move;
+//   this->m_last_move_checked = gb.m_last_move_checked;
+//   // this->interceptor_map = gb.interceptor_map;
+//   this->interceptor_map = gb.interceptor_map;
+//   this->knight_interceptors = gb.knight_interceptors;
+//   this->m_menaces = gb.m_menaces;
+
+//   for (unsigned x = 0; x < width; x++) {
+//     for (unsigned y = 0; y < height; y++) {
+//       Piece p{ static_cast<Piece_symbols>(gb.slots[x][y]) };
+//       at({ x, y }) = p;
+//     }
+//   }
+// }
+
 void Gameboard::move_or_capture(const Move t_move)
 {
   if (!at(t_move.end).isFree) {

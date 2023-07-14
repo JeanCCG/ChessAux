@@ -164,7 +164,6 @@ const std::vector<std::string> white_bishop_pinned{
   { _, _, _, _, _, _, _, R },
 };
 
-// move the pieces, white queen, black bishop, and try to move the king and put it in the same position.
 const std::vector<std::string> weird_king_1{
   { _, _, _, _, _, _, _, _ },
   { _, r, _, q, _, _, _, _ },
@@ -213,7 +212,7 @@ struct Game_settings
   const char A = testing::A;
   const char P = testing::P;
 
-  std::vector<std::string> board = testing::weird_king_1;
+  std::vector<std::string> board = testing::default_board;
 
   player_configuration white_config{ Player::white };
   player_configuration black_config{ Player::black };

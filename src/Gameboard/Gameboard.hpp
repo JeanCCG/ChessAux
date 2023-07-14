@@ -35,6 +35,7 @@ public:
   enum Direction { right, top, left, bot, top_right, top_left, bot_left, bot_right };
 
   explicit Gameboard(const Game_settings &game_settings);
+  // explicit Gameboard(const Gameboard &gb);
   // ~Gameboard() { clear_stack_vars(); }
 
   void move(const Move t_move);// end MUST BE FREE

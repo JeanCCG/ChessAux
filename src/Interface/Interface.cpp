@@ -22,14 +22,7 @@ https://isocpp.org/wiki/faq/misc-technical-issues#macros-with-if
  */
 
 // Uncomment the line below to enable logging, comment to disable it
-// #define ENABLE_LOGGING
-
-#ifdef ENABLE_LOGGING
-#include <chrono>
-#include <ctime>
-#include <fstream>
-#include <sstream>
-#endif
+#define ENABLE_LOGGING
 
 Interface::Input_error Interface::start_input_validation(Move &move,
   Gameboard &gb,
@@ -95,7 +88,7 @@ Interface::Input_error
 Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
-    const int depth = 2;
+    const int depth = 4;
     IA_functor IA{ my_player };
     return IA(gb, my_player, depth);
   }
@@ -198,6 +191,23 @@ void Interface::interface_state_machine(Interface_state state)
 void Interface::clean_screen() { system("clear"); }// Flawfinder: ignore ; reason: it is what it is //NOLINT
 
 #ifdef ENABLE_LOGGING
+
+
+#include <chrono>
+#include <csignal>
+#include <ctime>
+#include <fstream>
+#include <sstream>
+
+ofstream log_file;
+
+void HandleInterruptSignal(int signal)
+{
+  if (log_file.is_open()) { log_file.close(); }
+  std::exit(signal);
+}
+
+
 std::string log_path()
 {
   auto now = chrono::system_clock::now();
@@ -213,14 +223,12 @@ std::string log_path()
 }
 #endif
 
-
 // Interface::Interface_state Interface::game(const Game_settings &game_settings, logging = false, ) const
 Interface::Interface_state Interface::game(const Game_settings &game_settings) const
 {
   // enable and disable logging in "interface.cpp" file
 #ifdef ENABLE_LOGGING
-
-  ofstream log_file{ log_path() };
+  log_file.open(log_path());
   if (!log_file) { cerr << "couldn't open \"" << log_path << "\" for writing" << endl; }
 
 // #define LOG(x) log_file << x << "\n";

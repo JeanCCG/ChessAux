@@ -36,18 +36,15 @@ public:
 
   Page() = default;
   explicit Page(Bearing *t_page) : root{ t_page } {}
-  explicit Page(const Page &t_page) : root{ new Bearing[Size] }
+  explicit Page(const Page &t_page)
   {
+    if (t_page.empty()) { return; }
+    root = new Bearing[Size];
     Bearing *it = root;
     for (Bearing const *copy_it = t_page.root; copy_it != t_page.root + Size; copy_it++, it++) { *it = *copy_it; }
   }
 
-  void reserve()
-  {
-    root = new Bearing[Size];
-    init_array(root, root + Size);
-  }
-
+  void reserve();
   void append(const Bearing value);
   bool contains(const Bearing b) const;
   template<class Functor> void for_each(Functor functor)
@@ -55,6 +52,13 @@ public:
     for (Bearing *it = root; it != root + Size and *it != Bearing{ -1U, -1U }; it++) { functor(*it); }
   }
 };
+
+template<unsigned Size> void Page<Size>::reserve()
+{
+  clear();
+  root = new Bearing[Size];
+  init_array(root, root + Size);
+}
 
 template<unsigned Size> void Page<Size>::clear()
 {
@@ -99,10 +103,16 @@ public:
   explicit Map(Page<3> *t_keys) : keys{ t_keys } {}
   explicit Map(const Map &t_map) : keys{ new Page<3>[64] }
   {
+    if (t_map.empty()) { return; }
     Page<3> *it = keys;
     for (Page<3> const *copy_it = t_map.keys; copy_it != t_map.keys + 64; copy_it++, it++) { *it = *copy_it; }
   }
   explicit Map(const Map &&map) noexcept : keys{ map.keys } {}
+  Map &operator=(Map &)
+  {
+    //
+    return *this;
+  }
 
   explicit Map(const unsigned size);
   void reserve(const unsigned size);
@@ -126,4 +136,4 @@ private:
   Page<3> *keys{ nullptr };
 };
 
-#endif // __MAP_H__
+#endif// __MAP_H__

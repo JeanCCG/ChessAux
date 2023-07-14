@@ -22,7 +22,23 @@ struct Score
   int score[2]{ 0, 0 };
   int &white_score = score[0];
   int &black_score = score[1];
+  Score()
+  {
+    score[0] = 0;
+    score[1] = 0;
+  }
+  Score(int a, int b) : white_score{ a }, black_score{ b } {}
+  Score(const Score &s)
+  {
+    score[0] = s.score[0];
+    score[1] = s.score[1];
+  }
   int &at(const Player player);
+  // Score &operator=(const Score &)
+  // {
+  //   //
+  //   return this;
+  // }
 };
 
-#endif // __SCORE_H__
+#endif// __SCORE_H__
