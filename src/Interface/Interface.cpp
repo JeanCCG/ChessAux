@@ -217,7 +217,7 @@ std::string log_path()
 // Interface::Interface_state Interface::game(const Game_settings &game_settings, logging = false, ) const
 Interface::Interface_state Interface::game(const Game_settings &game_settings) const
 {
-  // enable and disable logging in "interface.hpp" file
+  // enable and disable logging in "interface.cpp" file
 #ifdef ENABLE_LOGGING
 
   ofstream log_file{ log_path() };

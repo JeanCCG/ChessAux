@@ -871,17 +871,20 @@ bool Gameboard::is_interceptable(const Player interceptor_p, const Bearing place
 bool Gameboard::pawn_intercepts(const Player interceptor_p, const Bearing place)
 {
   bool available_interceptor{ false };
-  Piece_symbols interceptor_pawn{};
-  unsigned direction{};
+  Piece_symbols interceptor_pawn;
+  unsigned direction;
+  bool y_condition;
   if (interceptor_p == Player::white) {
     interceptor_pawn = Piece_symbols::white_pawn;
     direction = -1U;
+    y_condition = place.y > 1;
   } else {
     interceptor_pawn = Piece_symbols::black_pawn;
     direction = +1;
+    y_condition = place.y < height - 1;
   }
 
-  if (at(place).empty()) {// move
+  if (at(place).empty()) {// move to block the enemy attack.
     const Bearing one_behind{ place.x, place.y + direction };
     const Bearing two_behind{ place.x, place.y + direction + direction };
     const bool pawn_first_movement = first_movement(place) and at(two_behind).symbol == interceptor_pawn;
@@ -892,8 +895,8 @@ bool Gameboard::pawn_intercepts(const Player interceptor_p, const Bearing place)
       available_interceptor = true;
       interceptor_map[two_behind].append(place);
     }
-  } else {// we assume that it's an enemy if not empty.
-    const bool checkable_left = place.x > 0;
+  } else {// we assume there is an enemy piece if not empty cause it is the direction of the menace.
+    const bool checkable_left = place.x > 0 and y_condition;
     const Bearing left_place = { place.x - 1, place.y + direction };
     const bool left_capture = checkable_left and is_an_enemy_piece(interceptor_p, left_place);
     if (left_capture) {
@@ -901,9 +904,9 @@ bool Gameboard::pawn_intercepts(const Player interceptor_p, const Bearing place)
       available_interceptor = true;
     }
 
-    const bool checkable_right = place.x < width - 1;
+    const bool checkable_right = place.x < width - 1 and y_condition;
     const Bearing right_place = { place.x + 1, place.y + direction };
-    const bool right_capture = checkable_right and is_an_enemy_piece(interceptor_p, right_place);
+    const bool right_capture = checkable_right and at(right_place).player != interceptor_p;
     if (right_capture) {
       interceptor_map[right_place].append(place);
       available_interceptor = true;

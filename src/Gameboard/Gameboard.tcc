@@ -331,9 +331,7 @@ bool Gameboard::pawn_menace(const Player player,
 {
   const auto [x, y] = place;
 
-  // FIXME
-  // TODO
-  // bug, no variable player
+  // TODO: bug, no variable player
   if ((player == Player::white) and (y < height - 1)) {
     if (const Bearing top_left{ x - 1, y + 1 };
         (x > 0) and (at(top_left).symbol == enemy_pawn) and do_if_menace(top_left)) {
