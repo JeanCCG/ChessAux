@@ -30,7 +30,6 @@ https://softwareengineering.stackexchange.com/questions/373916/c-preferred-metho
  * Template implementation
  ****************************************************************************/
 
-
 template<class Do_if_movable, class Do_if_edible>
 bool Gameboard::manage_available_menace_interceptors(const Bearing place,
   Do_if_movable do_if_movable,
@@ -39,7 +38,7 @@ bool Gameboard::manage_available_menace_interceptors(const Bearing place,
   const Piece_symbols menace_symbol = at(m_menaces.front()).symbol;
   const bool knight_case =
     (menace_symbol == Piece_symbols::black_knight or menace_symbol == Piece_symbols::white_knight);
-  if (knight_case) { return knight_interceptors.contains(place); }
+  if (knight_case) { return not knight_interceptors.empty() and knight_interceptors.contains(place); }
 
   const bool valid_key = not interceptor_map[place].empty();
   if (valid_key) {
@@ -306,16 +305,18 @@ bool Gameboard::evaluate_pawn_possibilities(const Bearing place, Do_if_movable d
   }
 
   const bool checkable_left = place.x > 0;
-  const bool left_capture = checkable_left and is_an_enemy_piece(my_player, { place.x - 1, place.y + direction });
+  const Bearing left = { place.x - 1, place.y + direction };
+  const bool left_capture = checkable_left and not at(left).empty() and at(left).player != my_player;
   if (left_capture) {
-    do_if_edible({ place.x - 1, place.y + direction });
+    do_if_edible(left);
     available_movement = true;
   }
 
   const bool checkable_right = place.x < width - 1;
-  const bool right_capture = checkable_right and is_an_enemy_piece(my_player, { place.x + 1, place.y + direction });
+  const Bearing right = { place.x + 1, place.y + direction };
+  const bool right_capture = checkable_right and not at(right).empty() and at(right).player != my_player;
   if (right_capture) {
-    do_if_edible({ place.x + 1, place.y + direction });
+    do_if_edible(right);
     available_movement = true;
   }
 

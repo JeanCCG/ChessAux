@@ -33,6 +33,11 @@ public:
   void set_null() { root = nullptr; }
   void clear();
   bool empty() const { return root == nullptr; }
+  void safe_delete()
+  {
+    delete[] root;
+    root = nullptr;
+  }
 
   Page() = default;
   explicit Page(Bearing *t_page) : root{ t_page } {}
@@ -62,14 +67,13 @@ template<unsigned Size> void Page<Size>::reserve()
 
 template<unsigned Size> void Page<Size>::clear()
 {
-  if (root == nullptr) { return; }
-  delete[] root;
-  root = nullptr;
+  if (empty()) { return; }
+  safe_delete();
 }
 
 template<unsigned Size> void Page<Size>::append(const Bearing value)
 {
-  if (root == nullptr) {
+  if (empty()) {
     root = new Bearing[Size];
     *root = value;
     init_array(root + 1, root + Size);
@@ -107,33 +111,39 @@ public:
     Page<3> *it = keys;
     for (Page<3> const *copy_it = t_map.keys; copy_it != t_map.keys + 64; copy_it++, it++) { *it = *copy_it; }
   }
-  explicit Map(const Map &&map) noexcept : keys{ map.keys } {}
-  Map &operator=(Map &)
-  {
-    //
-    return *this;
-  }
 
   explicit Map(const unsigned size);
   void reserve(const unsigned size);
-  // explicit Map(const unsigned size);
+
   ~Map() { clear(); }
-  void clear()
+  void safe_delete()
   {
-    if (keys == nullptr) { return; }
     delete[] keys;
     keys = nullptr;
   }
+  void clear()
+  {
+    if (empty()) { return; }
+    safe_delete();
+  }
 
   bool empty() const { return keys == nullptr; }
-  // bool has_values() const { return not empty(); }
 
   Page<3> &operator[](const Bearing b) const;
   Page<3> &at(const Bearing b) const;
 
+  std::vector<Page<3> *> interceptors()
+  {
+    std::vector<Page<3> *> v;
+    for (Page<3> *it = keys; it < keys + 64; it++) {
+      if (not it->empty()) { v.push_back(it); }
+    }
+    return v;
+  }
+
+  Page<3> *keys{ nullptr };
 
 private:
-  Page<3> *keys{ nullptr };
 };
 
 #endif// __MAP_H__

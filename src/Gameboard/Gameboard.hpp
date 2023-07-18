@@ -36,7 +36,7 @@ public:
 
   explicit Gameboard(const Game_settings &game_settings);
   // explicit Gameboard(const Gameboard &gb);
-  // ~Gameboard() { clear_stack_vars(); }
+  ~Gameboard() { clear_stack_vars(); }
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
@@ -93,18 +93,33 @@ public:
 
   bool start_able_to_intercept(const Move move);// check key
   bool end_able_to_intercept(const Move move);// check values
+  // TODO: move this to private after solving the 766 copy destructor bug
+  Map interceptor_map{ nullptr };
 
 private:
+  Piece slots[8][8];
   Bearing white_king_bearing;
   Bearing black_king_bearing;
-  Piece slots[8][8];
   int &white_score = score.score[0];
   int &black_score = score.score[1];
   Move last_move{ { 0U, 0U }, { 0U, 0U } };
 
   bool m_last_move_checked{ false };
 
-  Map interceptor_map{ nullptr };
+  /*
+  E: enemy knight
+  *: possible interceptor
+    _ _ _ _ _ _ _ _
+    _ _ * _ * _ _ _
+    _ * * * * * _ _
+    _ _ * E * _ _ _
+    _ * * * * * _ _
+    _ _ * _ * _ _ _
+    _ _ _ _ _ _ _ _
+    _ _ _ _ _ _ _ _
+    There are 15 possible interceptors, but it's easier to work with 16.
+   */
+
   Page<16> knight_interceptors{ nullptr };
 
   std::vector<Bearing> m_menaces;

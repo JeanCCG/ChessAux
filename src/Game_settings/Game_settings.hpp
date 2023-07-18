@@ -186,6 +186,32 @@ const std::vector<std::string> weird_king_2{
   { _, _, _, _, _, _, R, _ },
 };
 
+/* white_queen to black_queen; check king */
+// ! BUG
+const std::vector<std::string> destructor_766_bug{
+  { t, _, _, p, q, _, _, _ },
+  { c, _, _, _, p, _, P, C },
+  { _, _, _, p, _, P, _, A },
+  { _, _, _, p, _, _, P, Q },
+  { r, p, _, _, _, _, P, R },
+  { a, p, _, _, _, _, P, A },
+  { c, p, _, _, _, _, P, C },
+  { t, p, _, _, _, _, P, T },
+};
+
+/* white_queen to black_queen; check king */
+// * SOLVED
+const std::vector<std::string> HvsM_bad_read_1068{
+  { q, _, _, _, _, _, _, _ },
+  { _, _, _, C, p, _, _, _ },
+  { _, _, p, _, _, _, P, A },
+  { _, _, _, _, _, _, P, Q },
+  { r, p, _, _, _, _, a, R },
+  { a, p, _, _, _, _, P, A },
+  { c, p, _, _, _, _, P, C },
+  { t, p, _, _, _, _, P, T },
+};
+
 // const std::vector<std::string> board{
 //   { "♜♞♝♛♚♝♞♜" },
 //   { "♟♟♟♟♟♟♟♟" },
@@ -212,12 +238,11 @@ struct Game_settings
   const char A = testing::A;
   const char P = testing::P;
 
-  std::vector<std::string> board = testing::default_board;
+  std::vector<std::string> board = testing::HvsM_bad_read_1068;
 
   player_configuration white_config{ Player::white };
   player_configuration black_config{ Player::black };
 
-  bool is_logging_enabled{ true };
   bool is_time_enabled{ false };
   unsigned white_time{};
   unsigned black_time{};

@@ -21,33 +21,9 @@ Gameboard::Gameboard(const Game_settings &game_settings)
   }
 }
 
-// Gameboard::Gameboard(const Gameboard &gb)
-// {
-//   this->width = gb.width;
-//   this->height = gb.height;
-//   this->score.white_score = gb.score.white_score;
-//   this->score.black_score = gb.score.black_score;
-//   // this->score = gb.score;
-//   this->white_king_bearing = gb.white_king_bearing;
-//   this->black_king_bearing = gb.black_king_bearing;
-//   this->last_move = gb.last_move;
-//   this->m_last_move_checked = gb.m_last_move_checked;
-//   // this->interceptor_map = gb.interceptor_map;
-//   this->interceptor_map = gb.interceptor_map;
-//   this->knight_interceptors = gb.knight_interceptors;
-//   this->m_menaces = gb.m_menaces;
-
-//   for (unsigned x = 0; x < width; x++) {
-//     for (unsigned y = 0; y < height; y++) {
-//       Piece p{ static_cast<Piece_symbols>(gb.slots[x][y]) };
-//       at({ x, y }) = p;
-//     }
-//   }
-// }
-
 void Gameboard::move_or_capture(const Move t_move)
 {
-  if (!at(t_move.end).isFree) {
+  if (not at(t_move.end).isFree) {
     capture(t_move);
   } else {
     move(t_move);
@@ -415,6 +391,7 @@ void Gameboard::make_move(const Move t_move)
 
   default: move_or_capture(t_move); break;
   }
+  // should I check whether the moved_piece checks the enemy king?
 }
 
 void Gameboard::undraw_king(const Bearing king_bearing)
@@ -607,6 +584,8 @@ Game_result Gameboard::check_end_conditions()
     l_score = &black_score;
   }
 
+  // this might save some operations
+  // m_last_move_checked = king_is_menaced(o_player, o_king_bearing);
   if (king_is_menaced(o_player, o_king_bearing)) {
     bool checkmate{ false };
     m_last_move_checked = true;
@@ -641,13 +620,13 @@ Game_result Gameboard::check_end_conditions()
     }
   }
 
-  // it shouldn't have been stale_mate, the king is still able to intercept the menace
-  // before, (4,2) -> (3,3), (4,4) and (2,2) already had dots.
   if (not available_movement_for_player(o_player)) { return Game_result::stale_mate; }
   // TODO: insufficient material
 
   return Game_result::no_results_yet;
 }
+
+unsigned counter = 0;
 
 bool Gameboard::available_movement_for_player(const Player player)
 {
@@ -655,6 +634,7 @@ bool Gameboard::available_movement_for_player(const Player player)
     for (unsigned y = 0; y < height; y++) {
       const Bearing end{ x, y };
       if (at(end).empty() or at(end).player != player) { continue; }
+      counter++;
       if (available_movement_at(end)) { return true; }
     }
   }
@@ -698,7 +678,7 @@ bool Gameboard::king_is_menaced(const Player player, const Bearing place)
       return m_continue;
     };
   };
-  auto extra_condition = [this, &player](const Bearing b) {
+  auto until_is_my_piece = [this, &player](const Bearing b) {
     const bool m_break_loop{ false };
     const bool m_continue_loop{ true };
     if (at(b).player == player) { return m_break_loop; }
@@ -706,9 +686,9 @@ bool Gameboard::king_is_menaced(const Player player, const Bearing place)
   };
 
   const std::vector<Piece_symbols> rook_queen{ enemy.rook, enemy.queen };
-  straight_menace(place, perform_factory(rook_queen), extra_condition);
+  straight_menace(place, perform_factory(rook_queen), until_is_my_piece);
   const std::vector<Piece_symbols> bishop_queen{ enemy.bishop, enemy.queen };
-  diagonal_menace(place, perform_factory(bishop_queen), extra_condition);
+  diagonal_menace(place, perform_factory(bishop_queen), until_is_my_piece);
 
   auto jump_condition = [this, &enemy, &is_menaced](const Bearing b) {
     const bool m_continue{ false };
@@ -866,6 +846,7 @@ bool Gameboard::is_interceptable(const Player interceptor_p, const Bearing place
             return at(b).symbol == p_s;
           })) {
         available_interceptor = true;
+        //! this allocated the memory
         interceptor_map[b].append(place);
         return m_break;
       }

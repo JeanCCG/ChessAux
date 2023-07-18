@@ -22,7 +22,6 @@ https://isocpp.org/wiki/faq/misc-technical-issues#macros-with-if
  */
 
 
-
 Interface::Input_error Interface::start_input_validation(Move &move,
   Gameboard &gb,
   const Player turn_color,
@@ -87,7 +86,7 @@ Interface::Input_error
 Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
-    const int depth = 4;
+    const int depth = 3;
     IA_functor IA{ my_player };
     return IA(gb, my_player, depth);
   }
@@ -258,7 +257,6 @@ Interface::Interface_state Interface::game(const Game_settings &game_settings) c
   LOG(static_cast<int>(game_result));
   log_file.close();
 #endif
-
   return game_results_interface(game_result);
 }
 

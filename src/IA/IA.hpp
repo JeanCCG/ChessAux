@@ -2,15 +2,36 @@
 #define __IA_HPP__
 
 #include "../Gameboard/Gameboard.hpp"
+#include <iostream>
 #include <limits>
 #include <vector>
 
 using namespace std;
 
-auto less_than = [](const int lhs, const int rhs) {
+unsigned gb_counter = 0;
+
+void print_gb(Gameboard &gb)
+{
+  if (gb_counter < 763) { return; }
+  cout << "gb_counter: " << gb_counter << endl;
+  for (unsigned x = 0; x < gb.width; x++) {
+    for (unsigned y = 0; y < gb.height; y++) {
+      const Bearing b{ x, y };
+      const auto e = gb.at(b).symbol;
+      if (e == Piece_symbols::empty) {
+        cout << "O";
+      } else {
+        cout << static_cast<char>(e);
+      }
+    }
+    cout << endl;
+  }
+}
+
+const auto less_than = [](const int lhs, const int rhs) {
   return lhs < rhs;
 };
-auto greater_than = [](const int lhs, const int rhs) {
+const auto greater_than = [](const int lhs, const int rhs) {
   return lhs > rhs;
 };
 
@@ -43,11 +64,11 @@ struct IA_functor
     const Player next_player,
     int &best_score_until_now,
     vector<Move> &best_path_until_now,
-    auto cmp,
+    const auto cmp,
     int my_initial_score,
     vector<Move> &t_path,
     Gameboard &gb,
-    const Move start_end);
+    const Move move);
 };
 
 
@@ -59,29 +80,31 @@ void IA_functor::my_perform(const Player player,
   const Player next_player,
   int &best_score_until_now,
   vector<Move> &best_path_until_now,
-  auto cmp,
+  const auto cmp,
   int my_initial_score,
   vector<Move> &t_path,
   Gameboard &gb,
-  const Move start_end)
+  const Move move)
 {
-  auto [start, end] = start_end;
+  t_path.push_back(move);
   int score = diff_relative_to_player(player, gb.score) - my_initial_score;
   // vector<Move> path(depth + 1);
   vector<Move> path{ t_path };
 
-  if (gb.check_end_conditions() != Game_result::no_results_yet) {
-    path.push_back({ start, end });
-  } else {
+  if (gb.check_end_conditions() == Game_result::no_results_yet) {
     score += recursive_IA(gb, path, next_player, depth, next_minimax);
   }
+  // if (gb.check_end_conditions() != Game_result::no_results_yet) {
+  // } else {
+  //   score += recursive_IA(gb, path, next_player, depth, next_minimax);
+  // }
 
   if (cmp(score, best_score_until_now)) {
     best_score_until_now = score;
     best_path_until_now = path;
-    best_path_until_now.push_back({ start, end });
   }
 }
+
 
 int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player player, int depth, Minimax minimax)
 {
@@ -121,9 +144,18 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
 
       if (not initial_gb.available_movement_at(start, movable_append, edible_append)) { continue; }
 
+      //
+      gb_counter = gb_counter;
+      // vector<Page<3> *> initial_gb_map_interceptors = initial_gb.interceptor_map.interceptors();
+      //
       for (const auto end : edible_ends) {
+        gb_counter++;
         Gameboard gb = initial_gb;
-        gb.capture({ start, end });
+        print_gb(gb);
+        const Move move = { start, end };
+        gb.capture(move);
+        // vector<Page<3> *> gb_map_interceptors = initial_gb.interceptor_map.interceptors();
+        // print_gb(gb);
         my_perform(player,
           next_minimax,
           depth,
@@ -134,11 +166,12 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
           my_initial_score,
           t_path,
           gb,
-          Move{ start, end });
+          move);
       }
       for (const auto end : movable_ends) {
         Gameboard gb = initial_gb;
-        gb.make_move({ start, end });
+        const Move move = { start, end };
+        gb.make_move(move);
         my_perform(player,
           next_minimax,
           depth,
@@ -149,7 +182,7 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
           my_initial_score,
           t_path,
           gb,
-          Move{ start, end });
+          move);
       }
 
       movable_ends.clear();

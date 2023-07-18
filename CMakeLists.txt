@@ -75,7 +75,7 @@ endif()
 # =============================================================================
 
 set(SOURCES
-    "main.cpp"
+    # "main.cpp"
     "src/Gameboard/Gameboard.cpp"
     "src/Game_settings/Game_settings.cpp"
     "src/Move/Move.cpp"
@@ -105,7 +105,8 @@ set(SOURCES
 # Targets
 # =============================================================================
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} "main.cpp" ${SOURCES})
+# add_executable(testing "gb_test_destroyer.cpp" ${SOURCES})
 
 # add_executable(${PROJECT_NAME} "main.cpp" ${SOURCES})
 
@@ -120,3 +121,4 @@ include_directories(${CURSES_INCLUDE_DIR}) # is this necessary?, idk, it works
 
 # # Link the ncursed library to the executable
 target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES})
+# target_link_libraries(testing ${CURSES_LIBRARIES})

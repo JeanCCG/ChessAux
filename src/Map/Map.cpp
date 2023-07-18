@@ -29,4 +29,8 @@ Map::Map(const unsigned size) : keys{ new Page<3>[size] }
 }
 
 // cppcheck-suppress publicAllocationError; reason: i'll handle it.
-void Map::reserve(const unsigned size) { keys = new Page<3>[size]; }
+void Map::reserve(const unsigned size)
+{
+  if (not empty()) { safe_delete(); }
+  keys = new Page<3>[size];
+}
