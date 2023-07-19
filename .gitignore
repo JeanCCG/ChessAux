@@ -1,10 +1,46 @@
-.vs
-.vscode/
+#logs
+*.log
 .idea
-cmake-build-debug
+# build folder
 build
-main
+# main
+*helper*.*
+*aux*.*
+*.out
+
 cmake
-helper
-out
+cmake-build-debug
 cmake-build-debug/CMakeFiles/clion-log.txt
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app

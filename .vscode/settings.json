@@ -1,0 +1,158 @@
+{
+  "files.associations": {
+    "*.tpp": "cpp",
+    "initializer_list": "cpp",
+    "cctype": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "cstdarg": "cpp",
+    "cstddef": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cwchar": "cpp",
+    "cwctype": "cpp",
+    "array": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "*.tcc": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "cstdint": "cpp",
+    "deque": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "exception": "cpp",
+    "algorithm": "cpp",
+    "functional": "cpp",
+    "iterator": "cpp",
+    "memory": "cpp",
+    "memory_resource": "cpp",
+    "numeric": "cpp",
+    "optional": "cpp",
+    "random": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "fstream": "cpp",
+    "iosfwd": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "limits": "cpp",
+    "new": "cpp",
+    "ostream": "cpp",
+    "ranges": "cpp",
+    "sstream": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "cinttypes": "cpp",
+    "typeinfo": "cpp",
+    "bitset": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "chrono": "cpp",
+    "condition_variable": "cpp",
+    "list": "cpp",
+    "map": "cpp",
+    "set": "cpp",
+    "ratio": "cpp",
+    "regex": "cpp",
+    "future": "cpp",
+    "iomanip": "cpp",
+    "mutex": "cpp",
+    "shared_mutex": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp",
+    "variant": "cpp",
+    "strstream": "cpp",
+    "complex": "cpp",
+    "cfenv": "cpp",
+    "typeindex": "cpp",
+    "forward_list": "cpp",
+    "csignal": "cpp",
+    "codecvt": "cpp",
+    "numbers": "cpp",
+    "semaphore": "cpp"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "googletest.failed",
+        "settings": {
+          "foreground": "#f00"
+        }
+      },
+      {
+        "scope": "googletest.passed",
+        "settings": {
+          "foreground": "#0f0"
+        }
+      },
+      {
+        "scope": "googletest.run",
+        "settings": {
+          "foreground": "#0f0"
+        }
+      }
+    ]
+  },
+  "gtest-adapter.debugConfig": [
+    "(gdb) Launch"
+  ],
+  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+    "readability-magic-numbers",
+    "readability-identifier-length",
+    "misc-no-recursion",
+    "hicpp-avoid-c-arrays",
+    "modernize-avoid-c-arrays",
+    "bugprone-easily-swappable-parameters",
+    "cppcoreguidelines-avoid-magic-numbers",
+    "cppcoreguidelines-avoid-c-arrays",
+    "cppcoreguidelines-pro-bounds-array-to-pointer-decay",
+    "cppcoreguidelines-pro-bounds-pointer-arithmetic",
+    "hicpp-no-array-decay",
+    "hicpp-signed-bitwise",
+    "cppcoreguidelines-pro-bounds-constant-array-index",
+    "cppcoreguidelines-owning-memory",
+    "cppcoreguidelines-special-member-functions",
+    "hicpp-special-member-functions",
+    "clang-diagnostic-c++17-extensions"
+  ],
+  "C_Cpp.errorSquiggles": "disabled",
+  "task.allowAutomaticTasks": "on",
+  "files.exclude": {
+    "**/*.out": true,
+    "build": true,
+    ".clang-format": true,
+    ".clang-tidy": true,
+    "suppressions.txt": true,
+    ".pytest_cache": true,
+    "LICENSE": true
+    // "**/*.out": true,
+    // "build": true,
+    // ".clang-format": true,
+    // ".clang-tidy": true,
+    // "suppressions.txt": true,
+    // "pytest": true,
+  },
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cSpell.words": [
+    "castlings",
+    "gameboard",
+    "interceptable",
+    "ncursed"
+  ],
+  "cSpell.ignoreWords": [
+    "tkbqrbkt"
+  ],
+  "cmake.configureOnOpen": true,
+  "cmake.configureSettings": {
+    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+  },
+  // "makefile.compileCommandsPath": "build/compile_commands.json",
+  // "sonarlint.cxx.compilationDatabasePath": "./build/compile_commands.json"
+  // "sonarlint.cxx.compilationDatabasePath": "/home/marcus/+projects/ChessAux/build/compile_commands.json"
+  "cppStandard": "c++20",
+}
