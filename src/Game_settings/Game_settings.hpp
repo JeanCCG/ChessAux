@@ -238,7 +238,7 @@ struct Game_settings
   const char A = testing::A;
   const char P = testing::P;
 
-  std::vector<std::string> board = testing::destructor_766_bug;
+  std::vector<std::string> board = testing::default_board;
 
   player_configuration white_config{ Player::white };
   player_configuration black_config{ Player::black };

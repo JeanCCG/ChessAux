@@ -14,6 +14,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # option(BUILD_DOC "Build Documentation" ON)
 
+option(ENABLE_LOGGING "Move Logging" ON)
+
+if(ENABLE_LOGGING)
+  set(IS_LOGGING_ENABLE 1)
+else()
+  set(IS_LOGGING_ENABLE 0)
+endif()
+
+set(TEMPLATE_FILE "${CMAKE_SOURCE_DIR}/src/config/logging.hpp.in")
+set(OUTPUT_FILE "${CMAKE_SOURCE_DIR}/src/config/logging.hpp")
+configure_file(${TEMPLATE_FILE} ${OUTPUT_FILE} @ONLY)
+
 # set(CMAKE_CXX_COMPILER "/usr/bin/clang++-10")
 set(CMAKE_CXX_COMPILER "/usr/bin/g++-11") # for using enum
 
@@ -32,89 +44,6 @@ set(CMAKE_CXX_COMPILER "/usr/bin/g++-11") # for using enum
 # cmake_export_compile_commands()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# =============================================================================
-# Build Types Configuration
-# =============================================================================
-
-#[[
-g++ -Wall -Wextra -Wpedantic -Werror \
-	-pthread \
-	-fsanitize=address \
-	-O0 -g \
-	-fsanitize=address \
-	-fsanitize-address-use-after-scope \
-	-fsanitize=undefined \
-	-fsanitize=thread \
-	-fno-sanitize-recover \
-	-fstack-protector \
-	-fstack-check \
-	-fstack-protector-strong \
-	-D_FORTIFY_SOURCE=2 \
-	-o your_executable source_file.cpp
-#]]
-
-if(CMAKE_CONFIGURATION_TYPES)
-  if(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
-    list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
-  endif()
-else()
-  set(allowableBuildTypes Debug Release Profile)
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${allowableBuildTypes}")
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE
-        Debug
-        CACHE STRING "" FORCE)
-    message("debug build type will be used by default")
-  elseif(NOT CMAKE_BUILD_TYPE IN_LIST allowableBuildTypes)
-    message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
-  endif()
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  message("adding debug build type configuration")
-  add_compile_options(-Wall -Wextra -Wpedantic)
-  add_compile_options(-Wimplicit-fallthrough -Wsign-conversion)
-  add_compile_options(-pthread) # Enable multithreading
-  add_compile_options(-fsanitize=address) # ASAN
-  link_libraries(-fsanitize=address)
-  # add_link_options(-fsanitize=address)
-  add_compile_options(-fsanitize=undefined)
-  link_libraries(ubsan)
-  add_compile_options(-O0 -g) # disable optimizations and keep symbols
-  add_compile_options(-fsanitize-address-use-after-scope) # better ASAN and
-
-  # link_libraries(-fsanitize=address) add_compile_options(-fsanitize=thread) #
-  # Thread sanitizer
-
-  # add_compile_options(-fstack-protector -fstack-check -fstack-protector-all)
-  add_compile_options(-fstack-protector-all)
-  # add_compile_definitions(-D_FORTIFY_SOURCE=2)
-
-  # IF COMPILER == GCC
-  add_compile_options(-fdiagnostics-color=always)
-  # add_compile_options(-fdiagnostics-format=pretty)# this didn't work
-  #[[
-  #IF COMPILER == Clang
-  add_compile_options(-fcolor-diagnostics -fpretty-diagnostics)
-  ]]
-  # Make ASAN output pretty
-
-  #[[add_compile_options(--pretty-print)
-  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --pretty-print")
-
-
-
-  ]]
-  #
-  #[[Make ASAN output pretty through asan_symbolize
-  ]]
-  set(ENV{ASAN_SYMBOLIZER_PATH} "/usr/bin/asan_symbolize")
-  set(ENV{ASAN_OPTIONS} "symbolize=1")
-  #[[ GARBAGE
-  set(ASAN_SYMBOLIZER_PATH "/usr/bin/asan_symbolize")
-  ]]
-endif()
 
 # =============================================================================
 # Libraries
@@ -178,3 +107,115 @@ include_directories(${CURSES_INCLUDE_DIR}) # is this necessary?, idk, it works
 # # Link the ncursed library to the executable
 target_link_libraries(${PROJECT_NAME} ${CURSES_LIBRARIES})
 # target_link_libraries(testing ${CURSES_LIBRARIES})
+
+# =============================================================================
+# Build Types Configuration
+# =============================================================================
+
+#[[
+g++ -Wall -Wextra -Wpedantic -Werror \
+	-pthread \
+	-fsanitize=address \
+	-O0 -g \
+	-fsanitize=address \
+	-fsanitize-address-use-after-scope \
+	-fsanitize=undefined \
+	-fsanitize=thread \
+	-fno-sanitize-recover \
+	-fstack-protector \
+	-fstack-check \
+	-fstack-protector-strong \
+	-D_FORTIFY_SOURCE=2 \
+	-o your_executable source_file.cpp
+#]]
+
+if(CMAKE_CONFIGURATION_TYPES)
+  if(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
+    list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
+  endif()
+else()
+  set(allowableBuildTypes Debug Release Profile)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${allowableBuildTypes}")
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE
+        Debug
+        CACHE STRING "" FORCE)
+    message("debug build type will be used by default")
+  elseif(NOT CMAKE_BUILD_TYPE IN_LIST allowableBuildTypes)
+    message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
+  endif()
+endif()
+
+message("BUILD TYPE:")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  message("adding DEBUG BUILD TYPE configuration")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wimplicit-fallthrough -Wsign-conversion)
+  add_compile_options(-pthread) # Enable multithreading
+  add_compile_options(-fsanitize=address) # ASAN
+  link_libraries(-fsanitize=address)
+  add_compile_options(-fsanitize=memory) # MemSAN
+  link_libraries(-fsanitize=memory)
+  # add_link_options(-fsanitize=address)
+  add_compile_options(-fsanitize=undefined)
+  link_libraries(ubsan)
+  add_compile_options(-O0 -g) # disable optimizations and keep symbols
+  add_compile_options(-fsanitize-address-use-after-scope) # better ASAN and
+
+  # link_libraries(-fsanitize=address) add_compile_options(-fsanitize=thread)
+
+  # Thread sanitizer
+
+  # add_compile_options(-fstack-protector -fstack-check -fstack-protector-all)
+  add_compile_options(-fstack-protector-all)
+  # add_compile_definitions(-D_FORTIFY_SOURCE=2)
+
+  # IF COMPILER == GCC
+  add_compile_options(-fdiagnostics-color=always)
+  # add_compile_options(-fdiagnostics-format=pretty)# this didn't work
+  #[[
+  #IF COMPILER == Clang
+  add_compile_options(-fcolor-diagnostics -fpretty-diagnostics)
+  ]]
+  # Make ASAN output pretty
+
+  #[[add_compile_options(--pretty-print)
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --pretty-print")
+
+
+
+  ]]
+  #
+  #[[Make ASAN output pretty through asan_symbolize
+  ]]
+  set(ENV{ASAN_SYMBOLIZER_PATH} "/usr/bin/asan_symbolize")
+  set(ENV{ASAN_OPTIONS} "symbolize=1")
+  #[[ GARBAGE
+  set(ASAN_SYMBOLIZER_PATH "/usr/bin/asan_symbolize")
+  ]]
+else()
+  message("adding RELEASE BUILD TYPE configuration")
+  add_compile_options(-O3) # start with O2
+  add_compile_options(-ftree-vectorize) # Enables loop vectorization, which can
+                                        # help the compiler generate SIMD
+  add_compile_options(-march=native) # optimization by specific architecture,
+                                     # trade off with compatibility.
+  add_compile_options(-finline-functions) # suggest inlining the functions
+
+  # add_compile_options(-fprofile-generate) # profile info in first compilation
+  # add_compile_options(-fprofile-use) # use the profile info
+
+  add_compile_options(-fdata-sections) # better dead code elimination
+  add_compile_options(-ffunction-sections) # better unused function elimination
+  add_compile_options(-funroll-loops) # unroll the loops
+  add_compile_options(-fomit-frame-pointer) # omit frame pointer, worse debug,
+                                            # +1 register
+  # LTO
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT result)
+  if(result)
+    set_target_properties(${PROJECT_NAME}
+                          PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+  endif()
+
+endif()

@@ -86,7 +86,7 @@ Interface::Input_error
 Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
-    const int depth = 2;
+    const int depth = 5;
     IA_functor IA{ my_player };
     return IA(gb, my_player, depth);
   }
@@ -188,7 +188,7 @@ void Interface::interface_state_machine(Interface_state state)
 
 void Interface::clean_screen() { system("clear"); }// Flawfinder: ignore ; reason: it is what it is //NOLINT
 
-#ifdef ENABLE_LOGGING
+#if ENABLE_LOGGING
 
 
 #include <chrono>
@@ -224,7 +224,7 @@ std::string log_path()
 Interface::Interface_state Interface::game(const Game_settings &game_settings) const
 {
   // enable and disable logging in "interface.cpp" file
-#ifdef ENABLE_LOGGING
+#if ENABLE_LOGGING
   auto path = log_path();
   log_file.open(path);
   if (!log_file) { cerr << "couldn't open \"" << path << "\" for writing" << endl; }
@@ -254,7 +254,7 @@ Interface::Interface_state Interface::game(const Game_settings &game_settings) c
     game::switch_player(turn);
   }
 
-#ifdef ENABLE_LOGGING
+#if ENABLE_LOGGING
   LOG(static_cast<int>(game_result));
   log_file.close();
 #endif
