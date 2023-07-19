@@ -167,10 +167,10 @@ bool Gameboard::evaluate_king_possibilities(const Bearing king_bearing,
   // TODO: make this code clearer
   for (unsigned x_it = in_the_left_border ? 1U : 0U; x_it < x_limit; x_it++) {
     Bearing end;
-    end.x = king_bearing.x + x_it + -1;
+    end.x = king_bearing.x + x_it + -1U;
 
     for (unsigned y_it = in_the_bot_border ? 1U : 0U; y_it < y_limit; y_it++) {
-      end.y = king_bearing.y + y_it - 1;
+      end.y = king_bearing.y + y_it - 1U;
 
       if (isMenaced(my_player, end)) { continue; }
       if (at(end).empty()) {

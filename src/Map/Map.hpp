@@ -45,8 +45,25 @@ public:
   {
     if (t_page.empty()) { return; }
     root = new Bearing[Size];
-    Bearing *it = root;
-    for (Bearing const *copy_it = t_page.root; copy_it != t_page.root + Size; copy_it++, it++) { *it = *copy_it; }
+    // Bearing *it = root;
+    // for (Bearing const *t_it = t_page.root; t_it < t_page.root + Size; t_it++, it++) {//
+    //   *it = *t_it;
+    // }
+    for (unsigned i = 0; i < Size; i++) {//
+      root[i] = t_page.root[i];
+    }
+  }
+  // perhaps i should add a "page operator=()""
+  void copy_page(const Page &t_page)
+  {
+    if (t_page.empty()) {
+      root = nullptr;//! check if it is safe to remove this line, then comment this.
+      return;
+    }
+    root = new Bearing[Size];
+    for (unsigned i = 0; i < Size; i++) {//
+      root[i] = t_page.root[i];
+    }
   }
 
   void reserve();
@@ -54,7 +71,12 @@ public:
   bool contains(const Bearing b) const;
   template<class Functor> void for_each(Functor functor)
   {
-    for (Bearing *it = root; it != root + Size and *it != Bearing{ -1U, -1U }; it++) { functor(*it); }
+    for (Bearing *it = root;//
+         it != root + Size and//
+         *it != Bearing{ -1U, -1U };//
+         it++) {//
+      functor(*it);
+    }
   }
 };
 
@@ -105,11 +127,19 @@ class Map
 {
 public:
   explicit Map(Page<3> *t_keys) : keys{ t_keys } {}
-  explicit Map(const Map &t_map) : keys{ new Page<3>[64] }
+  explicit Map(const Map &t_map)
   {
     if (t_map.empty()) { return; }
+    keys = new Page<3>[64];
     Page<3> *it = keys;
-    for (Page<3> const *copy_it = t_map.keys; copy_it != t_map.keys + 64; copy_it++, it++) { *it = *copy_it; }
+    for (Page<3> const *copy_it = t_map.keys; copy_it != t_map.keys + 64; copy_it++, it++) {//
+      // if (copy_it->empty()) {
+      //   it->root = nullptr;
+      // } else {
+      // }
+      // *it = *copy_it;
+      it->copy_page((*copy_it));
+    }
   }
 
   explicit Map(const unsigned size);

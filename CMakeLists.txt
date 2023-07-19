@@ -37,6 +37,23 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Build Types Configuration
 # =============================================================================
 
+#[[
+g++ -Wall -Wextra -Wpedantic -Werror \
+	-pthread \
+	-fsanitize=address \
+	-O0 -g \
+	-fsanitize=address \
+	-fsanitize-address-use-after-scope \
+	-fsanitize=undefined \
+	-fsanitize=thread \
+	-fno-sanitize-recover \
+	-fstack-protector \
+	-fstack-check \
+	-fstack-protector-strong \
+	-D_FORTIFY_SOURCE=2 \
+	-o your_executable source_file.cpp
+#]]
+
 if(CMAKE_CONFIGURATION_TYPES)
   if(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
     list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
@@ -56,8 +73,47 @@ endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   message("adding debug build type configuration")
-  add_compile_options(-fsanitize=address)
-  add_link_options(-fsanitize=address)
+  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wimplicit-fallthrough -Wsign-conversion)
+  add_compile_options(-pthread) # Enable multithreading
+  add_compile_options(-fsanitize=address) # ASAN
+  link_libraries(-fsanitize=address)
+  # add_link_options(-fsanitize=address)
+  add_compile_options(-fsanitize=undefined)
+  link_libraries(ubsan)
+  add_compile_options(-O0 -g) # disable optimizations and keep symbols
+  add_compile_options(-fsanitize-address-use-after-scope) # better ASAN and
+
+  # link_libraries(-fsanitize=address) add_compile_options(-fsanitize=thread) #
+  # Thread sanitizer
+
+  # add_compile_options(-fstack-protector -fstack-check -fstack-protector-all)
+  add_compile_options(-fstack-protector-all)
+  # add_compile_definitions(-D_FORTIFY_SOURCE=2)
+
+  # IF COMPILER == GCC
+  add_compile_options(-fdiagnostics-color=always)
+  # add_compile_options(-fdiagnostics-format=pretty)# this didn't work
+  #[[
+  #IF COMPILER == Clang
+  add_compile_options(-fcolor-diagnostics -fpretty-diagnostics)
+  ]]
+  # Make ASAN output pretty
+
+  #[[add_compile_options(--pretty-print)
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --pretty-print")
+
+
+
+  ]]
+  #
+  #[[Make ASAN output pretty through asan_symbolize
+  ]]
+  set(ENV{ASAN_SYMBOLIZER_PATH} "/usr/bin/asan_symbolize")
+  set(ENV{ASAN_OPTIONS} "symbolize=1")
+  #[[ GARBAGE
+  set(ASAN_SYMBOLIZER_PATH "/usr/bin/asan_symbolize")
+  ]]
 endif()
 
 # =============================================================================

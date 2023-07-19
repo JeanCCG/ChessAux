@@ -86,7 +86,7 @@ Interface::Input_error
 Move Interface::get_player_move(Gameboard &gb, Player my_player, Player_type player_type)
 {
   if (player_type == Player_type::computer) {
-    const int depth = 3;
+    const int depth = 2;
     IA_functor IA{ my_player };
     return IA(gb, my_player, depth);
   }
@@ -225,8 +225,9 @@ Interface::Interface_state Interface::game(const Game_settings &game_settings) c
 {
   // enable and disable logging in "interface.cpp" file
 #ifdef ENABLE_LOGGING
-  log_file.open(log_path());
-  if (!log_file) { cerr << "couldn't open \"" << log_path << "\" for writing" << endl; }
+  auto path = log_path();
+  log_file.open(path);
+  if (!log_file) { cerr << "couldn't open \"" << path << "\" for writing" << endl; }
 
 // #define LOG(x) log_file << x << "\n";
 #define LOG(x) log_file << x << " ";
@@ -278,7 +279,7 @@ void Interface::modify_chess_board_interface(Game_settings &game_settings)
   cout << setw(15) << "White pieces\t" << setw(15) << "Black pieces" << endl;
 
   std::cout << std::left;
-  for (int i = 0; i < 6; i++) {
+  for (unsigned i = 0; i < 6; i++) {
     cout << setw(6) << white_names[i] << setw(2) << ":" << white_symbols[i] << "\t";
     cout << setw(6) << black_names[i] << setw(2) << ":" << black_symbols[i] << endl;
   }

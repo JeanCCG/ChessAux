@@ -36,7 +36,7 @@ public:
 
   explicit Gameboard(const Game_settings &game_settings);
   // explicit Gameboard(const Gameboard &gb);
-  ~Gameboard() { clear_stack_vars(); }
+  ~Gameboard() { clear_stack_vars(); }//! both freed memory here
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
@@ -170,7 +170,11 @@ private:
   Piece_symbols get_menace_symbol() { return at(m_menaces.front()).symbol; }
   bool available_knight_interceptor(const Player interceptor_p, const Bearing place);
   bool is_interceptable(const Player interceptor_p, const Bearing place);
+
   bool pawn_intercepts(const Player interceptor_p, const Bearing place);
+  bool white_pawn_intercepts(const Bearing place);
+  bool black_pawn_intercepts(const Bearing place);
+
   bool available_menace_interceptor(const Bearing place);
   bool legal_pawn(const Move t_move);
   bool legal_diagonal(const Move t_move);

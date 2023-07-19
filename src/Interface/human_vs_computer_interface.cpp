@@ -71,7 +71,7 @@ Interface::Interface_state Interface::human_vs_computer_interface()
   Interface_state next_state{};
   switch (option) {
   case Option::play: next_state = game(game_settings); break;
-  case Option::time: game_settings.is_time_enabled != game_settings.is_time_enabled; break;
+  case Option::time: game_settings.is_time_enabled = not game_settings.is_time_enabled; break;
   case Option::swap_colors: cout << "\tGood bye 1\n"; return Interface_state::end_program;
   case Option::difficulty: cout << "\tGood bye 2\n"; return Interface_state::end_program;
   case Option::modify_chess_board:

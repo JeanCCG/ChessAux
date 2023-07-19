@@ -6,26 +6,35 @@
 #include <limits>
 #include <vector>
 
+// debug headers
+#include <sstream>
+#include <string>
+
 using namespace std;
 
 unsigned gb_counter = 0;
 
-void print_gb(Gameboard &gb)
+std::string print_gb(Gameboard &gb)
 {
-  if (gb_counter < 763) { return; }
-  cout << "gb_counter: " << gb_counter << endl;
+  // if (gb_counter < 763) { return ""; }
+  std::ostringstream os;
+  os << "gb_counter: " << gb_counter << "\n";
+
   for (unsigned x = 0; x < gb.width; x++) {
     for (unsigned y = 0; y < gb.height; y++) {
       const Bearing b{ x, y };
       const auto e = gb.at(b).symbol;
       if (e == Piece_symbols::empty) {
-        cout << "O";
+        os << "_";
       } else {
-        cout << static_cast<char>(e);
+        os << static_cast<char>(e);
       }
     }
-    cout << endl;
+    os << "\n";
   }
+
+  std::string str = os.str();
+  return str;
 }
 
 const auto less_than = [](const int lhs, const int rhs) {
@@ -74,6 +83,8 @@ struct IA_functor
 
 int diff_relative_to_player(Player player, Score score) { return score.at(player) - score.at(not player); }
 
+unsigned sup = 0;
+
 void IA_functor::my_perform(const Player player,
   const Minimax next_minimax,
   const int depth,
@@ -91,13 +102,17 @@ void IA_functor::my_perform(const Player player,
   // vector<Move> path(depth + 1);
   vector<Move> path{ t_path };
 
+  std::string str = print_gb(gb);
+  gb_counter = gb_counter;
   if (gb.check_end_conditions() == Game_result::no_results_yet) {
-    score += recursive_IA(gb, path, next_player, depth, next_minimax);
-  }
-  // if (gb.check_end_conditions() != Game_result::no_results_yet) {
-  // } else {
-  //   score += recursive_IA(gb, path, next_player, depth, next_minimax);
-  // }
+    gb_counter = gb_counter;
+    sup++;
+    sup = sup;
+    Gameboard copy_gb = gb;
+    sup = sup;
+    score += recursive_IA(copy_gb, path, next_player, depth, next_minimax);//! first freed memory here
+    sup = sup;//* NOTE: i suspect the operator=() in page, keys are different but somehow the pages are double-freed
+  }//! second freed memory here
 
   if (cmp(score, best_score_until_now)) {
     best_score_until_now = score;
@@ -142,16 +157,19 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
                                  or initial_gb.is_absolutely_pinned(start, partially_pinned, operative_axis);
       if (invalid_piece) { continue; }
 
-      if (not initial_gb.available_movement_at(start, movable_append, edible_append)) { continue; }
-
       //
       gb_counter = gb_counter;
+      // at 52 it breaks
+      std::string str = print_gb(initial_gb);
+
+      if (not initial_gb.available_movement_at(start, movable_append, edible_append)) { continue; }
+
       // vector<Page<3> *> initial_gb_map_interceptors = initial_gb.interceptor_map.interceptors();
       //
       for (const auto end : edible_ends) {
         gb_counter++;
         Gameboard gb = initial_gb;
-        print_gb(gb);
+        // print_gb(gb);
         const Move move = { start, end };
         gb.capture(move);
         // vector<Page<3> *> gb_map_interceptors = initial_gb.interceptor_map.interceptors();
@@ -172,6 +190,10 @@ int IA_functor::recursive_IA(Gameboard initial_gb, vector<Move> &t_path, Player 
         Gameboard gb = initial_gb;
         const Move move = { start, end };
         gb.make_move(move);
+        /* Here
+        ! #8 frees the memory
+        ! #8 double-frees the memory
+        */
         my_perform(player,
           next_minimax,
           depth,

@@ -392,6 +392,7 @@ void Gameboard::make_move(const Move t_move)
   default: move_or_capture(t_move); break;
   }
   // should I check whether the moved_piece checks the enemy king?
+  // last_move = t_move;
 }
 
 void Gameboard::undraw_king(const Bearing king_bearing)
@@ -410,9 +411,9 @@ void Gameboard::undraw_king(const Bearing king_bearing)
   if (inTheRightBorder) { jLimit = 2; }
 
   for (unsigned i = inTheUpperBorder ? 1 : 0; i < iLimit; i++) {
-    end.x = king_bearing.x + (-1 + i);
+    end.x = king_bearing.x + (-1U + i);
     for (unsigned j = inTheLeftBorder ? 1 : 0; j < jLimit; j++) {
-      end.y = king_bearing.y + (-1 + j);
+      end.y = king_bearing.y + (-1U + j);
       if (at(end).symbol == Piece_symbols::dot) { unDrawDot(end); }
     }
   }
@@ -868,58 +869,120 @@ bool Gameboard::is_interceptable(const Player interceptor_p, const Bearing place
   };
   perform_jumps(place, do_nothing_false, jump_condition);
 
-  if (pawn_intercepts(interceptor_p, place)) { available_interceptor = true; }
+  // if (pawn_intercepts(interceptor_p, place)) { available_interceptor = true; }
+  if (interceptor_p == Player::white) {
+    if (white_pawn_intercepts(place)) { available_interceptor = true; }
+  } else {
+    if (black_pawn_intercepts(place)) { available_interceptor = true; }
+  }
 
   return available_interceptor;
 }
 
-bool Gameboard::pawn_intercepts(const Player interceptor_p, const Bearing place)
+const auto less_eq_than = [](const unsigned lhs, const unsigned rhs) {
+  return lhs <= rhs;
+};
+const auto greater_eq_than = [](const unsigned lhs, const unsigned rhs) {
+  return lhs >= rhs;
+};
+
+bool Gameboard::white_pawn_intercepts(const Bearing place)
 {
-  bool available_interceptor{ false };
-  Piece_symbols interceptor_pawn;
-  unsigned direction;
-  bool y_condition;
-  if (interceptor_p == Player::white) {
-    interceptor_pawn = Piece_symbols::white_pawn;
-    direction = -1U;
-    y_condition = place.y > 1;
-  } else {
-    interceptor_pawn = Piece_symbols::black_pawn;
-    direction = +1;
-    y_condition = place.y < height - 1;
-  }
+  const auto [x, y] = place;
+  // i: interceptor
+  bool available_i{ false };
+  const Piece_symbols i_pawn = Piece_symbols::white_pawn;
+  const unsigned direction = -1U;
+  const unsigned border = -1U;
 
   if (at(place).empty()) {// move to block the enemy attack.
-    const Bearing one_behind{ place.x, place.y + direction };
-    const Bearing two_behind{ place.x, place.y + direction + direction };
-    const bool pawn_first_movement = first_movement(place) and at(two_behind).symbol == interceptor_pawn;
-    if (const bool is_pawn = at(one_behind).symbol == interceptor_pawn; is_pawn) {
-      available_interceptor = true;
-      interceptor_map[one_behind].append(place);
-    } else if (pawn_first_movement) {
-      available_interceptor = true;
-      interceptor_map[two_behind].append(place);
+    const Bearing away1{ x, y + direction };
+    const Bearing away2{ x, y + direction + direction };
+    if (away2.y > border) {// check away1 and or away2;
+      const bool pawn_first_movement = first_movement(away2) and at(away2).symbol == i_pawn and at(away1).empty();
+      if (at(away1).symbol == i_pawn) {
+        available_i = true;
+        interceptor_map[away1].append(place);
+      } else if (pawn_first_movement) {
+        available_i = true;
+        interceptor_map[away2].append(place);
+      }
+    }
+    if (away1.y > border and at(away1).symbol == i_pawn) {// check away1
+      available_i = true;
+      interceptor_map[away1].append(place);
     }
   } else {// we assume there is an enemy piece if not empty cause it is the direction of the menace.
-    const bool checkable_left = place.x > 0 and y_condition;
-    const Bearing left_place = { place.x - 1, place.y + direction };
-    const bool left_capture = checkable_left and is_an_enemy_piece(interceptor_p, left_place);
+    const bool y_condition = y > 0;
+
+    const bool checkable_left = x > 0 and y_condition;
+    const Bearing left_place = { x - 1, y + direction };
+    const bool left_capture = checkable_left and at(left_place).player != Player::white;
     if (left_capture) {
       interceptor_map[left_place].append(place);
-      available_interceptor = true;
+      available_i = true;
     }
 
-    const bool checkable_right = place.x < width - 1 and y_condition;
-    const Bearing right_place = { place.x + 1, place.y + direction };
-    const bool right_capture = checkable_right and at(right_place).player != interceptor_p;
+    const bool checkable_right = x < width - 1U and y_condition;
+    const Bearing right_place = { x + 1, y + direction };
+    const bool right_capture = checkable_right and at(right_place).player != Player::white;
     if (right_capture) {
       interceptor_map[right_place].append(place);
-      available_interceptor = true;
+      available_i = true;
     }
   }
-  return available_interceptor;
+
+  return available_i;
 }
 
+bool Gameboard::black_pawn_intercepts(const Bearing place)
+{
+  const auto [x, y] = place;
+  // i: interceptor
+  bool available_i{ false };
+  const Piece_symbols i_pawn = Piece_symbols::black_pawn;
+  const unsigned direction = +1;
+  const unsigned border = height;
+
+  if (at(place).empty()) {// move to block the enemy attack.
+    const Bearing away1{ x, y + direction };
+    const Bearing away2{ x, y + direction + direction };
+    if (away2.y < border) {
+      // check one_away and or two_away;
+      const bool pawn_first_movement = first_movement(away2) and at(away2).symbol == i_pawn and at(away1).empty();
+      if (at(away1).symbol == i_pawn) {
+        available_i = true;
+        interceptor_map[away1].append(place);
+      } else if (pawn_first_movement) {
+        available_i = true;
+        interceptor_map[away2].append(place);
+      }
+    }
+    if (away1.y < border and at(away1).symbol == i_pawn) {
+      available_i = true;
+      interceptor_map[away1].append(place);
+    }
+  } else {// we assume there is an enemy piece if not empty cause it is the direction of the menace.
+    bool y_condition = y < height - 1U;
+
+    const bool checkable_left = x > 0 and y_condition;
+    const Bearing left_place = { x - 1U, y + direction };
+    const bool left_capture = checkable_left and at(left_place).player != Player::black;
+    if (left_capture) {
+      interceptor_map[left_place].append(place);
+      available_i = true;
+    }
+
+    const bool checkable_right = x < width - 1U and y_condition;
+    const Bearing right_place = { x + 1, y + direction };
+    const bool right_capture = checkable_right and at(right_place).player != Player::black;
+    if (right_capture) {
+      interceptor_map[right_place].append(place);
+      available_i = true;
+    }
+  }
+  return available_i;
+}
 
 bool Gameboard::available_menace_interceptor(const Bearing place)
 {

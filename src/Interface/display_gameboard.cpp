@@ -18,7 +18,7 @@
 
 using namespace std;
 
-void Interface::display_gameboard(Gameboard &gb, const Player turn_perspective)
+void Interface::display_gameboard(Gameboard &gb, [[maybe_unused]] const Player turn_perspective)
 {
   const std::string blank_frame{ "   " };
   std::string blank_slot{ "       " };
