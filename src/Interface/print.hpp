@@ -59,5 +59,6 @@ template<class... Types> void print(Style _style, Types... _rest)
   cout << "\033[" << _style << "m";
   print(_rest...);
 }
+template<class... Types> void println(Style _style, Types... _rest) { print(_rest..., "\n"); }
 
 #endif// __PRINT_H__

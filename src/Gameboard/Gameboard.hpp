@@ -36,7 +36,7 @@ public:
 
   explicit Gameboard(const Game_settings &game_settings);
   // explicit Gameboard(const Gameboard &gb);
-  ~Gameboard() { clear_stack_vars(); }//! both freed memory here
+  ~Gameboard() { clear_stack_vars(); }
 
   void move(const Move t_move);// end MUST BE FREE
   void capture(const Move t_move);
@@ -93,7 +93,7 @@ public:
 
   bool start_able_to_intercept(const Move move);// check key
   bool end_able_to_intercept(const Move move);// check values
-  // TODO: move this to private after solving the 766 copy destructor bug
+  // TODO: move this to private after solving
   Map interceptor_map{ nullptr };
 
 private:

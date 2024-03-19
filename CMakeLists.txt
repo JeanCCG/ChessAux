@@ -159,7 +159,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   # add_link_options(-fsanitize=address)
   add_compile_options(-fsanitize=undefined)
   link_libraries(ubsan)
-  add_compile_options(-O0 -g) # disable optimizations and keep symbols
+  add_compile_options(-O0 -g3) # disable optimizations & (debug info & assert)
   add_compile_options(-fsanitize-address-use-after-scope) # better ASAN and
 
   # link_libraries(-fsanitize=address) add_compile_options(-fsanitize=thread)
